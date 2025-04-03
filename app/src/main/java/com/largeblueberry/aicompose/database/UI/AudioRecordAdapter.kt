@@ -61,6 +61,5 @@ class AudioRecordAdapter(
 
     fun updateList(newList: List<AudioRecordEntity>) {
         records = newList
-        notifyDataSetChanged()
     }
 }

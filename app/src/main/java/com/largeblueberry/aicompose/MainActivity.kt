@@ -10,7 +10,7 @@ import com.largeblueberry.aicompose.record.RecordActivity
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         // binding 초기화
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
         binding.page1.setOnClickListener{
             val intent = Intent(this, RecordActivity::class.java)
             startActivity(intent)
