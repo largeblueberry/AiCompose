@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.largeblueberry.aicompose" />
+                  <option name="mobileSdkAppId" value="1:767030395279:android:2dc1e7eb18f126370ccbfa" />
+                  <option name="projectId" value="aicompose-49b5e" />
+                  <option name="projectNumber" value="767030395279" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

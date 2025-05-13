@@ -2,7 +2,6 @@ package com.largeblueberry.aicompose
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.largeblueberry.aicompose.database.UI.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityMainBinding
@@ -14,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         // binding 초기화
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -28,5 +26,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,AudioRecordDataActivity::class.java)
             startActivity(intent)
         }
+
     }
 }

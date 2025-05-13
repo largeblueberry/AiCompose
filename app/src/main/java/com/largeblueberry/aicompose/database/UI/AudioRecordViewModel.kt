@@ -22,11 +22,15 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
-        )
+        )// stateflow 를 활용한 개발
 
     // UI 상태: 데이터가 비어있는지 여부
     private val _isEmpty = MutableStateFlow(true)
     val isEmpty: StateFlow<Boolean> = _isEmpty
+
+    // 삭제 성공/실패 상태 알림용
+    private val _deleteResult = MutableStateFlow<Result<Unit>?>(null)
+    val deleteResult: StateFlow<Result<Unit>?> = _deleteResult
 
     init {
         // 데이터가 비어있는지 여부를 업데이트
@@ -39,8 +43,28 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
 
     fun deleteRecord(record: AudioRecordEntity) {
         viewModelScope.launch {
-            val fileDeleted = File(record.filePath).delete()
-            audioRecordDao.deleteRecord(record)
+            try {
+                val fileDeleted = File(record.filePath).delete()
+                audioRecordDao.deleteRecord(record)
+                if (!fileDeleted) {
+                    // 파일이 이미 없거나 삭제 실패
+                    _deleteResult.value = Result.failure(Exception("파일 삭제 실패"))
+                } else {
+                    _deleteResult.value = Result.success(Unit)
+                }
+            } catch (e: Exception) {
+                _deleteResult.value = Result.failure(e)
+            }
         }
+    }
+
+    // 공유를 위한 파일 반환 함수
+    fun getRecordFile(record: AudioRecordEntity): File {
+        return File(record.filePath)
+    }
+
+    // 삭제 결과 상태 초기화 (UI에서 메시지 표시 후 호출)
+    fun clearDeleteResult() {
+        _deleteResult.value = null
     }
 }

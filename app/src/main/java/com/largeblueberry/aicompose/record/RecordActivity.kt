@@ -19,6 +19,7 @@ import com.largeblueberry.aicompose.record.database.AudioDatabase
 import kotlinx.coroutines.launch
 
 class RecordActivity : AppCompatActivity() {
+    /* 녹음 화면 임 여기서 녹음기 키고 녹음함.*/
 
     private lateinit var binding: ActivityRecordBinding // 뷰 바인딩 객체
     private var isRecording = false

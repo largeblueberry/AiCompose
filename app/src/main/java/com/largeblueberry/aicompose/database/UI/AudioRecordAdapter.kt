@@ -13,7 +13,8 @@ import java.util.Locale
 // AudioRecordAdapter.kt
 class AudioRecordAdapter(
     private val onItemClick: (AudioRecordEntity) -> Unit,
-    private val onDeleteClick: (AudioRecordEntity) -> Unit
+    private val onDeleteClick: (AudioRecordEntity) -> Unit,
+    private val onShareClick: (AudioRecordEntity) -> Unit
 ) : RecyclerView.Adapter<AudioRecordAdapter.AudioViewHolder>() {
 
     private var records = emptyList<AudioRecordEntity>()
@@ -36,8 +37,12 @@ class AudioRecordAdapter(
                     onDeleteClick(record)
                 }
 
+                btnShare.setOnClickListener{
+                    onShareClick(record)
+                }
+
                 // 아이템 클릭 리스너
-                root.setOnClickListener {
+                btnPlay.setOnClickListener {
                     onItemClick(record)
                 }
             }
@@ -61,5 +66,7 @@ class AudioRecordAdapter(
 
     fun updateList(newList: List<AudioRecordEntity>) {
         records = newList
+        notifyDataSetChanged()
     }
+
 }
