@@ -12,6 +12,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import com.largeblueberry.aicompose.databinding.ActivityRecordDataBinding
 import com.largeblueberry.aicompose.record.UI.AudioPlayer
+import com.largeblueberry.aicompose.record.database.AudioRecordEntity
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -39,8 +40,6 @@ class AudioRecordDataActivity : AppCompatActivity() {
         observeViewModel()
     }
 
-
-
     private fun setupRecyclerView() {
         adapter = AudioRecordAdapter(
             onItemClick = { record ->
@@ -57,7 +56,6 @@ class AudioRecordDataActivity : AppCompatActivity() {
                             "업로드 성공! URL: $downloadUrlOrError",
                             Toast.LENGTH_SHORT
                         ).show()
-                        // 공유 인텐트 예시
                         val sendIntent = android.content.Intent().apply {
                             action = android.content.Intent.ACTION_SEND
                             putExtra(android.content.Intent.EXTRA_TEXT, downloadUrlOrError)
@@ -72,6 +70,9 @@ class AudioRecordDataActivity : AppCompatActivity() {
                         ).show()
                     }
                 }
+            },
+            onRenameClick = { record -> // 파일명 클릭 시
+                showRenameDialog(record)
             }
         )
 
@@ -80,7 +81,29 @@ class AudioRecordDataActivity : AppCompatActivity() {
             adapter = this@AudioRecordDataActivity.adapter
         }
     }
-    
+
+    // 파일명 변경 다이얼로그
+    private fun showRenameDialog(record: AudioRecordEntity) {
+        val editText = android.widget.EditText(this).apply {
+            setText(record.filename)
+            setSelection(record.filename.length)
+        }
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("파일 이름 변경")
+            .setView(editText)
+            .setPositiveButton("확인") { _, _ ->
+                val newName = editText.text.toString().trim()
+                if (newName.isNotEmpty() && newName != record.filename) {
+                    viewModel.renameRecord(record, newName)
+                } else if (newName == record.filename) {
+                    Toast.makeText(this, "동일한 이름입니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+
     private fun observeViewModel() {
         // 녹음 기록 리스트 관찰
         lifecycleScope.launch {

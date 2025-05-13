@@ -14,7 +14,8 @@ import java.util.Locale
 class AudioRecordAdapter(
     private val onItemClick: (AudioRecordEntity) -> Unit,
     private val onDeleteClick: (AudioRecordEntity) -> Unit,
-    private val onShareClick: (AudioRecordEntity) -> Unit
+    private val onShareClick: (AudioRecordEntity) -> Unit,
+    private val onRenameClick: (AudioRecordEntity) -> Unit // 추가!
 ) : RecyclerView.Adapter<AudioRecordAdapter.AudioViewHolder>() {
 
     private var records = emptyList<AudioRecordEntity>()
@@ -44,6 +45,11 @@ class AudioRecordAdapter(
                 // 아이템 클릭 리스너
                 btnPlay.setOnClickListener {
                     onItemClick(record)
+                }
+
+                //이름 변경 가능
+                FileName.setOnClickListener {
+                    onRenameClick(record)
                 }
             }
         }

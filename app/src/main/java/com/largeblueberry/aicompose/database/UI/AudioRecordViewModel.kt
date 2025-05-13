@@ -1,6 +1,7 @@
 package com.largeblueberry.aicompose.database.UI
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.record.database.AudioDatabase
@@ -58,9 +59,35 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
         }
     }
 
-    // 공유를 위한 파일 반환 함수
-    fun getRecordFile(record: AudioRecordEntity): File {
-        return File(record.filePath)
+    //이름 변경 가능 함수
+    fun renameRecord(record: AudioRecordEntity, newName: String) {
+        viewModelScope.launch {
+            try {
+                val oldFile = File(record.filePath)
+                val parentDir = oldFile.parentFile
+                val fileExtension = oldFile.extension
+                // 확장자 유지
+                val newFileName = if (fileExtension.isNotEmpty()) "$newName.$fileExtension" else newName
+                val newFile = File(parentDir, newFileName)
+
+                // 실제 파일 이름 변경
+                val renamed = oldFile.renameTo(newFile)
+                if (renamed) {
+                    // DB의 파일명, 경로 업데이트
+                    val updatedRecord = record.copy(
+                        filename = newFileName,
+                        filePath = newFile.absolutePath
+                    )
+                    audioRecordDao.updateRecord(updatedRecord)
+                } else {
+                    // 파일 이름 변경 실패
+                    
+                    // 필요하다면 오류 메시지 전달용 StateFlow 추가 가능
+                }
+            } catch (e: Exception) {
+                // 필요하다면 오류 메시지 전달용 StateFlow 추가 가능
+            }
+        }
     }
 
     // 삭제 결과 상태 초기화 (UI에서 메시지 표시 후 호출)
