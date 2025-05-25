@@ -51,11 +51,7 @@ class AudioRecordDataActivity : AppCompatActivity() {
             onShareClick = { record ->
                 uploadAudioToFirebase(record.filePath) { success, downloadUrlOrError ->
                     if (success) {
-                        Toast.makeText(
-                            this,
-                            "업로드 성공! URL: $downloadUrlOrError",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this,"업로드 성공! URL: $downloadUrlOrError", Toast.LENGTH_SHORT).show()
                         val sendIntent = android.content.Intent().apply {
                             action = android.content.Intent.ACTION_SEND
                             putExtra(android.content.Intent.EXTRA_TEXT, downloadUrlOrError)
@@ -63,14 +59,10 @@ class AudioRecordDataActivity : AppCompatActivity() {
                         }
                         startActivity(android.content.Intent.createChooser(sendIntent, "공유하기"))
                     } else {
-                        Toast.makeText(
-                            this,
-                            "업로드 실패: $downloadUrlOrError",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this,"업로드 실패: $downloadUrlOrError", Toast.LENGTH_SHORT).show()
                     }
                 }
-            },
+            },// 공유 기능을 retrofit으로 개선 firebase로 업로드 하는 것이 아니라
             onRenameClick = { record -> // 파일명 클릭 시
                 showRenameDialog(record)
             }
