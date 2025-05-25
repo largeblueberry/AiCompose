@@ -36,4 +36,6 @@ class AudioPlayer {
         mediaPlayer?.release()
         mediaPlayer = null
     }
+
+    fun isPlaying(): Boolean = mediaPlayer?.isPlaying == true
 }

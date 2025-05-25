@@ -18,7 +18,7 @@
             android:name=".database.UI.AudioRecordDataActivity"
             android:exported="false" />
         <activity
-            android:name=".record.RecordActivity"
+            android:name=".record.UI.RecordActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

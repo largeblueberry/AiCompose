@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.largeblueberry.aicompose.database.UI.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityMainBinding
-import com.largeblueberry.aicompose.record.RecordActivity
+import com.largeblueberry.aicompose.record.UI.RecordActivity
 
 class MainActivity : AppCompatActivity() {
 
