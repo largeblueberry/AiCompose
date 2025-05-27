@@ -1,5 +1,6 @@
 package com.largeblueberry.aicompose.database.UI
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -13,7 +14,11 @@ import com.google.firebase.storage.storage
 import com.largeblueberry.aicompose.databinding.ActivityRecordDataBinding
 import com.largeblueberry.aicompose.record.UI.AudioPlayer
 import com.largeblueberry.aicompose.record.database.AudioRecordEntity
+import com.largeblueberry.aicompose.retrofit.RetrofitClient
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.File
 
 class AudioRecordDataActivity : AppCompatActivity() {
@@ -49,20 +54,20 @@ class AudioRecordDataActivity : AppCompatActivity() {
                 viewModel.deleteRecord(record)
             },
             onShareClick = { record ->
-                uploadAudioToFirebase(record.filePath) { success, downloadUrlOrError ->
+                viewModel.uploadAudioToServer(record.filePath) { success, urlOrError ->
                     if (success) {
-                        Toast.makeText(this,"업로드 성공! URL: $downloadUrlOrError", Toast.LENGTH_SHORT).show()
-                        val sendIntent = android.content.Intent().apply {
-                            action = android.content.Intent.ACTION_SEND
-                            putExtra(android.content.Intent.EXTRA_TEXT, downloadUrlOrError)
+                        Toast.makeText(this, "업로드 성공! URL: $urlOrError", Toast.LENGTH_SHORT).show()
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, urlOrError)
                             type = "text/plain"
                         }
-                        startActivity(android.content.Intent.createChooser(sendIntent, "공유하기"))
+                        startActivity(Intent.createChooser(sendIntent, "공유하기"))
                     } else {
-                        Toast.makeText(this,"업로드 실패: $downloadUrlOrError", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "업로드 실패: $urlOrError", Toast.LENGTH_SHORT).show()
                     }
                 }
-            },// 공유 기능을 retrofit으로 개선 firebase로 업로드 하는 것이 아니라
+            },// URL 업로드 후 공유하기 url 받아올 것!
             onRenameClick = { record -> // 파일명 클릭 시
                 showRenameDialog(record)
             }
@@ -138,27 +143,6 @@ class AudioRecordDataActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun uploadAudioToFirebase(filePath: String, onResult: (Boolean, String?) -> Unit) {
-        val file = File(filePath)
-        if (!file.exists()) {
-            onResult(false, "파일이 존재하지 않습니다.")
-            return
-        }
-        val uri = Uri.fromFile(file)
-        val storageRef = Firebase.storage.reference
-        val audioRef = storageRef.child("audio/${System.currentTimeMillis()}_${file.name}")
-
-        audioRef.putFile(uri)
-            .addOnSuccessListener {
-                audioRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                    onResult(true, downloadUri.toString())
-                }
-            }
-            .addOnFailureListener { exception ->
-                onResult(false, exception.message)
-            }
     }
 
     override fun onDestroy() {
