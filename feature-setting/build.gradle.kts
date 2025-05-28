@@ -39,6 +39,9 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.preference)
+    implementation(libs.material)
 
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
