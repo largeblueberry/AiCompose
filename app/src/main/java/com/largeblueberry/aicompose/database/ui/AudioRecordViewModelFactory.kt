@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.database.UI
+package com.largeblueberry.aicompose.database.ui
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

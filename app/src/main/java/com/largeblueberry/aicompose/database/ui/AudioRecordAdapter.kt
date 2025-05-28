@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.database.UI
+package com.largeblueberry.aicompose.database.ui
 
 
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ class AudioRecordAdapter(
                 Duration.text = record.duration
 
                 // 날짜 포맷팅
-                val date = Date(record.timestamp)
+                val date = Date(record.createdAt)
                 val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
                 RecordDate.text = dateFormat.format(date)
 

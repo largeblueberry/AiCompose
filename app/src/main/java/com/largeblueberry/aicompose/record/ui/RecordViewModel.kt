@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.record.UI
+package com.largeblueberry.aicompose.record.ui
 
 import android.app.Application
 import android.media.MediaPlayer
@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.record.database.AudioDatabase
 import com.largeblueberry.aicompose.record.database.AudioRecordEntity
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -79,11 +80,12 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun saveRecordingToDatabase(filePath: String, duration: String) {
         val fileName = filePath.substring(filePath.lastIndexOf("/") + 1)
-        val timestamp = System.currentTimeMillis()
+        val createdAt = System.currentTimeMillis()
         val audioRecord = AudioRecordEntity(
             filename = fileName,
             filePath = filePath,
-            timestamp = timestamp,
+            fileSize = File(filePath).length(), // 파일 크기 추가
+            createdAt = createdAt,
             duration = duration
         )
         viewModelScope.launch {

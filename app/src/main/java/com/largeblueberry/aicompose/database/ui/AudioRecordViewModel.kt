@@ -1,13 +1,13 @@
-package com.largeblueberry.aicompose.database.UI
+package com.largeblueberry.aicompose.database.ui
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.record.database.AudioDatabase
 import com.largeblueberry.aicompose.record.database.AudioRecordEntity
 import com.largeblueberry.aicompose.retrofit.RetrofitClient
+import com.largeblueberry.aicompose.retrofit.data.UploadState
+import com.largeblueberry.aicompose.retrofit.data.UploadStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +21,9 @@ import java.io.File
 class AudioRecordViewModel(context: Context) : ViewModel() {
 
     private val audioRecordDao = AudioDatabase.getDatabase(context).audioRecordDao()
+    // 업로드 상태 추가
+    private val _uploadState = MutableStateFlow(UploadState())
+    val uploadState: StateFlow<UploadState> = _uploadState
 
     // 녹음 기록 리스트
     val audioRecords: StateFlow<List<AudioRecordEntity>> = audioRecordDao.getAllRecords()
@@ -86,7 +89,7 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
                     audioRecordDao.updateRecord(updatedRecord)
                 } else {
                     // 파일 이름 변경 실패
-                    
+
                     // 필요하다면 오류 메시지 전달용 StateFlow 추가 가능
                 }
             } catch (e: Exception) {
@@ -95,12 +98,16 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun uploadAudioToServer(filePath: String, onResult: (Boolean, String?) -> Unit) {
+    fun uploadAudioToServer(filePath: String) {
         viewModelScope.launch {
             try {
+                _uploadState.value = UploadState(status = UploadStatus.UPLOADING)
                 val file = File(filePath)
                 if (!file.exists()) {
-                    onResult(false, "파일이 존재하지 않습니다.")
+                    _uploadState.value = UploadState(
+                        status = UploadStatus.ERROR,
+                        message = "파일이 존재하지 않습니다."
+                    )
                     return@launch
                 }
 
@@ -124,16 +131,16 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { result ->
                         if (result.success && result.url != null) {
-                            onResult(true, result.url)
+                            _uploadState.value = UploadState(status = UploadStatus.SUCCESS, url = result.url)
                         } else {
-                            onResult(false, result.message)
+                            _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
                         }
                     }
                 } else {
-                    onResult(false, "서버 오류: ${response.code()}")
+                    _uploadState.value = UploadState(status = UploadStatus.ERROR, message = "서버 오류: ${response.code()}")
                 }
             } catch (e: Exception) {
-                onResult(false, e.message ?: "업로드 중 오류 발생")
+                _uploadState.value = UploadState(status = UploadStatus.ERROR, message = e.message)
             }
         }
     }
@@ -141,5 +148,9 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
     // 삭제 결과 상태 초기화 (UI에서 메시지 표시 후 호출)
     fun clearDeleteResult() {
         _deleteResult.value = null
+    }
+
+    fun clearUploadState() {
+        _uploadState.value = UploadState()
     }
 }

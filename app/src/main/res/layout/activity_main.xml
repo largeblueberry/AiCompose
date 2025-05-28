@@ -27,6 +27,26 @@
         app:layout_constraintStart_toEndOf="@id/page1"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <android.widget.Button
+        android:id="@+id/page3"
+        android:text="악보 화면"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@id/page2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <android.widget.Button
+        android:id="@+id/page4"
+        android:text="설정"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@id/page3"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

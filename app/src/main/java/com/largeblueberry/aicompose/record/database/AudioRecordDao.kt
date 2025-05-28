@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AudioRecordDao {
-    @Query("SELECT * FROM audio_records ORDER BY timestamp DESC")
+    @Query("SELECT * FROM audio_records ORDER BY created_at DESC")
     fun getAllRecords(): Flow<List<AudioRecordEntity>>
 
     @Insert

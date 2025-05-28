@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +17,13 @@
         android:theme="@style/Theme.AiCompose"
         tools:targetApi="31">
         <activity
-            android:name=".database.UI.AudioRecordDataActivity"
+            android:name=".sheetMusic.SheetMusicActivity"
             android:exported="false" />
         <activity
-            android:name=".record.UI.RecordActivity"
+            android:name=".database.ui.AudioRecordDataActivity"
+            android:exported="false" />
+        <activity
+            android:name=".record.ui.RecordActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

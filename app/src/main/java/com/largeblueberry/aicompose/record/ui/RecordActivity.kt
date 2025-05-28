@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.record.UI
+package com.largeblueberry.aicompose.record.ui
 
 import android.Manifest
 import android.content.Intent
@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.largeblueberry.aicompose.database.UI.AudioRecordDataActivity
+import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityRecordBinding
 
 class RecordActivity : AppCompatActivity() {
