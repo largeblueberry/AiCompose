@@ -1,8 +1,8 @@
-package com.largeblueberry.aicompose.sheetMusic
+package com.largeblueberry.feature_sheetmusic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.largeblueberry.aicompose.databinding.ActivitySheetMusicBinding
+import com.largeblueberry.feature_sheetmusic.databinding.ActivitySheetMusicBinding
 
 class SheetMusicActivity : AppCompatActivity() {
 

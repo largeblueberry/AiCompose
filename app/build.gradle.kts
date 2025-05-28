@@ -52,6 +52,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    //모듈
+    implementation(project(":feature-sheetmusic"))
+
     // 테스트
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AiCompose"
 include(":app")
+include(":feature-sheetmusic")

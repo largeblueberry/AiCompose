@@ -6,7 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityMainBinding
 import com.largeblueberry.aicompose.record.ui.RecordActivity
-import com.largeblueberry.aicompose.sheetMusic.SheetMusicActivity
+import com.largeblueberry.feature_sheetmusic.SheetMusicActivity
+
 
 class MainActivity : AppCompatActivity() {
 
