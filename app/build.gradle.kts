@@ -45,15 +45,16 @@ android {
 }
 
 dependencies {
+    //모듈
+    implementation(project(":feature-sheetmusic"))
+    implementation(project(":feature-setting"))
+
     // 기본 Android 라이브러리
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-
-    //모듈
-    implementation(project(":feature-sheetmusic"))
 
     // 테스트
     testImplementation(libs.junit)
