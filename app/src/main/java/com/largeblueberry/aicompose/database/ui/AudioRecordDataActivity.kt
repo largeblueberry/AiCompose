@@ -21,6 +21,7 @@ import com.largeblueberry.aicompose.record.ui.AudioPlayer
 import com.largeblueberry.aicompose.record.database.AudioRecordEntity
 import com.largeblueberry.aicompose.retrofit.data.UploadStatus
 
+// 녹음된 오디오 파일을 관리하는 Activity
 class AudioRecordDataActivity : ComponentActivity() {
 
     private val viewModel: AudioRecordViewModel by viewModels {
