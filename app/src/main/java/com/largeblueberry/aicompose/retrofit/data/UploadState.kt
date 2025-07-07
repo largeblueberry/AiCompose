@@ -4,7 +4,8 @@ data class UploadState(
     val status: UploadStatus = UploadStatus.IDLE,
     val progress: Float = 0f,
     val message: String? = null,
-    val url: String? = null
+    val url: String? = null,
+    val recordId: Int? = null
 )
 
 enum class UploadStatus {
