@@ -114,7 +114,7 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
                 // MultipartBody.Part 생성
                 val requestFile = RequestBody.create("audio/*".toMediaTypeOrNull(), file)
                 val audioPart = MultipartBody.Part.createFormData(
-                    "audio",
+                    "file",
                     file.name,
                     requestFile
                 )
@@ -126,14 +126,15 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
                 )
 
                 // API 호출
-                val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart, description)
-
+                // val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart, description)
+                val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart)
                 if (response.isSuccessful) {
                     response.body()?.let { result ->
-                        if (result.success && result.url != null) {
-                            _uploadState.value = UploadState(status = UploadStatus.SUCCESS, url = result.url)
+                        // if (result.success && result.url != null) {
+                        if (result.midi_url != null) {
+                            _uploadState.value = UploadState(status = UploadStatus.SUCCESS, url = result.midi_url)
                         } else {
-                            _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
+                            // _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
                         }
                     }
                 } else {
