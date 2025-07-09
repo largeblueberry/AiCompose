@@ -88,9 +88,7 @@ dependencies {
 
     // ===== COMPOSE =====
     // Compose BOM - 모든 Compose 라이브러리 버전 관리
-    val composeBom = platform("androidx.compose:compose-bom:2025.05.00") // 최신 안정 버전
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
 
     // 핵심 Compose UI (BOM 사용 시 버전 명시 불필요)
     implementation("androidx.compose.ui:ui")

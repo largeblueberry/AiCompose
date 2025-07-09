@@ -2,7 +2,6 @@ package com.largeblueberry.aicompose.database.ui
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.text.input.TextFieldValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
