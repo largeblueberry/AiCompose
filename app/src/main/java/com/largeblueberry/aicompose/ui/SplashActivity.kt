@@ -18,7 +18,7 @@ class SplashActivity : ComponentActivity() {
 
         // 2초 후 MainActivity로 이동
         lifecycleScope.launch {
-            delay(3000) // 2초
+            delay(2000) // 2초
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish()
         }
