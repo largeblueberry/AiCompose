@@ -22,8 +22,8 @@ fun SplashScreen() {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF6C6CFF), // 위쪽 색
-                        Color(0xFF5B6EE1)  // 아래쪽 색
+                        Color(0xFFFFFFFF), // 위쪽 색
+                        Color(0xFFFFFFFF)  // 아래쪽 색
                     )
                 )
             ),
