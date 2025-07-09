@@ -9,9 +9,9 @@ import retrofit2.http.Part
 
 interface NetworkService {
     @Multipart
-    @POST("upload")
+    @POST("convert")
     suspend fun upload3gpFile(
         @Part file: MultipartBody.Part,
-        @Part("description") description: RequestBody
+        // @Part("description") description: RequestBody
     ): retrofit2.Response<UploadResponse>
 }

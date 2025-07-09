@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.database.ui
+package com.largeblueberry.aicompose.database.ui.viemodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -20,16 +20,19 @@ import java.io.File
 
 class AudioRecordViewModel(context: Context) : ViewModel() {
 
-    private val audioRecordDao = AudioDatabase.getDatabase(context).audioRecordDao()
+    private val audioRecordDao = AudioDatabase.Companion.getDatabase(context).audioRecordDao()
     // 업로드 상태 추가
     private val _uploadState = MutableStateFlow(UploadState())
     val uploadState: StateFlow<UploadState> = _uploadState
+    private val _uploadingRecordId = MutableStateFlow<Int?>(null)
+    val uploadingRecordId: StateFlow<Int?> = _uploadingRecordId
+
 
     // 녹음 기록 리스트
     val audioRecords: StateFlow<List<AudioRecordEntity>> = audioRecordDao.getAllRecords()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),// 마지막 구독 5초 후에 구독 해제
+            started = SharingStarted.Companion.WhileSubscribed(5000),// 마지막 구독 5초 후에 구독 해제
             initialValue = emptyList() // 초기값은 빈 리스트
         )// stateflow 를 활용한 개발
 
@@ -98,10 +101,14 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun uploadAudioToServer(filePath: String) {
+    fun uploadAudioToServer(filePath: String, recordId: Int) {
         viewModelScope.launch {
             try {
-                _uploadState.value = UploadState(status = UploadStatus.UPLOADING)
+                _uploadingRecordId.value = recordId // 초기 값 설정
+                _uploadState.value = UploadState(
+                    status = UploadStatus.UPLOADING,
+                    recordId = recordId // 업로드 중인 파일의 id
+                )
                 val file = File(filePath)
                 if (!file.exists()) {
                     _uploadState.value = UploadState(
@@ -112,35 +119,42 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
                 }
 
                 // MultipartBody.Part 생성
-                val requestFile = RequestBody.create("audio/*".toMediaTypeOrNull(), file)
+                val requestFile = RequestBody.Companion.create("audio/*".toMediaTypeOrNull(), file)
                 val audioPart = MultipartBody.Part.createFormData(
-                    "audio",
+                    "file",
                     file.name,
                     requestFile
                 )
 
                 // description 생성
-                val description = RequestBody.create(
+                val description = RequestBody.Companion.create(
                     "text/plain".toMediaTypeOrNull(),
                     "audio file"
                 )
 
                 // API 호출
-                val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart, description)
-
+                // val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart, description)
+                val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart)
                 if (response.isSuccessful) {
                     response.body()?.let { result ->
-                        if (result.success && result.url != null) {
-                            _uploadState.value = UploadState(status = UploadStatus.SUCCESS, url = result.url)
+                        // if (result.success && result.url != null) {
+                        if (result.midi_url != null) {
+                            _uploadState.value =
+                                UploadState(status = UploadStatus.SUCCESS, url = result.midi_url)
                         } else {
-                            _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
+                            // _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
                         }
                     }
                 } else {
-                    _uploadState.value = UploadState(status = UploadStatus.ERROR, message = "서버 오류: ${response.code()}")
+                    _uploadState.value = UploadState(
+                        status = UploadStatus.ERROR,
+                        message = "서버 오류: ${response.code()}"
+                    )
                 }
             } catch (e: Exception) {
                 _uploadState.value = UploadState(status = UploadStatus.ERROR, message = e.message)
+            }finally {
+                _uploadingRecordId.value = null // 업로드 끝나면 무조건 null로!
             }
         }
     }
