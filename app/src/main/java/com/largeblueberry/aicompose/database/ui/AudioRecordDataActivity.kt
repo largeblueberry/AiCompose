@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.largeblueberry.aicompose.database.ui.viemodel.AudioRecordViewModel
 import com.largeblueberry.aicompose.database.ui.viemodel.AudioRecordViewModelFactory
-import com.largeblueberry.aicompose.record.ui.AudioPlayer
+import com.largeblueberry.aicompose.database.ui.AudioPlayer
 
 class AudioRecordDataActivity : ComponentActivity() {
 
