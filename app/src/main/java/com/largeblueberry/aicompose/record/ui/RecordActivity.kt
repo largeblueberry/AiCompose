@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityRecordBinding
-import android.graphics.Color
 import androidx.core.graphics.toColorInt
 
 class RecordActivity : AppCompatActivity() {
