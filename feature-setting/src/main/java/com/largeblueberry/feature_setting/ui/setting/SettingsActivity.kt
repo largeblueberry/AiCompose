@@ -1,8 +1,9 @@
-package com.largeblueberry.feature_setting
+package com.largeblueberry.feature_setting.ui.setting
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
+import com.largeblueberry.feature_setting.R
 
 class SettingsActivity : AppCompatActivity() {
 
