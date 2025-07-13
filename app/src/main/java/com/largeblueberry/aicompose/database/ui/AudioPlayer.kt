@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.record.ui
+package com.largeblueberry.aicompose.database.ui
 
 import android.media.MediaPlayer
 import android.util.Log

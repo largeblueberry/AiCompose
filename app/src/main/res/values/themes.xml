@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.AiCompose" parent="Base.Theme.AiCompose" />
+
+    <style name="Theme.MyApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/eareamsplash</item>
+    </style>
 </resources>

@@ -19,22 +19,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.page1.setOnClickListener{
+        binding.cardRecord.setOnClickListener{
             val intent = Intent(this, RecordActivity::class.java)
             startActivity(intent)
         }
 
-        binding.page2.setOnClickListener{
+        binding.cardMyWorks.setOnClickListener{
             val intent = Intent(this,AudioRecordDataActivity::class.java)
             startActivity(intent)
         }
 
-        binding.page3.setOnClickListener {
-            val intent = Intent(this, SheetMusicActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.page4.setOnClickListener {
+        binding.cardSettings.setOnClickListener {
             TODO()
         }
 

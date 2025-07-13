@@ -1,9 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     alias(libs.plugins.compose.compiler)
+
 }
 
 android {
@@ -20,6 +24,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            // local.properties에서 BASE_URL 읽기
+            val localProperties = Properties()
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                localProperties.load(FileInputStream(localPropertiesFile))
+            }
+
+            buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL", 
+                "https://teamproject.p-e.kr")}\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -41,6 +56,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
 }
 

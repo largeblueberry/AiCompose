@@ -1,80 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recordLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F7FAFC"
     android:padding="24dp">
 
-    <!-- 녹음 상태 텍스트 -->
+    <!-- 상단 상태 텍스트 -->
     <TextView
         android:id="@+id/textRecordingState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="대기 중"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="16dp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#222222"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="48dp" />
 
-    <!-- 녹음 상태 ProgressBar -->
+    <!-- 마이크 아이콘 (원 배경 포함) -->
+    <FrameLayout
+        android:id="@+id/micCircle"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/textRecordingState"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_blue_bg" /> <!-- 파란색 원 drawable -->
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_mic"
+            app:tint="@android:color/white"/>
+    </FrameLayout>
+
+    <!-- 진행 바 -->
     <ProgressBar
         android:id="@+id/progressRecording"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/textRecordingState"
+        android:layout_height="8dp"
+        android:layout_marginTop="32dp"
+        android:progress="30"
+        android:max="100"
+        android:progressTint="#4F8CFF"
+        android:progressBackgroundTint="#E0E7EF"
+        app:layout_constraintTop_toBottomOf="@id/micCircle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 녹음 시작 버튼 -->
-    <android.widget.Button
-        android:id="@+id/btnRecord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btnRecordToggle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
         android:text="녹음 시작"
-        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#4F8CFF"
         app:layout_constraintTop_toBottomOf="@id/progressRecording"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="12dp" />
 
-    <!-- 녹음 중지 버튼 -->
-    <android.widget.Button
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="녹음 중지"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btnRecord"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 저장 버튼 -->
-    <android.widget.Button
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="저장"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btnStop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- 녹음된 파일 보기 버튼 -->
-    <android.widget.Button
+    <!-- 녹음 파일 보기 버튼 (테두리만 파랑) -->
+    <Button
         android:id="@+id/btnViewRecordings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
         android:text="녹음 파일 보기"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btnSave"
+        android:textColor="#4F8CFF"
+        android:textStyle="bold"
+        android:background="@drawable/bg_outline"
+        app:layout_constraintTop_toBottomOf="@id/btnRecordToggle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

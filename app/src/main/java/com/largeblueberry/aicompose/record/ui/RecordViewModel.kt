@@ -33,36 +33,46 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     private val dao = db.audioRecordDao()
 
     fun startRecording() {
-        outputFile = createUniqueAudioFilePath()
-        mediaRecorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFile(outputFile)
-            prepare()
-            start()
+        try {
+            outputFile = createUniqueAudioFilePath()
+            mediaRecorder = MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                setOutputFile(outputFile)
+                prepare()
+                start()
+            }
+            _isRecording.value = true
+            _recordingStateText.value = "녹음 중..."
+        } catch (e: Exception) {
+            _recordingStateText.value = "녹음 시작 실패: ${e.message}"
+            mediaRecorder?.release()
+            mediaRecorder = null
+            _isRecording.value = false
         }
-        _isRecording.value = true
-        _recordingStateText.value = "녹음 중..."
     }
 
     fun stopRecording() {
-        mediaRecorder?.apply {
-            stop()
-            release()
+        try {
+            mediaRecorder?.apply {
+                stop()
+                release()
+            }
+            mediaRecorder = null
+            _isRecording.value = false
+            _recordingStateText.value = "녹음 완료"
+
+            val mediaPlayer = MediaPlayer()
+            mediaPlayer.setDataSource(outputFile)
+            mediaPlayer.prepare()
+            val duration = mediaPlayer.duration
+            mediaPlayer.release()
+
+            saveRecordingToDatabase(outputFile, formatRecordingDuration(duration))
+        } catch (e: Exception) {
+            _recordingStateText.value = "녹음 중지 실패: ${e.message}"
         }
-        mediaRecorder = null
-        _isRecording.value = false
-        _recordingStateText.value = "녹음 완료"
-
-        // 녹음 파일 길이 계산 및 DB 저장
-        val mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(outputFile)
-        mediaPlayer.prepare()
-        val duration = mediaPlayer.duration
-        mediaPlayer.release()
-
-        saveRecordingToDatabase(outputFile, formatRecordingDuration(duration))
     }
 
     private fun createUniqueAudioFilePath(): String {

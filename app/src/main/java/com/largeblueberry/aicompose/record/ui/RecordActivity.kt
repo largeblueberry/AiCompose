@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityRecordBinding
+import androidx.core.graphics.toColorInt
 
 class RecordActivity : AppCompatActivity() {
 
@@ -25,17 +26,15 @@ class RecordActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // UI 상태 초기화
-        binding.btnStop.visibility = View.GONE
         binding.progressRecording.visibility = View.GONE
 
-        // 권한 체크 후 녹음 시작
-        binding.btnRecord.setOnClickListener {
-            checkPermissionAndStartRecording()
-        }
-
-        // 녹음 중지
-        binding.btnStop.setOnClickListener {
-            viewModel.stopRecording()
+        // 녹음 시작/중지 토글 버튼
+        binding.btnRecordToggle.setOnClickListener {
+            if (viewModel.isRecording.value == true) {
+                viewModel.stopRecording()
+            } else {
+                checkPermissionAndStartRecording()
+            }
         }
 
         // 녹음 파일 목록 보기
@@ -49,13 +48,15 @@ class RecordActivity : AppCompatActivity() {
             if (isRecording) {
                 binding.textRecordingState.text = "녹음 중..."
                 binding.progressRecording.visibility = View.VISIBLE
-                binding.btnRecord.visibility = View.GONE
-                binding.btnStop.visibility = View.VISIBLE
+                binding.btnRecordToggle.text = "녹음 중지"
+                binding.btnRecordToggle.setBackgroundColor("#FF4F4F".toColorInt()) // 빨간색
+                binding.btnRecordToggle.setTextColor("#FFFFFF".toColorInt())       // 흰색
             } else {
                 binding.textRecordingState.text = "녹음 완료"
                 binding.progressRecording.visibility = View.GONE
-                binding.btnRecord.visibility = View.VISIBLE
-                binding.btnStop.visibility = View.GONE
+                binding.btnRecordToggle.text = "녹음 시작"
+                binding.btnRecordToggle.setBackgroundColor("#4F8CFF".toColorInt()) // 파란색
+                binding.btnRecordToggle.setTextColor("#FFFFFF".toColorInt())       // 흰색
             }
         }
 

@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.largeblueberry.aicompose.database.ui.viemodel.AudioRecordViewModel
-import com.largeblueberry.aicompose.record.ui.AudioPlayer
+import com.largeblueberry.aicompose.database.ui.AudioPlayer
 import com.largeblueberry.aicompose.record.database.AudioRecordEntity
 import com.largeblueberry.aicompose.retrofit.data.UploadStatus
 
