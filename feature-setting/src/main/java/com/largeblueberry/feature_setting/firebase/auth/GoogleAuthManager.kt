@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -12,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.largeblueberry.feature_setting.BuildConfig
 
 @Singleton
 class GoogleAuthManager @Inject constructor(
@@ -19,17 +19,15 @@ class GoogleAuthManager @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) {
 
-    private val googleSignInClient: GoogleSignInClient by lazy {
+    val googleSignInClient: GoogleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("YOUR_WEB_CLIENT_ID") // Firebase Console에서 가져올 예정
+            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
             .requestEmail()
             .build()
         GoogleSignIn.getClient(context, gso)
     }
 
     fun getCurrentUser(): FirebaseUser? = firebaseAuth.currentUser
-
-    fun getGoogleSignInClient(): GoogleSignInClient = googleSignInClient
 
     suspend fun signInWithGoogle(idToken: String): AuthResult {
         return try {

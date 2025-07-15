@@ -7,7 +7,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     alias(libs.plugins.compose.compiler)
-
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -30,7 +30,12 @@ android {
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
                 localProperties.load(FileInputStream(localPropertiesFile))
+            }else {
+                println("❌ local.properties 파일이 없습니다!")
             }
+
+            buildConfigField("String", "GOOGLE_CLIENT_ID",
+                "\"${localProperties.getProperty("GOOGLE_CLIENT_ID")}\"")
 
             buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL", 
                 "https://teamproject.p-e.kr")}\"")
@@ -71,6 +76,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.hilt.android)
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
     // 테스트
     testImplementation(libs.junit)
@@ -90,11 +97,6 @@ dependencies {
     // Lifecycle & ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7") // 업데이트
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-storage")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -133,4 +135,6 @@ dependencies {
 
     // 테스트
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    implementation(project(":core_ui"))
 }

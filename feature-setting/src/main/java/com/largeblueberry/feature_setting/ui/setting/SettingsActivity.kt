@@ -1,27 +1,50 @@
 package com.largeblueberry.feature_setting.ui.setting
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceFragmentCompat
-import com.largeblueberry.feature_setting.R
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.largeblueberry.feature_setting.ui.login.LoginScreen
+import dagger.hilt.android.AndroidEntryPoint
 
-class SettingsActivity : AppCompatActivity() {
-
+@AndroidEntryPoint
+class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.settings, SettingsFragment())
-                .commit()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
+        setContent {
+            MaterialTheme {
+                val navController = rememberNavController()
 
-    class SettingsFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey)
+                NavHost(
+                    navController = navController,
+                    startDestination = "settings"
+                ) {
+                    composable("settings") {
+                        SettingsScreen(
+                            onNavigateToLogin = {
+                                navController.navigate("login")
+                            },
+                            onNavigateBack = {
+                                finish() // MainActivity로 돌아가기
+                            }
+                        )
+                    }
+
+                    composable("login") {
+                        LoginScreen(
+                            onNavigateBack = {
+                                navController.popBackStack() // 설정 화면으로 돌아가기
+                            },
+                            onNavigateToMain = {
+                                finish() // MainActivity로 돌아가기
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 }

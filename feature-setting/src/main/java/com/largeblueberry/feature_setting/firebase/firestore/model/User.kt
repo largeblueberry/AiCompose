@@ -11,5 +11,3 @@ data class User(
     val createdAt: Timestamp = Timestamp.now(),
     val lastLoginAt: Timestamp = Timestamp.now()
 )
-
-
