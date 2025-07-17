@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -307,9 +308,7 @@ private fun BenefitsCard() {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            BenefitItem("✅ 무제한 AI 작곡 생성")
-            BenefitItem("💾 작품 클라우드 저장")
-            BenefitItem("📱 모든 기기에서 동기화")
+            BenefitItem("✅ AI 작곡 10회 제공")
             BenefitItem("🎨 프리미엄 기능 이용")
         }
     }
@@ -375,4 +374,10 @@ private fun GoogleSignInButton(
             )
         }
     }
+
+}
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen()
 }

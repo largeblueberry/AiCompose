@@ -29,7 +29,7 @@ class CheckUsageLimitUseCase @Inject constructor(
     }
 
     fun canUseWithoutLogin(): Boolean {
-        // 비로그인 사용자는 제한 없이 사용 가능 (또는 다른 정책 적용)
+        // 비로그인 사용자는 제한 둘 예정
         return true
     }
 }

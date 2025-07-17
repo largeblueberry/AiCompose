@@ -11,7 +11,7 @@ data class UsageData(
     val updatedAt: Timestamp = Timestamp.now()
 ) {
     companion object {
-        const val DAILY_LIMIT_FREE = 5 // 무료 사용자 일일 제한
-        const val DAILY_LIMIT_PREMIUM = 100 // 프리미엄 사용자 일일 제한
+        const val DAILY_LIMIT_FREE = 3 // 로그인 안 한 사용자 일일 제한
+        const val DAILY_LIMIT_PREMIUM = 10 // 로그인 한 사용자 일일 제한
     }
 }
