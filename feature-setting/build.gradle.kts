@@ -1,9 +1,23 @@
+// build.gradle.kts (feature_setting 모듈)
+
+// ✅ 1. 플러그인 블록 위로 파일 읽기 로직을 이동
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+}
+
+// ✅ 2. local.properties 파일을 여기서 한 번만 읽도록 수정
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
@@ -15,31 +29,48 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        // ✅ 3. buildConfigField를 buildTypes가 아닌 defaultConfig로 이동
+        // 모든 빌드 유형에 이 설정이 적용됩니다.
+        buildConfigField(
+            "String",
+            "GOOGLE_CLIENT_ID",
+            "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
+        )
     }
 
     buildTypes {
+        debug {
+            // ✅ 4. 여기 있던 buildConfigField 관련 코드를 모두 삭제
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // ✅ 4. 여기 있던 buildConfigField 관련 코드를 모두 삭제
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true // 이 설정은 필수이며, 올바르게 유지하셨습니다.
     }
 }
 
 dependencies {
+    // ... dependencies는 기존과 동일합니다 ...
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.preference)
@@ -75,8 +106,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    kapt("com.google.dagger:hilt-compiler:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
+    implementation(project(":core_ui"))
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
 import com.largeblueberry.aicompose.databinding.ActivityMainBinding
 import com.largeblueberry.aicompose.record.ui.RecordActivity
+import com.largeblueberry.feature_setting.ui.setting.SettingsActivity
 import com.largeblueberry.feature_sheetmusic.SheetMusicActivity
 
 
@@ -30,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.cardSettings.setOnClickListener {
-            TODO()
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
     }
