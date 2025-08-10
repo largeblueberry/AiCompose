@@ -1,4 +1,4 @@
-package com.largeblueberry.feature_setting.di
+package com.largeblueberry.feature_setting.firebase.di
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
