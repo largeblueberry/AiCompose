@@ -13,7 +13,7 @@ class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SplashScreen() // 아까 만든 Compose 함수
+            SplashScreen()
         }
 
         // 2초 후 MainActivity로 이동
