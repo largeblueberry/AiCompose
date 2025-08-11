@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    id("com.google.gms.google-services")
+
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
@@ -109,6 +109,4 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    implementation(project(":core_ui"))
 }
