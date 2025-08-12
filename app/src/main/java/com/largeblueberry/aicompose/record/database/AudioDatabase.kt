@@ -15,23 +15,6 @@ import com.largeblueberry.aicompose.dataLayer.repository.AudioRecordDao
 abstract class AudioDatabase : RoomDatabase() {
     abstract fun audioRecordDao(): AudioRecordDao
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AudioDatabase? = null
-
-        fun getDatabase(context: Context): AudioDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AudioDatabase::class.java,
-                    "audio_database_v2"
-                )
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
 }
 /**
  * 데이터베이스 이름 변경! -> 중간에 스키마가 변경됨. room이 스키마를 혼동해서 이름을 새로 만듦.

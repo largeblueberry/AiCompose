@@ -1,13 +1,13 @@
 package com.largeblueberry.aicompose.library.dataLayer.repository.impl
 
 import com.largeblueberry.aicompose.library.dataLayer.repository.AudioUploadRepository
-import com.largeblueberry.aicompose.retrofit.RetrofitClient
+import com.largeblueberry.aicompose.retrofit.NetworkService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
-class AudioUploadRepositoryImpl : AudioUploadRepository{
+class AudioUploadRepositoryImpl(private val networkService: NetworkService) : AudioUploadRepository{
     override suspend fun uploadAudioFile(filePath: String): Result<String> {
         val file = File(filePath)
         if (!file.exists()) {
@@ -16,7 +16,7 @@ class AudioUploadRepositoryImpl : AudioUploadRepository{
         val requestFile = RequestBody.create("audio/*".toMediaTypeOrNull(), file)
         val audioPart = MultipartBody.Part.createFormData("file", file.name, requestFile)
         return try {
-            val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart)
+            val response = networkService.upload3gpFile(audioPart)
             if (response.isSuccessful) {
                 response.body()?.let { result ->
                     if (result.midiUrl != null) {

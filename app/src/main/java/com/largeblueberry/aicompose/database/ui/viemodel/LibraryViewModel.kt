@@ -1,26 +1,30 @@
 package com.largeblueberry.aicompose.database.ui.viemodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.aicompose.record.database.AudioDatabase
 import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
-import com.largeblueberry.aicompose.retrofit.RetrofitClient
 import com.largeblueberry.aicompose.dataLayer.model.network.UploadState
 import com.largeblueberry.aicompose.dataLayer.model.network.UploadStatus
+import com.largeblueberry.aicompose.library.domainLayer.usecase.DeleteAudioRecordUseCase
+import com.largeblueberry.aicompose.library.domainLayer.usecase.GetAudioRecordsUseCase
+import com.largeblueberry.aicompose.library.domainLayer.usecase.RenameAudioRecordUseCase
+import com.largeblueberry.aicompose.library.domainLayer.usecase.UploadAudioRecordUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
 
-class LibraryViewModel(context: Context) : ViewModel() {
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
+    private val getAudioRecordsUseCase: GetAudioRecordsUseCase,
+    private val deleteAudioRecordUseCase: DeleteAudioRecordUseCase,
+    private val renameAudioRecordUseCase: RenameAudioRecordUseCase,
+    private val uploadAudioRecordUseCase: UploadAudioRecordUseCase
+) : ViewModel() {
 
-    private val audioRecordDao = AudioDatabase.Companion.getDatabase(context).audioRecordDao()
     // 업로드 상태 추가
     private val _uploadState = MutableStateFlow(UploadState())
     val uploadState: StateFlow<UploadState> = _uploadState
@@ -29,12 +33,13 @@ class LibraryViewModel(context: Context) : ViewModel() {
 
 
     // 녹음 기록 리스트
-    val audioRecords: StateFlow<List<AudioRecordEntity>> = audioRecordDao.getAllRecords()
+    // audioRecordDao 대신 getAudioRecordsUseCase를 사용합니다.
+    val audioRecords: StateFlow<List<AudioRecordEntity>> = getAudioRecordsUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5000),// 마지막 구독 5초 후에 구독 해제
+            started = SharingStarted.WhileSubscribed(5000), // 마지막 구독 5초 후에 구독 해제
             initialValue = emptyList() // 초기값은 빈 리스트
-        )// stateflow 를 활용한 개발
+        )
 
     // UI 상태: 데이터가 비어있는지 여부
     private val _isEmpty = MutableStateFlow(true)
@@ -56,108 +61,65 @@ class LibraryViewModel(context: Context) : ViewModel() {
     fun deleteRecord(record: AudioRecordEntity) {
         viewModelScope.launch {
             try {
-                val fileDeleted = File(record.filePath).delete()
-                audioRecordDao.deleteRecord(record)
-                if (!fileDeleted) {
-                    // 파일이 이미 없거나 삭제 실패
-                    _deleteResult.value = Result.failure(Exception("파일 삭제 실패"))
-                } else {
-                    _deleteResult.value = Result.success(Unit)
-                }
+                // 파일 삭제 및 DB 업데이트 로직은 DeleteAudioRecordUseCase가 처리하도록 위임합니다.
+                deleteAudioRecordUseCase(record) // invoke() 호출
+                _deleteResult.value = Result.success(Unit)
             } catch (e: Exception) {
                 _deleteResult.value = Result.failure(e)
             }
         }
     }
 
-    //이름 변경 가능 함수
+    // 이름 변경 가능 함수
     fun renameRecord(record: AudioRecordEntity, newName: String) {
         viewModelScope.launch {
             try {
-                val oldFile = File(record.filePath)
-                val parentDir = oldFile.parentFile
-                val fileExtension = oldFile.extension
-                // 확장자 유지
-                val newFileName = if (fileExtension.isNotEmpty()) "$newName.$fileExtension" else newName
-                val newFile = File(parentDir, newFileName)
-
-                // 실제 파일 이름 변경
-                val renamed = oldFile.renameTo(newFile)
-                if (renamed) {
-                    // DB의 파일명, 경로 업데이트
-                    val updatedRecord = record.copy(
-                        filename = newFileName,
-                        filePath = newFile.absolutePath
-                    )
-                    audioRecordDao.updateRecord(updatedRecord)
-                } else {
-                    // 파일 이름 변경 실패
-
-                    // 필요하다면 오류 메시지 전달용 StateFlow 추가 가능
-                }
+                renameAudioRecordUseCase(record, newName) // invoke() 호출
+                // 필요하다면 이름 변경 성공/실패에 대한 StateFlow를 추가할 수 있습니다.
             } catch (e: Exception) {
                 // 필요하다면 오류 메시지 전달용 StateFlow 추가 가능
+
             }
         }
     }
 
-    fun uploadAudioToServer(filePath: String, recordId: Int) {
+    fun uploadAudioToServer(filePath: String, recordId: Int) { // recordId는 UI에서 Int로 넘어오므로 non-nullable
         viewModelScope.launch {
+            _uploadingRecordId.value = recordId // UI에서 어떤 레코드가 업로드 중인지 식별
+            _uploadState.value = UploadState(
+                status = UploadStatus.UPLOADING,
+                recordId = recordId // UI 상태에 recordId 포함
+            )
+
             try {
-                _uploadingRecordId.value = recordId // 초기 값 설정
-                _uploadState.value = UploadState(
-                    status = UploadStatus.UPLOADING,
-                    recordId = recordId // 업로드 중인 파일의 id
-                )
-                val file = File(filePath)
-                if (!file.exists()) {
-                    _uploadState.value = UploadState(
-                        status = UploadStatus.ERROR,
-                        message = "파일이 존재하지 않습니다."
-                    )
-                    return@launch
-                }
+                // UploadAudioRecordUseCase는 이제 kotlin.Result<String>을 반환하며, recordId를 받지 않습니다.
+                val result: Result<String> = uploadAudioRecordUseCase(filePath) // recordId 제거
 
-                // MultipartBody.Part 생성
-                val requestFile = RequestBody.Companion.create("audio/*".toMediaTypeOrNull(), file)
-                val audioPart = MultipartBody.Part.createFormData(
-                    "file",
-                    file.name,
-                    requestFile
-                )
-
-                // description 생성
-                val description = RequestBody.Companion.create(
-                    "text/plain".toMediaTypeOrNull(),
-                    "audio file"
-                )
-
-                // API 호출
-                // val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart, description)
-                val response = RetrofitClient.audioUploadService.upload3gpFile(audioPart)
-                if (response.isSuccessful) {
-                    response.body()?.let { result ->
-                        // if (result.success && result.url != null) {
-                        if (result.midiUrl != null) {
-                            _uploadState.value =
-                                UploadState(status = UploadStatus.SUCCESS, url = result.midiUrl)
+                result.fold(
+                    onSuccess = { midiUrl ->
+                        if (midiUrl.isNotEmpty()) {
+                            _uploadState.value = UploadState(status = UploadStatus.SUCCESS, url = midiUrl, recordId = recordId)
                         } else {
-                            // _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
+                            _uploadState.value = UploadState(status = UploadStatus.ERROR, message = "업로드 성공했으나, 유효한 URL을 받지 못했습니다.", recordId = recordId)
                         }
+                    },
+                    onFailure = { exception ->
+                        _uploadState.value = UploadState(status = UploadStatus.ERROR, message = exception.message ?: "알 수 없는 에러 발생", recordId = recordId)
                     }
-                } else {
-                    _uploadState.value = UploadState(
-                        status = UploadStatus.ERROR,
-                        message = "서버 오류: ${response.code()}"
-                    )
-                }
+                )
+
             } catch (e: Exception) {
-                _uploadState.value = UploadState(status = UploadStatus.ERROR, message = e.message)
-            }finally {
-                _uploadingRecordId.value = null // 업로드 끝나면 무조건 null로!
+                _uploadState.value = UploadState(status = UploadStatus.ERROR, message = e.message ?: "알 수 없는 에러 발생", recordId = recordId)
+            } finally {
+                // 현재 처리중인 recordId에 대한 작업이 끝났을 때만 null로 설정
+                // (동시에 여러 업로드를 처리하지 않는다는 가정 하에)
+                if (_uploadingRecordId.value == recordId) {
+                    _uploadingRecordId.value = null
+                }
             }
         }
     }
+
 
     // 삭제 결과 상태 초기화 (UI에서 메시지 표시 후 호출)
     fun clearDeleteResult() {
