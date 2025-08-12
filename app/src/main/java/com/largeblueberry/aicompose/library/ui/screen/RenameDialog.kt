@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.database.ui
+package com.largeblueberry.aicompose.library.ui.screen
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*

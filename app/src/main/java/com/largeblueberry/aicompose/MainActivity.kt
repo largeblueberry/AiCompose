@@ -3,7 +3,7 @@ package com.largeblueberry.aicompose
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.largeblueberry.aicompose.database.ui.LibraryActivity
+import com.largeblueberry.aicompose.library.ui.LibraryActivity
 import com.largeblueberry.aicompose.databinding.ActivityMainBinding
 import com.largeblueberry.aicompose.record.ui.RecordActivity
 import com.largeblueberry.feature_setting.ui.setting.SettingsActivity

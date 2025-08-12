@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.largeblueberry.aicompose.database.ui.LibraryActivity
+import com.largeblueberry.aicompose.library.ui.LibraryActivity
 import com.largeblueberry.aicompose.databinding.ActivityRecordBinding
 import androidx.core.graphics.toColorInt
 
