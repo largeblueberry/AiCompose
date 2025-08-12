@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".database.ui.LibraryActivity"
+            android:name=".library.ui.LibraryActivity"
             android:exported="false" />
         <activity
             android:name=".record.ui.RecordActivity"

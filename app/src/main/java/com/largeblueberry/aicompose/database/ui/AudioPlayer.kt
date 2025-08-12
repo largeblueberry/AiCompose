@@ -5,6 +5,11 @@ import android.util.Log
 
 class AudioPlayer {
     private var mediaPlayer: MediaPlayer? = null
+    private var onCompletionListener: (() -> Unit)? = null
+
+    fun setOnCompletionListener(listener: () -> Unit) {
+        onCompletionListener = listener
+    }
 
     fun play(filePath: String) {
         try {
@@ -16,10 +21,13 @@ class AudioPlayer {
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(filePath) // 녹음 파일 경로 설정
                 prepare() // 파일 준비
-                start() // 파일 재생
+                setOnCompletionListener {
+                    onCompletionListener?.invoke() // 재생 완료 시 ViewModel에 알림
+                }
             }
         } catch (e: Exception) {
             Log.e("AudioPlayer", "Error playing audio file: ${e.message}")
+            onCompletionListener?.invoke() // 에러 발생 시에도 상태 초기화를 위해 알림
         }
     }
 
