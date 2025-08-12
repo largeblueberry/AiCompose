@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- 악보 표시 영역 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sheetMusicCard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.6">
+
+        <ImageView
+            android:id="@+id/sheetMusicView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="Sheet Music" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title of the Sheet Music"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/sheetMusicCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 오디오 플레이어 컨트롤 -->
+    <ImageButton
+        android:id="@+id/playPauseButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/circle_button_background"
+        android:src="@drawable/ic_play"
+        android:contentDescription="Play/Pause"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- 진행바 -->
+    <SeekBar
+        android:id="@+id/progressSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/playPauseButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 시간 표시 -->
+    <TextView
+        android:id="@+id/currentTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0:00"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/progressSeekBar"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/totalTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3:45"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/progressSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 템포 조절 버튼들 -->
+    <ImageButton
+        android:id="@+id/slowTempoButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/tempo_button_background"
+        android:src="@drawable/ic_turtle"
+        android:contentDescription="Fast Tempo"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/currentTimeText"
+        app:layout_constraintEnd_toStartOf="@id/tempoText"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tempoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100 BPM"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="@id/slowTempoButton"
+        app:layout_constraintBottom_toBottomOf="@id/slowTempoButton"
+        app:layout_constraintStart_toEndOf="@id/slowTempoButton"
+        app:layout_constraintEnd_toStartOf="@id/fastTempoButton"/>
+
+    <ImageButton
+        android:id="@+id/fastTempoButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/tempo_button_background"
+        android:src="@drawable/ic_rabbit"
+        android:contentDescription="Slow Tempo"
+        app:layout_constraintTop_toTopOf="@id/slowTempoButton"
+        app:layout_constraintStart_toEndOf="@id/tempoText"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
