@@ -66,9 +66,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:sheetmusic"))
     //모듈
-    implementation(project(":feature-sheetmusic"))
     implementation(project(":feature-setting"))
+    implementation(project(":core:ui"))
 
     // 기본 Android 라이브러리
     implementation(libs.androidx.core.ktx)
@@ -135,6 +136,4 @@ dependencies {
 
     // 테스트
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-
-    implementation(project(":core_ui"))
 }

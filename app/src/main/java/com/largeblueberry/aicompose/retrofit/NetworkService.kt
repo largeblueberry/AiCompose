@@ -1,6 +1,6 @@
 package com.largeblueberry.aicompose.retrofit
 
-import com.largeblueberry.aicompose.retrofit.data.UploadResponse
+import com.largeblueberry.aicompose.dataLayer.model.network.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Multipart

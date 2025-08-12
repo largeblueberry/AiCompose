@@ -3,11 +3,10 @@ package com.largeblueberry.aicompose
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
+import com.largeblueberry.aicompose.database.ui.LibraryActivity
 import com.largeblueberry.aicompose.databinding.ActivityMainBinding
 import com.largeblueberry.aicompose.record.ui.RecordActivity
 import com.largeblueberry.feature_setting.ui.setting.SettingsActivity
-import com.largeblueberry.feature_sheetmusic.SheetMusicActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.cardMyWorks.setOnClickListener{
-            val intent = Intent(this,AudioRecordDataActivity::class.java)
+            val intent = Intent(this,LibraryActivity::class.java)
             startActivity(intent)
         }
 

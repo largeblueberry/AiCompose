@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.record.database.AudioDatabase
-import com.largeblueberry.aicompose.record.database.AudioRecordEntity
+import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat

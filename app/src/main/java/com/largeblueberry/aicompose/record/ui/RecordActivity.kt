@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.largeblueberry.aicompose.database.ui.AudioRecordDataActivity
+import com.largeblueberry.aicompose.database.ui.LibraryActivity
 import com.largeblueberry.aicompose.databinding.ActivityRecordBinding
 import androidx.core.graphics.toColorInt
 
@@ -39,7 +39,7 @@ class RecordActivity : AppCompatActivity() {
 
         // 녹음 파일 목록 보기
         binding.btnViewRecordings.setOnClickListener {
-            val intent = Intent(this, AudioRecordDataActivity::class.java)
+            val intent = Intent(this, LibraryActivity::class.java)
             startActivity(intent)
         }
 
