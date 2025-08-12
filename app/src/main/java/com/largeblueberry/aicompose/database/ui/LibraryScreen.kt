@@ -18,10 +18,11 @@ import com.largeblueberry.aicompose.dataLayer.model.network.UploadStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AudioRecordScreen(
+fun LibraryScreen(
     viewModel: LibraryViewModel,
     audioPlayer: AudioPlayer,
     onShare: (String) -> Unit
+
 ) {
     val audioRecords by viewModel.audioRecords.collectAsStateWithLifecycle()
     val isEmpty by viewModel.isEmpty.collectAsStateWithLifecycle()

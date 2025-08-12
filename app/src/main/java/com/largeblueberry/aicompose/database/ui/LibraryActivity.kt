@@ -17,7 +17,7 @@ class LibraryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AudioRecordScreen(
+            LibraryScreen(
                 viewModel = viewModel,
                 audioPlayer = audioPlayer,
                 onShare = { url -> shareUrl(url) }

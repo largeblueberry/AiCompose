@@ -20,5 +20,5 @@ interface AudioRecordDao {
     suspend fun deleteRecord(record: AudioRecordEntity)
 
     @Update
-    suspend fun updateRecord(record: AudioRecordEntity)
+    suspend fun updateRecord(record: AudioRecordEntity) // 이게 그 이름 바꾸는 거임.
 }
