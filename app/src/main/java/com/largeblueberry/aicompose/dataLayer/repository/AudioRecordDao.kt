@@ -1,10 +1,11 @@
-package com.largeblueberry.aicompose.record.database
+package com.largeblueberry.aicompose.dataLayer.repository
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

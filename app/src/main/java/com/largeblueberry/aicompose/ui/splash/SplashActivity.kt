@@ -1,8 +1,8 @@
-package com.largeblueberry.aicompose.ui
+package com.largeblueberry.aicompose.ui.splash
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import android.content.Intent
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.largeblueberry.aicompose.MainActivity

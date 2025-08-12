@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.largeblueberry.aicompose.record.database.AudioRecordEntity
+import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

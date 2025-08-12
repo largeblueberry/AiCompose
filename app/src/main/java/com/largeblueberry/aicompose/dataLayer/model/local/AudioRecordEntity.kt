@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.record.database
+package com.largeblueberry.aicompose.dataLayer.model.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -14,7 +14,7 @@ data class AudioRecordEntity(
     @ColumnInfo(name = "file_path")
     val filePath: String,
 
-    @ColumnInfo(name = "file_size") // ✅ 추가
+    @ColumnInfo(name = "file_size")
     val fileSize: Long,
 
     @ColumnInfo(name = "duration")

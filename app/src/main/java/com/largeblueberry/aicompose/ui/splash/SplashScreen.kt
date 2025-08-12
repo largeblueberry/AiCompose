@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.ui
+package com.largeblueberry.aicompose.ui.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -12,15 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.largeblueberry.aicompose.database.ui.viemodel.AudioRecordViewModel
-import com.largeblueberry.aicompose.database.ui.AudioPlayer
-import com.largeblueberry.aicompose.record.database.AudioRecordEntity
-import com.largeblueberry.aicompose.retrofit.data.UploadStatus
+import com.largeblueberry.aicompose.database.ui.viemodel.LibraryViewModel
+import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
+import com.largeblueberry.aicompose.dataLayer.model.network.UploadStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioRecordScreen(
-    viewModel: AudioRecordViewModel,
+    viewModel: LibraryViewModel,
     audioPlayer: AudioPlayer,
     onShare: (String) -> Unit
 ) {

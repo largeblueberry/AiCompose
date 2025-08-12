@@ -19,7 +19,7 @@
         tools:replace="android:icon,android:roundIcon"
         tools:targetApi="31">
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:theme="@style/Theme.MyApp.Splash"
             android:exported="true">
             <intent-filter>
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".database.ui.AudioRecordDataActivity"
+            android:name=".database.ui.LibraryActivity"
             android:exported="false" />
         <activity
             android:name=".record.ui.RecordActivity"

@@ -3,6 +3,8 @@ package com.largeblueberry.aicompose.record.database
 
 import android.content.Context
 import androidx.room.*
+import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
+import com.largeblueberry.aicompose.dataLayer.repository.AudioRecordDao
 
 @Database(
     entities = [AudioRecordEntity::class],
@@ -23,8 +25,6 @@ abstract class AudioDatabase : RoomDatabase() {
                     context.applicationContext,
                     AudioDatabase::class.java,
                     "audio_database_v2"
-
-
                 )
                     .build()
                 INSTANCE = instance

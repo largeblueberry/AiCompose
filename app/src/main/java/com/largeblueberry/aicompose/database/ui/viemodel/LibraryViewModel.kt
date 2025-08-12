@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.record.database.AudioDatabase
-import com.largeblueberry.aicompose.record.database.AudioRecordEntity
+import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
 import com.largeblueberry.aicompose.retrofit.RetrofitClient
-import com.largeblueberry.aicompose.retrofit.data.UploadState
-import com.largeblueberry.aicompose.retrofit.data.UploadStatus
+import com.largeblueberry.aicompose.dataLayer.model.network.UploadState
+import com.largeblueberry.aicompose.dataLayer.model.network.UploadStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
-class AudioRecordViewModel(context: Context) : ViewModel() {
+class LibraryViewModel(context: Context) : ViewModel() {
 
     private val audioRecordDao = AudioDatabase.Companion.getDatabase(context).audioRecordDao()
     // 업로드 상태 추가
@@ -138,9 +138,9 @@ class AudioRecordViewModel(context: Context) : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let { result ->
                         // if (result.success && result.url != null) {
-                        if (result.midi_url != null) {
+                        if (result.midiUrl != null) {
                             _uploadState.value =
-                                UploadState(status = UploadStatus.SUCCESS, url = result.midi_url)
+                                UploadState(status = UploadStatus.SUCCESS, url = result.midiUrl)
                         } else {
                             // _uploadState.value = UploadState(status = UploadStatus.ERROR, message = result.message)
                         }

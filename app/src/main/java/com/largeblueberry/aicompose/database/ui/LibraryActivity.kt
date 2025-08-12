@@ -4,14 +4,13 @@ import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.largeblueberry.aicompose.database.ui.viemodel.AudioRecordViewModel
-import com.largeblueberry.aicompose.database.ui.viemodel.AudioRecordViewModelFactory
-import com.largeblueberry.aicompose.database.ui.AudioPlayer
+import com.largeblueberry.aicompose.database.ui.viemodel.LibraryViewModel
+import com.largeblueberry.aicompose.database.ui.viemodel.LibraryViewModelFactory
 
-class AudioRecordDataActivity : ComponentActivity() {
+class LibraryActivity : ComponentActivity() {
 
-    private val viewModel: AudioRecordViewModel by viewModels {
-        AudioRecordViewModelFactory(applicationContext)
+    private val viewModel: LibraryViewModel by viewModels {
+        LibraryViewModelFactory(applicationContext)
     }
     private val audioPlayer = AudioPlayer()
 
@@ -32,7 +31,7 @@ class AudioRecordDataActivity : ComponentActivity() {
             putExtra(Intent.EXTRA_TEXT, url)
             type = "text/plain"
         }
-        startActivity(Intent.createChooser(sendIntent, "공유하기"))
+        startActivity(Intent.createChooser(sendIntent, "업로드 하기"))
     }
 
     override fun onDestroy() {
