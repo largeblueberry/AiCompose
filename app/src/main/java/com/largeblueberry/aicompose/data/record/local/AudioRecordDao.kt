@@ -1,11 +1,10 @@
-package com.largeblueberry.aicompose.dataLayer.repository
+package com.largeblueberry.aicompose.data.record.local
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,5 +19,5 @@ interface AudioRecordDao {
     suspend fun deleteRecord(record: AudioRecordEntity)
 
     @Update
-    suspend fun updateRecord(record: AudioRecordEntity) // 이게 그 이름 바꾸는 거임.
+    suspend fun renameRecord(record: AudioRecordEntity)
 }

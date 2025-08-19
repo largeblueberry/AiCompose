@@ -1,7 +1,7 @@
 package com.largeblueberry.aicompose.library.dataLayer.repository.impl
 
 import com.largeblueberry.aicompose.library.dataLayer.repository.AudioUploadRepository
-import com.largeblueberry.aicompose.retrofit.NetworkService
+import com.largeblueberry.aicompose.data.record.remote.retrofit.NetworkService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

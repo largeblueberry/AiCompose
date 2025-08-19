@@ -1,6 +1,7 @@
 // build.gradle.kts (feature_setting 모듈)
 
 // ✅ 1. 플러그인 블록 위로 파일 읽기 로직을 이동
+import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -76,6 +77,7 @@ dependencies {
     implementation(libs.androidx.preference)
     implementation(libs.material)
 
+    implementation(project(":core:ui"))
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)

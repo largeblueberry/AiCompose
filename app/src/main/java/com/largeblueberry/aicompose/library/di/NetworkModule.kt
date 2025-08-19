@@ -3,7 +3,7 @@ package com.largeblueberry.aicompose.library.di
 import com.largeblueberry.aicompose.library.dataLayer.repository.AudioUploadRepository
 import com.largeblueberry.aicompose.library.dataLayer.repository.impl.AudioUploadRepositoryImpl
 import com.largeblueberry.aicompose.library.domainLayer.usecase.UploadAudioRecordUseCase
-import com.largeblueberry.aicompose.retrofit.NetworkService
+import com.largeblueberry.aicompose.data.record.remote.retrofit.NetworkService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

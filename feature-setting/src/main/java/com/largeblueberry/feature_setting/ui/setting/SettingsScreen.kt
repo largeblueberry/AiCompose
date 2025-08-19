@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.core_ui.R
+import com.largeblueberry.ui.R
 import com.largeblueberry.feature_setting.firebase.auth.AuthState
 import com.largeblueberry.feature_setting.ui.login.LoginViewModel
 

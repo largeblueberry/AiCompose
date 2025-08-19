@@ -2,15 +2,15 @@ package com.largeblueberry.aicompose.library.ui.viemodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
-import com.largeblueberry.aicompose.dataLayer.model.network.UploadState
-import com.largeblueberry.aicompose.dataLayer.model.network.UploadStatus
-import com.largeblueberry.aicompose.database.ui.AudioPlayer
+import com.largeblueberry.aicompose.data.record.remote.model.UploadState
+import com.largeblueberry.aicompose.data.record.remote.model.UploadStatus
+import com.largeblueberry.aicompose.library.domainLayer.model.LibraryModel
 import com.largeblueberry.aicompose.library.domainLayer.usecase.DeleteAudioRecordUseCase
 import com.largeblueberry.aicompose.library.domainLayer.usecase.GetAudioRecordsUseCase
 import com.largeblueberry.aicompose.library.domainLayer.usecase.RenameAudioRecordUseCase
 import com.largeblueberry.aicompose.library.domainLayer.usecase.UploadAudioRecordUseCase
 import com.largeblueberry.aicompose.library.ui.LibraryUiState
+import com.largeblueberry.aicompose.util.AudioPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +56,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecord(record: AudioRecordEntity) {
+    fun deleteRecord(record: LibraryModel) {
         viewModelScope.launch {
             try {
                 deleteAudioRecordUseCase(record)
@@ -72,7 +72,7 @@ class LibraryViewModel @Inject constructor(
     }
 
     // 이름 변경 가능 함수
-    fun renameRecord(record: AudioRecordEntity, newName: String) {
+    fun renameRecord(record: LibraryModel, newName: String) {
         viewModelScope.launch {
             try {
                 renameAudioRecordUseCase(record, newName) // invoke() 호출
@@ -172,7 +172,7 @@ class LibraryViewModel @Inject constructor(
     }
 
     // 오디오 재생 관련 함수들
-    fun playAudio(record: AudioRecordEntity) {
+    fun playAudio(record: LibraryModel) {
         // 이미 재생 중인 레코드가 있다면 정지
         if (audioPlayer.isPlaying()) {
             audioPlayer.stop()
@@ -210,7 +210,7 @@ class LibraryViewModel @Inject constructor(
         _uiState.update { it.copy(uploadState = UploadState()) }
     }
 
-    fun showRenameDialog(record: AudioRecordEntity) {
+    fun showRenameDialog(record: LibraryModel) {
         _uiState.update { it.copy(showRenameDialogForRecord = record) }
     }
 

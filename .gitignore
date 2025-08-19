@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+google-services.json
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+*.ipr

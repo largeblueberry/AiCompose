@@ -1,11 +1,11 @@
 package com.largeblueberry.aicompose.library.domainLayer.usecase
 
-import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
-import com.largeblueberry.aicompose.library.dataLayer.repository.AudioRecordRepository
+import com.largeblueberry.aicompose.library.domainLayer.model.LibraryModel
+import com.largeblueberry.aicompose.library.domainLayer.repository.LibraryRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetAudioRecordsUseCase(private val repository: AudioRecordRepository) {
-    operator fun invoke(): Flow<List<AudioRecordEntity>> {
+class GetAudioRecordsUseCase(private val repository: LibraryRepository) {
+    operator fun invoke(): Flow<List<LibraryModel>> {
         return repository.getAllRecords()
     }
 }
