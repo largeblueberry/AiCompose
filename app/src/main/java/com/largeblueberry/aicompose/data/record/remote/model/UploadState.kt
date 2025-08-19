@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.dataLayer.model.network
+package com.largeblueberry.aicompose.data.record.remote.model
 
 data class UploadState(
     val status: UploadStatus = UploadStatus.IDLE,

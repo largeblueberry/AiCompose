@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.largeblueberry.core_ui.R
+import com.largeblueberry.ui.R
 import com.largeblueberry.feature_setting.firebase.auth.AuthState
 
 @OptIn(ExperimentalMaterial3Api::class)

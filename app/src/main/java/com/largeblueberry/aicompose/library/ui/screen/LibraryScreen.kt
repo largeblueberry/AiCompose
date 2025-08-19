@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.largeblueberry.aicompose.library.ui.viemodel.LibraryViewModel
-import com.largeblueberry.aicompose.dataLayer.model.network.UploadStatus
+import com.largeblueberry.aicompose.data.record.remote.model.UploadStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
