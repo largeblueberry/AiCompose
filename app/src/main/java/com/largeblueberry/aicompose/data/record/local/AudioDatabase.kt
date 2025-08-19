@@ -1,10 +1,7 @@
-// AudioDatabase.kt
-package com.largeblueberry.aicompose.record.database
+package com.largeblueberry.aicompose.data.record.local
 
-import android.content.Context
 import androidx.room.*
-import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
-import com.largeblueberry.aicompose.dataLayer.repository.AudioRecordDao
+
 
 @Database(
     entities = [AudioRecordEntity::class],

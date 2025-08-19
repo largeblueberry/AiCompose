@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.largeblueberry.aicompose.dataLayer.model.local.AudioRecordEntity
+import com.largeblueberry.aicompose.library.domainLayer.model.LibraryModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -18,7 +18,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioRecordItem(
-    record: AudioRecordEntity,
+    record: LibraryModel,
     isPlaying: Boolean, // 현재 이 레코드가 재생 중인지 여부
     isUploading: Boolean,
     isPaused: Boolean,  // 추가: 현재 이 레코드가 일시정지 상태인지 여부

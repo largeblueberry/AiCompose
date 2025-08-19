@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.largeblueberry.aicompose"
-        minSdk = 26
+        minSdk = 35
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"

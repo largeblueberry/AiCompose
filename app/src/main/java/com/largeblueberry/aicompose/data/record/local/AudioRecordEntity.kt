@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.dataLayer.model.local
+package com.largeblueberry.aicompose.data.record.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -2,13 +2,13 @@ package com.largeblueberry.aicompose.library.di
 
 import android.content.Context
 import androidx.room.Room
-import com.largeblueberry.aicompose.dataLayer.repository.AudioRecordDao
-import com.largeblueberry.aicompose.library.dataLayer.repository.AudioRecordRepository
-import com.largeblueberry.aicompose.library.dataLayer.repository.impl.AudioRecordRepositoryImpl
+import com.largeblueberry.aicompose.data.record.local.AudioDatabase
+import com.largeblueberry.aicompose.data.record.local.AudioRecordDao
+import com.largeblueberry.aicompose.library.domainLayer.repository.LibraryRepository
+import com.largeblueberry.aicompose.library.dataLayer.repository.impl.LibraryRepositoryImpl
 import com.largeblueberry.aicompose.library.domainLayer.usecase.DeleteAudioRecordUseCase
 import com.largeblueberry.aicompose.library.domainLayer.usecase.GetAudioRecordsUseCase
 import com.largeblueberry.aicompose.library.domainLayer.usecase.RenameAudioRecordUseCase
-import com.largeblueberry.aicompose.record.database.AudioDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,26 +43,26 @@ object DatabaseModule {
     // -> AudioRecordDao가 있어야만 만들 수 있다고 알려줌
     @Provides
     @Singleton
-    fun provideAudioRecordRepository(dao: AudioRecordDao): AudioRecordRepository {
+    fun provideAudioRecordRepository(dao: AudioRecordDao): LibraryRepository {
 
-        return AudioRecordRepositoryImpl(dao)
+        return LibraryRepositoryImpl(dao)
     }
 
 
     // 4. UseCase들을 만드는 방법 정의
     @Provides
-    fun provideDeleteAudioRecordUseCase(repository: AudioRecordRepository): DeleteAudioRecordUseCase {
+    fun provideDeleteAudioRecordUseCase(repository: LibraryRepository): DeleteAudioRecordUseCase {
         return DeleteAudioRecordUseCase(repository)
     }
 
     @Provides
-    fun provideGetAudioRecordsUseCase(repository: AudioRecordRepository) : GetAudioRecordsUseCase{
+    fun provideGetAudioRecordsUseCase(repository: LibraryRepository) : GetAudioRecordsUseCase{
         return GetAudioRecordsUseCase(repository)
     }
 
 
     @Provides
-    fun provideRenameAudioRecordUseCase(repository: AudioRecordRepository) : RenameAudioRecordUseCase {
+    fun provideRenameAudioRecordUseCase(repository: LibraryRepository) : RenameAudioRecordUseCase {
         return RenameAudioRecordUseCase(repository)
     }
 
