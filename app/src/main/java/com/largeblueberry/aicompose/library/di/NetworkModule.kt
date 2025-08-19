@@ -13,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import com.largeblueberry.aicompose.BuildConfig
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -34,7 +35,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit { // OkHttpClient를 주입받음
         return Retrofit.Builder()
-            .baseUrl("BASE_URL") // localproperty에 적용
+            .baseUrl(BuildConfig.BASE_URL) // localproperty에 적용
             .client(okHttpClient) // OkHttpClient 주입
             .addConverterFactory(GsonConverterFactory.create()) // JSON 파싱을 위한 컨버터
             .build()
