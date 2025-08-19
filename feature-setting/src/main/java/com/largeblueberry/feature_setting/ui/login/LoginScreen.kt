@@ -3,10 +3,10 @@ package com.largeblueberry.feature_setting.ui.login
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -73,17 +73,14 @@ fun LoginScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .navigationBarsPadding()
             .background(Color(0xFFF8F9FA))
-            .padding(24.dp),
+            .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Spacer(modifier = Modifier.height(40.dp))
-
         // 🎵 앱 로고 및 제목 (업로드된 로고 사용)
         AppLogo()
-
-        Spacer(modifier = Modifier.height(40.dp))
 
         // 📱 설정에서 온 것을 나타내는 안내 텍스트
         Text(
@@ -120,21 +117,16 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // 📊 로그인 혜택 안내
-        BenefitsCard()
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 📝 하단 텍스트
         Text(
             text = "로그인하면 서비스 약관에 동의하는 것으로 간주됩니다",
             style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFF999999),
+            color = Color.Black,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp)) // 고정 높이 공간
+
     }
 
     // 🔄 로딩 오버레이
@@ -177,19 +169,9 @@ private fun AppLogo() {
             painter = painterResource(id = R.drawable.eareamsplash),
             contentDescription = "이어름 로고",
             modifier = Modifier
-                .size(140.dp)
+                .size(300.dp)
                 .padding(16.dp),
             contentScale = ContentScale.Fit
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 앱 제목은 로고에 이미 포함되어 있으므로 제거하거나 간소화
-        Text(
-            text = "듣고, 꿈꾸는 AI 작곡 서비스",
-            fontSize = 16.sp,
-            color = Color(0xFF666666),
-            textAlign = TextAlign.Center
         )
     }
 }
@@ -276,7 +258,7 @@ private fun LoginCard(
             ) {
                 Text(
                     text = "나중에 하기",
-                    color = Color(0xFF666666),
+                    color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
@@ -285,50 +267,6 @@ private fun LoginCard(
     }
 }
 
-@Composable
-private fun BenefitsCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF3F8FF)
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
-        ) {
-            Text(
-                text = "🎵 로그인 혜택",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF4285F4)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            BenefitItem("✅ AI 작곡 10회 제공")
-            BenefitItem("🎨 프리미엄 기능 이용")
-        }
-    }
-}
-
-@Composable
-private fun BenefitItem(text: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = text,
-            fontSize = 14.sp,
-            color = Color(0xFF333333)
-        )
-    }
-}
 
 @Composable
 private fun GoogleSignInButton(
@@ -337,45 +275,42 @@ private fun GoogleSignInButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF4285F4),
-            disabledContainerColor = Color.Gray
+            containerColor = Color.White, // 흰색 배경
+            contentColor = Color.Black, // 검은색 글자 (기본 텍스트 색상)
+            disabledContainerColor = Color(0xFFE0E0E0), // 비활성화 시 연한 회색 배경
+            disabledContentColor = Color(0xFF9E9E9E) // 비활성화 시 연한 회색 글자
         ),
+        border = BorderStroke(1.dp, Color(0xFFDADCE0)), // 연한 회색 테두리
         enabled = enabled
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(vertical = 12.dp)
+            modifier = Modifier.padding(horizontal = 8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .background(Color.White, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "G",
-                    color = Color(0xFF4285F4),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.ic_google_logo),
+                contentDescription = "Google Logo",
+                modifier = Modifier.size(24.dp) // 로고 크기 조정 (구글 가이드라인 18-24dp)
+            )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
                 text = "Google 계정으로 로그인",
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
+                fontSize = 15.sp, // 구글 가이드라인에 맞춰 폰트 크기 조정 (14-16sp)
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
             )
         }
     }
-
 }
+
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {

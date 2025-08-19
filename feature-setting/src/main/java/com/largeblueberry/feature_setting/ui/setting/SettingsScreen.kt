@@ -19,7 +19,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +43,7 @@ fun SettingsScreen(
             .fillMaxSize()
             .background(Color(0xFFF8F9FA))
     ) {
-        // 🎯 상단 앱바
+        // 상단 앱바
         TopAppBar(
             title = {
                 Text(
@@ -68,7 +67,9 @@ fun SettingsScreen(
         )
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -126,28 +127,13 @@ private fun AppInfoCard() {
                 painter = painterResource(id = R.drawable.eareamsplash),
                 contentDescription = "이어름 로고",
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(200.dp)
                     .padding(8.dp),
                 contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "이어름",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333)
-            )
-
-            Text(
-                text = "듣고, 꿈꾸는 AI 작곡 서비스",
-                fontSize = 14.sp,
-                color = Color(0xFF666666),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "버전 1.0.0",
