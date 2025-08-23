@@ -1,6 +1,7 @@
 package com.largeblueberry.feature_setting.firebase.auth
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -20,11 +21,13 @@ class GoogleAuthManager @Inject constructor(
 ) {
 
     val googleSignInClient: GoogleSignInClient by lazy {
+        Log.d("AuthDebug", "Initializing googleSignInClient. GOOGLE_CLIENT_ID: ${BuildConfig.GOOGLE_CLIENT_ID}")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
             .requestEmail()
             .build()
         GoogleSignIn.getClient(context, gso)
+
     }
 
     fun getCurrentUser(): FirebaseUser? = firebaseAuth.currentUser

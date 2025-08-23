@@ -1,27 +1,36 @@
 package com.largeblueberry.aicompose.library.ui.screen
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.largeblueberry.aicompose.library.ui.viemodel.LibraryViewModel
+import androidx.navigation.NavController
 import com.largeblueberry.aicompose.data.record.remote.model.UploadStatus
+import com.largeblueberry.aicompose.library.ui.viemodel.LibraryViewModel
+import com.largeblueberry.core_ui.AppPrimaryBlue
+import com.largeblueberry.core_ui.AppBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
-    viewModel: LibraryViewModel,
-    onUploadSuccess: (String) -> Unit
+    viewModel: LibraryViewModel = hiltViewModel(),
+    onUploadSuccess: (String) -> Unit,
+    navController: NavController,
+    onBackClick: () -> Unit // 여기에 추가: 뒤로가기 콜백
 ) {
     // Context 가져오기 -> toast 메시지 표시를 위해 필요
     val context = LocalContext.current
@@ -67,23 +76,64 @@ fun LibraryScreen(
         }
     }
 
+    //디자인
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(AppBackground)
     ) {
-        Text(
-            text = "녹음 기록",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = AppPrimaryBlue,
+            shadowElevation = 4.dp
+        ) {
+            Box( // Box를 사용하여 아이콘과 텍스트를 배치
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 32.dp) // 상하 여백 조정
+            ) {
+                // 뒤로가기 버튼 (왼쪽 정렬)
+                IconButton(
+                    onClick = {
+                        if (navController.previousBackStackEntry != null) {
+                            navController.popBackStack()
+                        } else {
+                            onBackClick()
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterStart) // Box의 시작 부분에 정렬
+                        .padding(top = 20.dp) // 왼쪽 여백 추가
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, // 뒤로가기 아이콘
+                        contentDescription = "뒤로가기",
+                        tint = Color.White // 흰색으로 설정
+                    )
+                }
+
+                // 제목 텍스트 (가운데 정렬)
+                Text(
+                    text = "내 작품",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.Center)// Box의 가운데에 정렬
+                        .padding(top = 20.dp)
+                )
+            }
+        }
 
         if (uiState.isEmpty) {
             EmptyView()
         } else {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .fillMaxWidth(), // LazyColumn이 가로 전체를 차지하도록
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = 16.dp) // 여기에 하단 패딩 추가
             ) {
                 items(uiState.audioRecords) { record ->
 
@@ -138,7 +188,9 @@ fun EmptyView() {
             Icon(
                 imageVector = Icons.Default.MusicNote,
                 contentDescription = null,
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier
+                    .size(64.dp)
+                    .background(AppBackground),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
