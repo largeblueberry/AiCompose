@@ -28,18 +28,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.largeblueberry.core_ui.AppBackground
+import com.largeblueberry.core_ui.AppTextDark
+import com.largeblueberry.core_ui.ProgressBarBackgroundTint
+import com.largeblueberry.core_ui.RecordingRed
+import com.largeblueberry.core_ui.AppPrimaryBlue
 
 /**
  * 녹음 화면의 UI 레이아웃을 정의하는 Composable 함수.
  * 상태와 이벤트 콜백을 파라미터로 받습니다.
  */
-
-val BackgroundColor = Color(0xFFF7FAFC) // 이거 core ui로 빼기. 추후에
-val DarkTextColor = Color(0xFF222222)
-val PrimaryBlue = Color(0xFF4F8CFF)
-val ProgressBackgroundTint = Color(0xFFE0E7EF)
-val RecordingRed = Color(0xFFFF4F4F) // 녹음 중일 때 버튼 색상
 
 @Composable
 fun RecordScreenUi(
@@ -51,7 +49,7 @@ fun RecordScreenUi(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundColor)
+            .background(AppBackground)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally // 자식 컴포넌트들을 가운데 정렬
     ){
@@ -61,14 +59,14 @@ fun RecordScreenUi(
             text = recordingStateText,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            color = DarkTextColor
+            color = AppTextDark
         )
         // 마이크 아이콘 (원 배경 포함)
         Spacer(modifier = Modifier.height(32.dp)) // XML의 layout_marginTop="32dp"
         Box(
             modifier = Modifier
                 .size(112.dp) // width, height "112dp"
-                .background(PrimaryBlue, shape = CircleShape), // round_blue_bg 대체
+                .background(AppPrimaryBlue, shape = CircleShape), // round_blue_bg 대체
             contentAlignment = Alignment.Center // ImageView의 layout_gravity="center"
         ) {
             Icon(
@@ -87,8 +85,8 @@ fun RecordScreenUi(
                 modifier = Modifier
                     .fillMaxWidth() // layout_width="0dp" (match_parent)
                     .height(8.dp), // layout_height="8dp"
-                color = PrimaryBlue, // progressTint="#4F8CFF"
-                trackColor = ProgressBackgroundTint // progressBackgroundTint="#E0E7EF"
+                color = AppPrimaryBlue, // progressTint="#4F8CFF"
+                trackColor = ProgressBarBackgroundTint
             )
         } else {
             // 녹음 중이 아닐 때는 진행 바를 숨기거나 다른 UI를 표시할 수 있습니다.
@@ -103,7 +101,7 @@ fun RecordScreenUi(
                 .fillMaxWidth() // layout_width="0dp" (match_parent)
                 .height(48.dp), // layout_height="48dp"
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isRecording) RecordingRed else PrimaryBlue // 배경색 변경
+                containerColor = if (isRecording) RecordingRed else AppPrimaryBlue // 배경색 변경
             ),
             shape = MaterialTheme.shapes.small // 기본 버튼 모양 사용 (cornerRadius가 없으므로)
         ) {
@@ -123,9 +121,9 @@ fun RecordScreenUi(
                 .height(48.dp), // layout_height="48dp"
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent, // 배경 투명
-                contentColor = PrimaryBlue // 텍스트 색상
+                contentColor = AppPrimaryBlue // 텍스트 색상
             ),
-            border = BorderStroke(1.dp, PrimaryBlue), // 테두리 추가 (bg_outline 대체)
+            border = BorderStroke(1.dp, AppPrimaryBlue), // 테두리 추가 (bg_outline 대체)
             shape = MaterialTheme.shapes.small // 기본 버튼 모양 사용
         ) {
             Text(

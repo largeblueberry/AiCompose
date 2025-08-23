@@ -21,12 +21,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.largeblueberry.aicompose.data.record.remote.model.UploadStatus
 import com.largeblueberry.aicompose.library.ui.viemodel.LibraryViewModel
-
-
-// 이거 core ui로 빼기. 추후에
-val BackgroundColor = Color(0xFFF7FAFC)
-val PrimaryBlue = Color(0xFF4F8CFF)
-
+import com.largeblueberry.core_ui.AppPrimaryBlue
+import com.largeblueberry.core_ui.AppBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,11 +80,11 @@ fun LibraryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundColor)
+            .background(AppBackground)
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = PrimaryBlue,
+            color = AppPrimaryBlue,
             shadowElevation = 4.dp
         ) {
             Box( // Box를 사용하여 아이콘과 텍스트를 배치
@@ -194,7 +190,7 @@ fun EmptyView() {
                 contentDescription = null,
                 modifier = Modifier
                     .size(64.dp)
-                    .background(BackgroundColor),
+                    .background(AppBackground),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))

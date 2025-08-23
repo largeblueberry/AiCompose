@@ -5,21 +5,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.R
+import com.largeblueberry.core_ui.AppBackground
 
-
-val BackgroundColor = Color(0xFFFFFFFF)
 
 @Composable
 fun MainScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundColor)
+            .background(AppBackground)
     ) {
         CardViewScreen(
             iconResId = R.drawable.ic_mic,

@@ -25,6 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.largeblueberry.core_ui.CardViewBackGround
+import com.largeblueberry.core_ui.CardViewMainText
+import com.largeblueberry.core_ui.CardViewSubText
 
 @Composable
 fun CardViewScreen(
@@ -60,7 +63,7 @@ fun CardViewScreen(
                     .width(48.dp)
                     .height(48.dp)
                     .background(
-                        color = Color(0xFF3B82F6),
+                        color = CardViewBackGround,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -80,13 +83,13 @@ fun CardViewScreen(
                 Text(
                     text = mainText,
                     fontSize = 18.sp,
-                    color = Color(0xFF2563EB),
+                    color = CardViewMainText,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = subText,
                     fontSize = 13.sp,
-                    color = Color(0xFF7B93B8),
+                    color = CardViewSubText,
                     fontWeight = FontWeight.Light
                 )
             }
