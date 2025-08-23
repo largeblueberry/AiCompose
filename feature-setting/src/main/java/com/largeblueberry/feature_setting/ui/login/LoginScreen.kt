@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions // 추가
 import com.google.android.gms.common.api.ApiException
 import com.largeblueberry.ui.R
 import com.largeblueberry.feature_setting.firebase.auth.AuthState
+import com.largeblueberry.feature_setting.BuildConfig // 추가
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,9 +37,18 @@ fun LoginScreen(
     onNavigateBack: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val context = LocalContext.current // Activity context
     val uiState by viewModel.uiState.collectAsState()
     val authState by viewModel.authState.collectAsState()
+
+    // 🚀 Google Sign-In Client를 Activity Context로 직접 생성
+    val googleSignInClient = remember(context) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
+            .requestEmail()
+            .build()
+        GoogleSignIn.getClient(context, gso)
+    }
 
     // 🚀 Google Sign-In Launcher
     val googleSignInLauncher = rememberLauncherForActivityResult(
@@ -108,9 +119,8 @@ fun LoginScreen(
             canUseWithoutLogin = uiState.canUseWithoutLogin,
             usageWarning = viewModel.getUsageWarningMessage(),
             onGoogleSignIn = {
-                // 수정된 부분: 함수 호출에서 속성 접근으로 변경
-                val signInIntent = viewModel.googleSignInClient.signInIntent
-                googleSignInLauncher.launch(signInIntent)
+                // 수정된 부분: 이제 LoginScreen에서 생성한 googleSignInClient 사용
+                googleSignInLauncher.launch(googleSignInClient.signInIntent)
             },
             onSkip = onNavigateBack // 건너뛰기로 설정 화면 복귀
         )

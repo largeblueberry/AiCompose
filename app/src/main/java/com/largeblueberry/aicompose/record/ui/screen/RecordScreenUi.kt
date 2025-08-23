@@ -53,7 +53,7 @@ fun RecordScreenUi(
             .fillMaxSize()
             .background(BackgroundColor)
             .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally // 자식 컴포넌트들을 수평 중앙 정렬
+        horizontalAlignment = Alignment.CenterHorizontally // 자식 컴포넌트들을 가운데 정렬
     ){
 // 상단 상태 텍스트
         Spacer(modifier = Modifier.height(48.dp)) // XML의 layout_marginTop="48dp"

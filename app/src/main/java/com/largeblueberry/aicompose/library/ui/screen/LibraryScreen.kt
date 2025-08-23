@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.largeblueberry.aicompose.data.record.remote.model.UploadStatus
@@ -30,7 +31,7 @@ val PrimaryBlue = Color(0xFF4F8CFF)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
-    viewModel: LibraryViewModel,
+    viewModel: LibraryViewModel = hiltViewModel(),
     onUploadSuccess: (String) -> Unit,
     navController: NavController,
     onBackClick: () -> Unit // 여기에 추가: 뒤로가기 콜백
