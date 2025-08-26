@@ -70,6 +70,7 @@ dependencies {
     //모듈
     implementation(project(":feature-setting"))
     implementation(project(":core:ui"))
+    implementation(project(":feature:auth"))
 
     // 기본 Android 라이브러리
     implementation(libs.androidx.core.ktx)
