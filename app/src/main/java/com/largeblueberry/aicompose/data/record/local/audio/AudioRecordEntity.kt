@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.data.record.local
+package com.largeblueberry.aicompose.data.record.local.audio
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

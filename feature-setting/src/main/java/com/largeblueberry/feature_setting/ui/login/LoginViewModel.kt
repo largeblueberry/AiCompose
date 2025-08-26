@@ -24,7 +24,6 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val checkUsageLimitUseCase: CheckUsageLimitUseCase,
-    private val incrementUsageUseCase: IncrementUsageUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val googleAuthManager: GoogleAuthManager
 ) : ViewModel() {
@@ -121,47 +120,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    // ➕ 사용량 증가
-    fun incrementUsage(userId: String) {
-        viewModelScope.launch {
-            val success = incrementUsageUseCase(userId)
-            if (success) {
-                // 사용량 증가 후 다시 확인
-                checkUsageLimit(userId)
-            }
-        }
-    }
 
     // 🔄 에러 메시지 클리어
     fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
-    }
-
-    // 🎯 GoogleSignInClient 제공 (UI에서 사용) - 수정된 부분
-    val googleSignInClient get() = googleAuthManager.googleSignInClient
-
-    // 🔍 현재 로그인 상태 확인
-    fun isSignedIn(): Boolean = googleAuthManager.isSignedIn()
-
-    // 👤 현재 사용자 정보
-    fun getCurrentUser(): FirebaseUser? = getCurrentUserUseCase()
-
-    // 🎮 비로그인 사용 가능 여부
-    fun canUseWithoutLogin(): Boolean = checkUsageLimitUseCase.canUseWithoutLogin()
-
-    // 📈 사용량 정보 포맷팅
-    fun getUsageDisplayText(): String {
-        val result = _uiState.value.usageLimitResult
-        return if (result != null) {
-            "남은 사용량: ${result.remainingCount}/${result.dailyLimit}"
-        } else {
-            "사용량 정보 없음"
-        }
-    }
-
-    // 🚨 사용량 한도 초과 여부
-    fun isUsageLimitExceeded(): Boolean {
-        return _uiState.value.usageLimitResult?.canUse == false
     }
 
     // 🔔 사용량 경고 메시지

@@ -1,6 +1,3 @@
-// build.gradle.kts (feature_setting 모듈)
-
-// ✅ 1. 플러그인 블록 위로 파일 읽기 로직을 이동
 import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
 import java.io.FileInputStream
@@ -14,7 +11,7 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
-// ✅ 2. local.properties 파일을 여기서 한 번만 읽도록 수정
+
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -26,13 +23,12 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 35
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        // ✅ 3. buildConfigField를 buildTypes가 아닌 defaultConfig로 이동
-        // 모든 빌드 유형에 이 설정이 적용됩니다.
+
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
@@ -42,7 +38,7 @@ android {
 
     buildTypes {
         debug {
-            // ✅ 4. 여기 있던 buildConfigField 관련 코드를 모두 삭제
+
         }
         release {
             isMinifyEnabled = false
@@ -50,7 +46,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // ✅ 4. 여기 있던 buildConfigField 관련 코드를 모두 삭제
+
         }
     }
 
@@ -64,9 +60,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         compose = true
-        buildConfig = true // 이 설정은 필수이며, 올바르게 유지하셨습니다.
+        buildConfig = true
     }
 }
 

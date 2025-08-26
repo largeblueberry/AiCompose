@@ -1,7 +1,7 @@
 package com.largeblueberry.aicompose.library.dataLayer.repository.impl
 
 import com.largeblueberry.aicompose.library.domainLayer.repository.LibraryRepository
-import com.largeblueberry.aicompose.data.record.local.AudioRecordDao
+import com.largeblueberry.aicompose.data.record.local.audio.AudioRecordDao
 import com.largeblueberry.aicompose.library.dataLayer.mapper.LibraryMapper
 import com.largeblueberry.aicompose.library.domainLayer.model.LibraryModel
 import kotlinx.coroutines.flow.Flow

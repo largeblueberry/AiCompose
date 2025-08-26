@@ -1,6 +1,6 @@
 package com.largeblueberry.aicompose.record.dataLayer.mapper
 
-import com.largeblueberry.aicompose.data.record.local.AudioRecordEntity
+import com.largeblueberry.aicompose.data.record.local.audio.AudioRecordEntity
 import com.largeblueberry.aicompose.record.domain.model.RecordModel
 
 object RecordMapper {

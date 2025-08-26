@@ -174,7 +174,7 @@ private fun AppLogo() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 🎨 업로드된 로고 이미지 사용 (배경 제거)
+
         Image(
             painter = painterResource(id = R.drawable.eareamsplash),
             contentDescription = "이어름 로고",

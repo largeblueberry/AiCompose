@@ -3,11 +3,8 @@ package com.largeblueberry.feature_setting.firebase.di
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.largeblueberry.feature_setting.data.repository.AuthRepositoryImpl
-import com.largeblueberry.feature_setting.domain.repository.AuthRepository
 import com.largeblueberry.feature_setting.firebase.auth.GoogleAuthManager
 import com.largeblueberry.feature_setting.firebase.firestore.UsageTracker
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +24,7 @@ object AuthModule {
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    // 🔥 GoogleAuthManager만 제공 (GoogleSignInClient는 내부에서 생성)
+    // GoogleAuthManager만 제공 (GoogleSignInClient는 내부에서 생성)
     @Provides
     @Singleton
     fun provideGoogleAuthManager(
@@ -44,15 +41,4 @@ object AuthModule {
     ): UsageTracker {
         return UsageTracker(firestore)
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class AuthRepositoryModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
 }

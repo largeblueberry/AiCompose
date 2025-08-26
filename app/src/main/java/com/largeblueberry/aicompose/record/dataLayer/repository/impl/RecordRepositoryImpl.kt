@@ -3,7 +3,7 @@ package com.largeblueberry.aicompose.record.dataLayer.repository.impl
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import com.largeblueberry.aicompose.data.record.local.AudioRecordDao
+import com.largeblueberry.aicompose.data.record.local.audio.AudioRecordDao
 import com.largeblueberry.aicompose.record.dataLayer.mapper.RecordMapper
 import com.largeblueberry.aicompose.record.domain.model.RecordModel
 import com.largeblueberry.aicompose.record.domain.repository.RecordRepository
