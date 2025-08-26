@@ -1,6 +1,6 @@
 package com.largeblueberry.aicompose.library.dataLayer.mapper
 
-import com.largeblueberry.aicompose.data.record.local.AudioRecordEntity // AudioRecordEntity를 임포트해야 합니다.
+import com.largeblueberry.aicompose.data.record.local.audio.AudioRecordEntity // AudioRecordEntity를 임포트해야 합니다.
 import com.largeblueberry.aicompose.library.domainLayer.model.LibraryModel
 
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.library.ui.viemodel.LibraryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,9 +18,14 @@ class LibraryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            val navController = rememberNavController()
+
             LibraryScreen(
                 viewModel = viewModel,
-                onUploadSuccess = { url -> shareUrl(url) }
+                onUploadSuccess = { url -> shareUrl(url) },
+                navController = navController,
+                onBackClick = { finish() } // 뒤로가기 콜백 추가
             )
         }
     }
