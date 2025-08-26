@@ -1,11 +1,14 @@
-import java.io.FileInputStream
+import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 
@@ -16,7 +19,7 @@ if (localPropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.largeblueberry.auth"
+    namespace = "com.largeblueberry.setting"
     compileSdk = 35
 
     defaultConfig {
@@ -25,6 +28,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
+
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
@@ -32,39 +36,46 @@ android {
         )
     }
 
-    buildFeatures {
-        buildConfig = true
-    }
-
     buildTypes {
+        debug {
+
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.preference)
     implementation(libs.material)
-    implementation(libs.hilt.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core:ui"))
+    implementation(project(":feature:auth"))
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)
@@ -98,5 +109,4 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
 }

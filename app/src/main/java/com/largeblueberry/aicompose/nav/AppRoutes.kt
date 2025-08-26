@@ -5,4 +5,5 @@ sealed class AppRoutes(val route: String) {
     object RecordScreen : AppRoutes("record_route")
     object LibraryScreen : AppRoutes("library_route")
     object SettingsScreen : AppRoutes("settings_route")
+    object LoginScreen : AppRoutes("login_route")
 }

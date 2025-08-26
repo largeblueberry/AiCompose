@@ -1,6 +1,8 @@
 package com.largeblueberry.aicompose.data.record.local
 
 import androidx.room.*
+import com.largeblueberry.aicompose.data.record.local.audio.AudioRecordDao
+import com.largeblueberry.aicompose.data.record.local.audio.AudioRecordEntity
 
 
 @Database(

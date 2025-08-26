@@ -9,7 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.record.ui.screen.RecordScreenState
 import com.largeblueberry.aicompose.ui.main.MainScreen
-import com.largeblueberry.feature_setting.ui.setting.SettingsScreen
+import com.largeblueberry.setting.ui.SettingsScreen
+import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 
 @Composable
 fun AppNavigation() {
@@ -41,9 +42,15 @@ fun AppNavigation() {
         }
 
         composable(AppRoutes.SettingsScreen.route) {
-            SettingsScreen() // 설정 화면 컴포저블 함수 호출
+            SettingsScreen(
+                onNavigateToLogin = { navController.navigate(AppRoutes.LoginScreen.route) }
+            ) // 설정 화면 컴포저블 함수 호출
         }
-    }
 
+        composable(AppRoutes.LoginScreen.route) {
+            LoginScreen() // 로그인 화면 컴포저블 함수 호출
+        }
+
+    }
 
 }
