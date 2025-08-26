@@ -67,8 +67,8 @@ android {
 
 dependencies {
     implementation(project(":feature:sheetmusic"))
+    implementation(project(":feature:setting"))
     //모듈
-    implementation(project(":feature-setting"))
     implementation(project(":core:ui"))
     implementation(project(":feature:auth"))
 

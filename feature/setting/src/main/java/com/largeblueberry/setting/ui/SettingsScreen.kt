@@ -1,4 +1,4 @@
-package com.largeblueberry.feature_setting.ui
+package com.largeblueberry.setting.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,8 +33,8 @@ import com.largeblueberry.aicompose.feature_auth.domainLayer.model.UserDomain
 import com.largeblueberry.ui.R
 import com.largeblueberry.aicompose.feature_auth.ui.LoginViewModel
 import com.largeblueberry.aicompose.feature_auth.ui.model.AuthUiState
-import com.largeblueberry.feature_setting.ui.util.SettingItem
-import com.largeblueberry.feature_setting.ui.util.SettingSection
+import com.largeblueberry.setting.ui.util.SettingItem
+import com.largeblueberry.setting.ui.util.SettingSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

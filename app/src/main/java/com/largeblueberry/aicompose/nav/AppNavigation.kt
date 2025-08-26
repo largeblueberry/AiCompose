@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.record.ui.screen.RecordScreenState
 import com.largeblueberry.aicompose.ui.main.MainScreen
-import com.largeblueberry.feature_setting.ui.SettingsScreen
+import com.largeblueberry.setting.ui.SettingsScreen
 import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 
 @Composable

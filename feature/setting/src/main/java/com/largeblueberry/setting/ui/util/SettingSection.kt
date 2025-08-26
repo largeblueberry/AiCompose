@@ -1,4 +1,4 @@
-package com.largeblueberry.feature_setting.ui.util
+package com.largeblueberry.setting.ui.util
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

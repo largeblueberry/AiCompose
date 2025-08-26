@@ -19,7 +19,7 @@ if (localPropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.largeblueberry.feature_setting"
+    namespace = "com.largeblueberry.setting"
     compileSdk = 35
 
     defaultConfig {
@@ -71,6 +71,10 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.preference)
     implementation(libs.material)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core:ui"))
     implementation(project(":feature:auth"))

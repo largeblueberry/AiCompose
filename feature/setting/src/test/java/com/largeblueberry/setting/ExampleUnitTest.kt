@@ -1,4 +1,4 @@
-package com.largeblueberry.feature_setting
+package com.largeblueberry.setting
 
 import org.junit.Test
 
