@@ -42,7 +42,9 @@ fun AppNavigation() {
         }
 
         composable(AppRoutes.SettingsScreen.route) {
-            SettingsScreen() // 설정 화면 컴포저블 함수 호출
+            SettingsScreen(
+                onNavigateToLogin = { navController.navigate(AppRoutes.LoginScreen.route) }
+            ) // 설정 화면 컴포저블 함수 호출
         }
 
         composable(AppRoutes.LoginScreen.route) {

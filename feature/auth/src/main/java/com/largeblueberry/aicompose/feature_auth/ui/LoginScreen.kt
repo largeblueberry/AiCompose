@@ -37,7 +37,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit = {}
 ) {
-    // ViewModel의 상태를 관찰합니다.
+    // ViewModel의 상태를 관찰
     val uiState = viewModel.uiState.collectAsState().value
     val authState = viewModel.authUiState.collectAsState().value
 
@@ -45,7 +45,7 @@ fun LoginScreen(
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        // ViewModel에 원본 Intent 데이터를 전달하여 처리하도록 합니다.
+
         viewModel.handleGoogleSignInResult(result.data)
 
         if (result.resultCode != Activity.RESULT_OK) {
@@ -53,10 +53,10 @@ fun LoginScreen(
         }
     }
 
-    // 2. ViewModel로부터 Google Sign-In Intent 요청을 관찰하고 실행합니다.
+    // 2. ViewModel로부터 Google Sign-In Intent 요청을 관찰하고 실행
     LaunchedEffect(key1 = Unit) {
         viewModel.startGoogleSignInFlow.collectLatest { intent ->
-            // ViewModel이 제공한 Intent를 실행합니다.
+            // ViewModel이 제공한 Intent를 실행
             googleSignInLauncher.launch(intent)
         }
     }
@@ -98,6 +98,8 @@ fun LoginScreen(
             },
             onSkip = onNavigateBack // 건너뛰기로 설정 화면 복귀
         )
+
+        Spacer(modifier = Modifier.height(40.dp))// 여백 필요
 
         Text(
             text = "로그인하면 서비스 약관에 동의하는 것으로 간주됩니다",

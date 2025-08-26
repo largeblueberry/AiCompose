@@ -8,11 +8,7 @@ object AuthMapper {
     fun toDomain(authResult: AuthResult): AuthResultDomain {
         return when (authResult) {
             is AuthResult.Success -> {
-                // 1. AuthResult.Success에서 받은 FirebaseUser를 데이터 레이어의 User 모델로 변환
-                val userDataModel = UserMapper.toUser(authResult.user)
-                // 2. 데이터 레이어의 User 모델을 도메인 레이어의 UserDomain 모델로 변환
-                val userDomainModel = UserMapper.toDomain(userDataModel)
-                // 3. 변환된 UserDomain을 사용하여 AuthResultDomain.Success 반환
+                val userDomainModel = UserMapper.toDomain(authResult.user)
                 AuthResultDomain.Success(userDomainModel)
             }
             is AuthResult.Error -> {

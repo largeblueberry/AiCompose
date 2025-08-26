@@ -3,11 +3,8 @@ package com.largeblueberry.aicompose.feature_auth.di
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.AuthRepositoryImpl
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSourceImpl
-import com.largeblueberry.aicompose.feature_auth.domainLayer.repository.AuthRepository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AuthModule {
+object AuthModule {
 
     @Provides
     @Singleton
@@ -34,9 +31,4 @@ abstract class AuthModule {
         return GoogleAuthDataSourceImpl(context)
     }
 
-    @Binds
-    @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
 }

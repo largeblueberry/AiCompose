@@ -86,10 +86,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // ViewPager2
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("com.google.android.material:material:1.12.0")
-
     // Room
     val room_version = "2.6.1" // 최신 버전으로 업데이트
     implementation("androidx.room:room-runtime:$room_version")
