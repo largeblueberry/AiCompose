@@ -1,39 +1,44 @@
 package com.largeblueberry.usertracker.usecase
 
 import com.largeblueberry.usertracker.model.UploadAvailabilityResult
+import com.largeblueberry.usertracker.repository.AuthGateway
 import com.largeblueberry.usertracker.repository.UserUsageRepository
 
-class CheckUploadAvailabilityUseCase(
-    private val userUsageRepository : UserUsageRepository
+class CheckUploadAvailabilityUseCase (
+    private val userUsageRepository : UserUsageRepository,
+    private val authGateway: AuthGateway
 ) {
+    suspend fun invoke(): UploadAvailabilityResult{
+        val isLoggedIn = authGateway.isLoggedIn()
+        val currentUserId = authGateway.getCurrentUserId()
 
-    private val LOGGED_IN_MAX_UPLOADS = 5
+        val maxUpload = authGateway.getUploadLimitForUser(currentUserId)
 
-    private val ANONYMOUS_MAX_UPLOADS = 1
+        val currentUploads = userUsageRepository.getCurrentUploadCount(currentUserId)//현재 업로드 횟수
 
-    suspend fun invoke(userId: String?): UploadAvailabilityResult{
-        val isLoggedIn = userUsageRepository.isLoggedIn()
-
-        val currentUploads = userUsageRepository.getCurrentUploadCount(userId)//현재 업로드 횟수
-
-        val maxUpload = if(isLoggedIn) LOGGED_IN_MAX_UPLOADS else ANONYMOUS_MAX_UPLOADS
-
-        return if(currentUploads < maxUpload){
-            UploadAvailabilityResult.Available(remainingUploads = maxUpload - currentUploads)
-            //업로드 가능, 남은 업로드 횟수 포함
-        }else {
-            UploadAvailabilityResult.LimitReached(maxUploads = maxUpload)
-            //업로드 한도 초과
+        return if(currentUploads < maxUpload) {
+            UploadAvailabilityResult.Available(
+                remainingUploads = maxUpload - currentUploads,
+                currentUploads = currentUploads,
+                maxUploads = maxUpload
+            )
+        } else {
+            UploadAvailabilityResult.LimitReached(
+                maxUploads = maxUpload,
+                currentUploads = currentUploads
+            )
         }
 
     }
 
-    suspend fun uploadCounter(userId: String?){
-        userUsageRepository.incrementUploadCount(userId)
+    suspend fun uploadCounter(){
+        val currentUserId = authGateway.getCurrentUserId()
+        userUsageRepository.incrementUploadCount(currentUserId)
     }
 
-    suspend fun resetCounter(userId: String?){
-        userUsageRepository.resetUploadCount(userId)
+    suspend fun resetCounter(){
+        val currentUserId = authGateway.getCurrentUserId()
+        userUsageRepository.resetUploadCount(currentUserId)
     }
 
 }

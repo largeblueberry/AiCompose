@@ -2,8 +2,6 @@ package com.largeblueberry.usertracker.repository
 
 interface UserUsageRepository {
 
-    suspend fun isLoggedIn(): Boolean
-
     suspend fun getCurrentUploadCount(userId: String?): Int
 
     suspend fun incrementUploadCount(userId: String?)

@@ -1,13 +1,13 @@
 package com.largeblueberry.usertracker.usecase
 
 import com.largeblueberry.usertracker.model.UploadAvailabilityResult
+import com.largeblueberry.usertracker.repository.AuthGateway
 import com.largeblueberry.usertracker.repository.UserUsageRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -21,6 +21,9 @@ class CheckUploadAvailabilityUseCaseTest {
     @Mock
     private lateinit var userUsageRepository: UserUsageRepository
 
+    @Mock
+    private lateinit var authGateway: AuthGateway
+
     // SUT (System Under Test)
     private lateinit var checkUploadAvailabilityUseCase: CheckUploadAvailabilityUseCase
 
@@ -29,7 +32,8 @@ class CheckUploadAvailabilityUseCaseTest {
     fun setUp() {
 
         checkUploadAvailabilityUseCase = CheckUploadAvailabilityUseCase(
-            userUsageRepository = userUsageRepository
+            userUsageRepository = userUsageRepository,
+            authGateway = authGateway
         )
     }
 
@@ -38,61 +42,84 @@ class CheckUploadAvailabilityUseCaseTest {
         // given
         val userId = "testUser"
         val currentCount = 3
+        val maxUpload = 5
 
-        `when`(userUsageRepository.isLoggedIn()).thenReturn(true)
-        `when`(userUsageRepository.getCurrentUploadCount(userId))
-            .thenReturn(currentCount)
+        whenever(authGateway.isLoggedIn()).thenReturn(true)
+        whenever(authGateway.getCurrentUserId()).thenReturn(userId)
+        whenever(authGateway.getUploadLimitForUser(userId)).thenReturn(maxUpload)
+        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(currentCount)
 
         // when
-        val result = checkUploadAvailabilityUseCase.invoke(userId)
+        val result = checkUploadAvailabilityUseCase.invoke()
         // then
         assertTrue(result is UploadAvailabilityResult.Available)
-        assertEquals(UploadAvailabilityResult.Available(remainingUploads = 5 - currentCount), result)
-        // 남은 횟수 검증
+        val availableResult = result
+        assertEquals(2, availableResult.remainingUploads) // 5 - 3 = 2
+        assertEquals(3, availableResult.currentUploads)
+        assertEquals(5, availableResult.maxUploads)
     }
     @Test
     fun `로그인 한 사용자가 업로드 한도에 도달한 경우`() = runTest {
         // Given
         val userId = "testUser123"
-        whenever(userUsageRepository.isLoggedIn()).thenReturn(true)
-        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(5) // 현재 5회 업로드 (최대)
+        val maxUpload = 5
 
+        whenever(authGateway.isLoggedIn()).thenReturn(true)
+        whenever(authGateway.getCurrentUserId()).thenReturn(userId)
+        whenever(authGateway.getUploadLimitForUser(userId)).thenReturn(maxUpload)
+        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(5)
         // When
-        val result = checkUploadAvailabilityUseCase.invoke(userId)
+        val result = checkUploadAvailabilityUseCase.invoke()
 
         // Then
-        // UploadAvailabilityResult.LimitReached(maxUploads = 5) 가 반환되어야 함
-        assertEquals(UploadAvailabilityResult.LimitReached(maxUploads = 5), result)
+        assertTrue(result is UploadAvailabilityResult.LimitReached)
+        val limitResult = result
+        assertEquals(5, limitResult.maxUploads)
+        assertEquals(5, limitResult.currentUploads)
     }
 
     @Test
     fun `익명 사용자가 업로드 가능 횟수가 남아있는 경우`() = runTest {
         // Given
-        val userId: String? = null // 익명 사용자
-        whenever(userUsageRepository.isLoggedIn()).thenReturn(false) // 비로그인 상태로 가정
-        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(0) // 현재 0회 업로드
+        val userId: String? = null
+        val maxUpload = 1
+
+        whenever(authGateway.isLoggedIn()).thenReturn(false)
+        whenever(authGateway.getCurrentUserId()).thenReturn(userId)
+        whenever(authGateway.getUploadLimitForUser(userId)).thenReturn(maxUpload)
+        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(0)
 
         // When
-        val result = checkUploadAvailabilityUseCase.invoke(userId)
+        val result = checkUploadAvailabilityUseCase.invoke()
 
         // Then
-        // UploadAvailabilityResult.Available(remainingUploads = 1 - 0 = 1) 가 반환되어야 함
-        assertEquals(UploadAvailabilityResult.Available(remainingUploads = 1), result)
+        assertTrue(result is UploadAvailabilityResult.Available)
+        val availableResult = result
+        assertEquals(1, availableResult.remainingUploads) // 1 - 0 = 1
+        assertEquals(0, availableResult.currentUploads)
+        assertEquals(1, availableResult.maxUploads)
     }
 
     @Test
     fun `익명 사용자가 업로드 한도에 도달한 경우`() = runTest {
         // Given
         val userId: String? = null
-        whenever(userUsageRepository.isLoggedIn()).thenReturn(false)
-        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(1) // 현재 1회 업로드 (최대)
+        val maxUpload = 1
+
+        whenever(authGateway.isLoggedIn()).thenReturn(false)
+        whenever(authGateway.getCurrentUserId()).thenReturn(userId)
+        whenever(authGateway.getUploadLimitForUser(userId)).thenReturn(maxUpload)
+        whenever(userUsageRepository.getCurrentUploadCount(userId)).thenReturn(1)
 
         // When
-        val result = checkUploadAvailabilityUseCase.invoke(userId)
+        val result = checkUploadAvailabilityUseCase.invoke()
+
 
         // Then
-        // UploadAvailabilityResult.LimitReached(maxUploads = 1) 가 반환되어야 함
-        assertEquals(UploadAvailabilityResult.LimitReached(maxUploads = 1), result)
+        assertTrue(result is UploadAvailabilityResult.LimitReached)
+        val limitResult = result
+        assertEquals(1, limitResult.maxUploads)
+        assertEquals(1, limitResult.currentUploads)
     }
 
     @Test
@@ -100,11 +127,12 @@ class CheckUploadAvailabilityUseCaseTest {
         // Given
         val userId = "someUser"
 
+        whenever(authGateway.getCurrentUserId()).thenReturn(userId)
+
         // When
-        checkUploadAvailabilityUseCase.uploadCounter(userId)
+        checkUploadAvailabilityUseCase.uploadCounter()
 
         // Then
-        // userUsageRepository의 incrementUploadCount 메서드가 userId 인자와 함께 한 번 호출되었는지 검증
         verify(userUsageRepository).incrementUploadCount(userId)
     }
 
@@ -113,11 +141,12 @@ class CheckUploadAvailabilityUseCaseTest {
         // Given
         val userId = "someUser"
 
+        whenever(authGateway.getCurrentUserId()).thenReturn(userId)
+
         // When
-        checkUploadAvailabilityUseCase.resetCounter(userId)
+        checkUploadAvailabilityUseCase.resetCounter()
 
         // Then
-        // userUsageRepository의 resetUploadCount 메서드가 userId 인자와 함께 한 번 호출되었는지 검증
         verify(userUsageRepository).resetUploadCount(userId)
     }
 }

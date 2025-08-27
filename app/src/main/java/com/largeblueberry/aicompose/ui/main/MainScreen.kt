@@ -3,15 +3,23 @@ package com.largeblueberry.aicompose.ui.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.R
 import com.largeblueberry.core_ui.AppBackground
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController){
     Column(
@@ -19,6 +27,16 @@ fun MainScreen(navController: NavController){
             .fillMaxSize()
             .background(AppBackground)
     ) {
+        TopAppBar(
+            title = {
+                Text(text = "이어름", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = AppBackground
+            )
+        )
+
+
         CardViewScreen(
             iconResId = R.drawable.ic_mic,
             mainText = "음성 녹음하기",
