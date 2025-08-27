@@ -71,6 +71,7 @@ dependencies {
     //모듈
     implementation(project(":core:ui"))
     implementation(project(":feature:auth"))
+    implementation(project(":domain:usertracker"))
 
     // 기본 Android 라이브러리
     implementation(libs.androidx.core.ktx)

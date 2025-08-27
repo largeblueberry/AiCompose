@@ -8,13 +8,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Storage
@@ -82,12 +82,12 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // 🎵 앱 정보 카드
+            //  앱 정보 카드
             item {
                 AppInfoCard()
             }
 
-            // 👤 계정 섹션
+            //  계정 섹션
             item {
                 AccountSection(
                     authState = authState,
@@ -96,17 +96,17 @@ fun SettingsScreen(
                 )
             }
 
-            // ⚙️ 앱 설정 섹션
+            // ️ 앱 설정 섹션
             item {
                 AppSettingsSection()
             }
 
-            // ℹ️ 정보 섹션
+            // ℹ 정보 섹션
             item {
                 InfoSection()
             }
 
-            // 📱 앱 정보 섹션
+            //  앱 정보 섹션
             item {
                 AboutSection()
             }
@@ -255,10 +255,10 @@ private fun AppSettingsSection() {
         )
 
         SettingItem(
-            icon = Icons.AutoMirrored.Filled.VolumeUp,
-            title = "오디오 설정",
-            subtitle = "음질 및 오디오 옵션",
-            onClick = { /* TODO: 오디오 설정 */ }
+            icon = Icons.Default.Language,
+            title = "언어",
+            subtitle = "언어 설정",
+            onClick = { /* TODO: 언어 설정 */ }
         )
 
         SettingItem(
@@ -282,9 +282,9 @@ private fun InfoSection() {
 
         SettingItem(
             icon = Icons.AutoMirrored.Filled.ContactSupport,
-            title = "고객지원",
-            subtitle = "문의 및 피드백",
-            onClick = { /* TODO: 고객지원 */ }
+            title = "About eaream",
+            subtitle = "서비스 소개",
+            onClick = { /* TODO: 서비스 소개 */ }
         )
 
         SettingItem(

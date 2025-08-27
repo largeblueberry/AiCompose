@@ -57,7 +57,6 @@ fun LibraryScreen(
         }
     }
 
-
     // 업로드 상태 처리
     LaunchedEffect(uiState.uploadState.status) {
         when (uiState.uploadState.status) {
@@ -121,6 +120,15 @@ fun LibraryScreen(
                     modifier = Modifier
                         .align(Alignment.Center)// Box의 가운데에 정렬
                         .padding(top = 20.dp)
+                )
+                Text(
+                    text = "(${uiState.currentUploads}/${uiState.maxUploads})",
+                    style = MaterialTheme.typography.headlineMedium, // 동일한 스타일 사용
+                    fontWeight = FontWeight.Normal, // 숫자는 일반 두께로
+                    color = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 10.dp)
                 )
             }
         }

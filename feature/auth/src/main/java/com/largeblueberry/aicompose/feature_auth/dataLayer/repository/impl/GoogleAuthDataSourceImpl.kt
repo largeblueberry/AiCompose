@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.feature_auth.dataLayer.repository
+package com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
+import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
 import com.largeblueberry.auth.BuildConfig
 
 private const val TAG = "GoogleSignInHelper"

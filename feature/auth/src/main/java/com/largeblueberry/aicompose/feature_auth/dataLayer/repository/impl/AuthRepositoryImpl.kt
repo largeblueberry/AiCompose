@@ -1,4 +1,4 @@
-package com.largeblueberry.aicompose.feature_auth.dataLayer.repository
+package com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -6,9 +6,9 @@ import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.AuthMapper
 import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.UserMapper
 import com.largeblueberry.aicompose.feature_auth.dataLayer.model.AuthResult
 import com.largeblueberry.aicompose.feature_auth.domainLayer.model.AuthResultDomain
-import com.largeblueberry.aicompose.feature_auth.domainLayer.repository.AuthRepository // Domain Layer의 AuthRepository 임포트
+import com.largeblueberry.aicompose.feature_auth.domainLayer.repository.AuthRepository
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import kotlinx.coroutines.tasks.await // suspend 함수에서 Firebase Task를 await하기 위해 필요
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth, // Firebase Authentication 인스턴스를 주입받음
