@@ -11,6 +11,8 @@ import com.largeblueberry.aicompose.library.domainLayer.usecase.RenameAudioRecor
 import com.largeblueberry.aicompose.library.domainLayer.usecase.UploadAudioRecordUseCase
 import com.largeblueberry.aicompose.library.ui.LibraryUiState
 import com.largeblueberry.aicompose.util.AudioPlayer
+import com.largeblueberry.usertracker.usecase.CheckUploadAvailabilityUseCase
+import com.largeblueberry.usertracker.model.UploadAvailabilityResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +27,8 @@ class LibraryViewModel @Inject constructor(
     private val getAudioRecordsUseCase: GetAudioRecordsUseCase,
     private val deleteAudioRecordUseCase: DeleteAudioRecordUseCase,
     private val renameAudioRecordUseCase: RenameAudioRecordUseCase,
-    private val uploadAudioRecordUseCase: UploadAudioRecordUseCase
+    private val uploadAudioRecordUseCase: UploadAudioRecordUseCase,
+    private val checkUploadAvailabilityUseCase: CheckUploadAvailabilityUseCase
 ) : ViewModel() {
 
     private val audioPlayer = AudioPlayer()
@@ -76,10 +79,9 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 renameAudioRecordUseCase(record, newName) // invoke() 호출
-                // 필요하다면 이름 변경 성공/실패에 대한 StateFlow를 추가할 수 있습니다.
+                // 필요하다면 이름 변경 성공/실패에 대한 StateFlow를 추가
             } catch (e: Exception) {
-                // 필요하다면 오류 메시지 전달용 StateFlow 추가 가능
-
+                // 필요하다면 오류 메시지 전달용 StateFlow 추가
             }
         }
     }
@@ -94,80 +96,116 @@ class LibraryViewModel @Inject constructor(
                 return@launch
             }
 
-            _uiState.update {
-                it.copy(
-                    uploadState = UploadState(
-                        status = UploadStatus.UPLOADING,
-                        recordId = recordId
-                    ),
-                    uploadingRecordId = recordId,
-                    isUploadingInProgress = true // 업로드 시작 시 플래그 설정
-                )
-            }
+            //업로드 가능 여부 체크
+            val availabilityResult = checkUploadAvailabilityUseCase.invoke()
 
-            try {
-                val result: Result<String> = uploadAudioRecordUseCase(filePath)
+            when(availabilityResult){
+                is UploadAvailabilityResult.Available ->{
+                    _uiState.update {
+                        it.copy(
+                            uploadState = UploadState(
+                                status = UploadStatus.UPLOADING,
+                                recordId = recordId
+                            ),
+                            uploadingRecordId = recordId,
+                            isUploadingInProgress = true // 업로드 시작 시 플래그 설정
+                        )
+                    }
+                    try {
+                        val result: Result<String> = uploadAudioRecordUseCase(filePath)
 
-                result.fold(
-                    onSuccess = { midiUrl ->
-                        if (midiUrl.isNotEmpty()) {
-                            _uiState.update {
-                                it.copy(
-                                    uploadState = UploadState(
-                                        status = UploadStatus.SUCCESS,
-                                        url = midiUrl,
-                                        recordId = recordId
+                        result.fold(
+                            onSuccess = { midiUrl ->
+                                if (midiUrl.isNotEmpty()) {
+                                    _uiState.update {
+                                        it.copy(
+                                            uploadState = UploadState(
+                                                status = UploadStatus.SUCCESS,
+                                                url = midiUrl,
+                                                recordId = recordId,
+                                            ),
+                                            currentUploads = availabilityResult.currentUploads,
+                                            maxUploads = availabilityResult.maxUploads
+                                        )
+                                    }
+                                    checkUploadAvailabilityUseCase.uploadCounter()
+                                } else {
+                                    _uiState.update {
+                                        it.copy(
+                                            uploadState = UploadState(
+                                                status = UploadStatus.ERROR,
+                                                message = "업로드 성공했으나, 유효한 URL을 받지 못했습니다.",
+                                                recordId = recordId
+                                            )
+                                        )
+                                    }
+                                }
+                            },
+                            onFailure = { exception ->
+                                _uiState.update {
+                                    it.copy(
+                                        uploadState = UploadState(
+                                            status = UploadStatus.ERROR,
+                                            message = exception.message ?: "알 수 없는 에러 발생",
+                                            recordId = recordId
+                                        )
                                     )
-                                )
+                                }
                             }
-                        } else {
-                            _uiState.update {
-                                it.copy(
-                                    uploadState = UploadState(
-                                        status = UploadStatus.ERROR,
-                                        message = "업로드 성공했으나, 유효한 URL을 받지 못했습니다.",
-                                        recordId = recordId
-                                    )
-                                )
-                            }
-                        }
-                    },
-                    onFailure = { exception ->
+                        )
+
+                    } catch (e: Exception) {
                         _uiState.update {
                             it.copy(
                                 uploadState = UploadState(
                                     status = UploadStatus.ERROR,
-                                    message = exception.message ?: "알 수 없는 에러 발생",
+                                    message = e.message ?: "알 수 없는 에러 발생",
                                     recordId = recordId
                                 )
                             )
                         }
+                    } finally {
+                        // 업로드 완료 후 uploadingRecordId 초기화.
+                        // 여러 업로드를 동시에 처리하지 않는다는 가정 하에.
+                        if (_uiState.value.uploadingRecordId == recordId) {
+                            _uiState.update {
+                                it.copy(
+                                    uploadingRecordId = null,
+                                    isUploadingInProgress = false
+                                    // 업로드 결과에 상관없이 시 플래그
+                                )
+                            }
+                        }
                     }
-                )
-
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        uploadState = UploadState(
-                            status = UploadStatus.ERROR,
-                            message = e.message ?: "알 수 없는 에러 발생",
-                            recordId = recordId
-                        )
-                    )
                 }
-            } finally {
-                // 업로드 완료 후 uploadingRecordId 초기화.
-                // 여러 업로드를 동시에 처리하지 않는다는 가정 하에.
-                if (_uiState.value.uploadingRecordId == recordId) {
+                is UploadAvailabilityResult.LimitReached -> {
+                    // 업로드 한도 초과: 사용자에게 메시지 표시
                     _uiState.update {
                         it.copy(
-                            uploadingRecordId = null,
-                            isUploadingInProgress = false
-                            // 업로드 결과에 상관없이 시 플래그
+                            uploadState = UploadState(
+                                status = UploadStatus.ERROR,
+                                message = "업로드 한도 초과: 최대 ${availabilityResult.maxUploads}회 업로드 가능합니다.",
+                                recordId = recordId // 어떤 레코드에 대한 메시지인지 표시
+                            ),
+                            currentUploads = availabilityResult.currentUploads,
+                            maxUploads = availabilityResult.maxUploads
+                        )
+                    }
+                }
+                is UploadAvailabilityResult.Error -> {
+                // 업로드 가능 여부 확인 중 오류 발생
+                    _uiState.update {
+                        it.copy(
+                            uploadState = UploadState(
+                                status = UploadStatus.ERROR,
+                                message = availabilityResult.message,
+                                recordId = recordId
+                            )
                         )
                     }
                 }
             }
+
         }
     }
 
