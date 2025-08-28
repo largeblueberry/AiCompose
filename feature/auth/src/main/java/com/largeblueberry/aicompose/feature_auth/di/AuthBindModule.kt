@@ -2,7 +2,7 @@ package com.largeblueberry.aicompose.feature_auth.di
 
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl.AuthGatewayImpl
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl.AuthRepositoryImpl
-import com.largeblueberry.aicompose.feature_auth.domainLayer.repository.AuthRepository
+import com.largeblueberry.auth.repository.AuthRepository
 import com.largeblueberry.usertracker.repository.AuthGateway
 import dagger.Binds
 import dagger.Module

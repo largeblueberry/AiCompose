@@ -29,12 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.aicompose.feature_auth.domainLayer.model.UserDomain
+import com.largeblueberry.auth.model.AuthUiState
+import com.largeblueberry.auth.model.UserCore
 import com.largeblueberry.ui.R
-import com.largeblueberry.aicompose.feature_auth.ui.LoginViewModel
-import com.largeblueberry.aicompose.feature_auth.ui.model.AuthUiState
 import com.largeblueberry.setting.ui.util.SettingItem
 import com.largeblueberry.setting.ui.util.SettingSection
+import com.largeblueberry.setting.ui.viewmodel.SettingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +42,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     onNavigateToLogin: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: SettingViewModel = hiltViewModel()
 ) {
     val authState by viewModel.authUiState.collectAsState()
 
@@ -182,7 +182,7 @@ private fun AccountSection(
 
 @Composable
 private fun UserProfileItem(
-    user: UserDomain,
+    user: UserCore,
     onLogoutClick: () -> Unit
 ) {
     Card(

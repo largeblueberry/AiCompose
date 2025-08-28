@@ -66,6 +66,8 @@ dependencies {
 
     implementation(project(":core:ui"))
     implementation(project(":domain:usertracker"))
+    implementation(project(":core:auth"))
+
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)

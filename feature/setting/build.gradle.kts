@@ -75,7 +75,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core:ui"))
-    implementation(project(":feature:auth"))
+    implementation(project(":core:auth"))
+
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)
