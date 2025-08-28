@@ -6,11 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.largeblueberry.aicompose.library.ui.screen.LibraryScreen
-import com.largeblueberry.aicompose.record.ui.screen.RecordScreenState
+import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
 import com.largeblueberry.setting.ui.SettingsScreen
 import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
+import com.largeblueberry.navigation.AppRoutes
+import com.largeblueberry.record.ui.screen.RecordScreenState
 
 @Composable
 fun AppNavigation() {
@@ -23,7 +24,7 @@ fun AppNavigation() {
         }
 
         composable(AppRoutes.RecordScreen.route) {
-            RecordScreenState()
+            RecordScreenState(navController = navController)
         }
 
         composable(AppRoutes.LibraryScreen.route) {

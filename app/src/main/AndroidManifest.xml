@@ -28,12 +28,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".library.ui.LibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".record.ui.RecordActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
         </activity>
