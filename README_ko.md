@@ -7,6 +7,7 @@
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)]()
 [![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?style=flat-square&logo=kotlin&logoColor=white)]()
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)]()
+[![Clean Architecture](https://img.shields.io/badge/Clean%20Architecture-FF6B6B?style=flat-square)]()
 
 ## 프로젝트 개요
 
@@ -62,7 +63,7 @@
 - **단일 액티비티**: Navigation Component를 활용한 효율적인 화면 전환
 
 #### UI/UX 구현
-- **100% Jetpack Compose**: XML에서 Compose로 전면 전환
+- **Jetpack Compose**: XML에서 Compose로 전면 전환
 - **Material 3 Design**: 최신 디자인 가이드라인 적용
 - **반응형 UI**: 다양한 화면 크기 대응
 - **다크 테마**: 시스템 설정에 따른 자동 테마 전환
@@ -71,16 +72,16 @@
 - **Hilt 의존성 주입**: 보일러플레이트 코드 감소 및 테스트 용이성
 - **Coroutines + Flow**: 비동기 작업 및 상태 관리 최적화
 
-#### 🔊 오디오 처리
-- **AudioRecord API**: 고품질 음성 녹음 구현
+#### 오디오 처리
+- **AudioRecord API**: 음성 녹음 구현
 - **권한 관리**: 마이크 권한 요청 및 처리
 
-#### 🌐 네트워크 및 데이터
+#### 네트워크 및 데이터
 - **Retrofit + OkHttp**: RESTful API 통신
 - **Firebase**: Authentication
-- **Room Database**: 로컬 데이터 영속성
+- **Room Database**: 로컬 데이터베이스를 활용해 녹음 파일 관리
 
-## 🛠 기술 스택
+## 기술 스택
 
 ### 개발 환경
 - **IDE**: Android Studio Narwhal
@@ -91,6 +92,8 @@
 ## 라이선스
 
 MIT License
+
+## About Developer
 
 **개발자**: [신용우]  
 **연락처**: [onlym3480@naver.com]  
