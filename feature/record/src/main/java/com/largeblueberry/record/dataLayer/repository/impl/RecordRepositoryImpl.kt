@@ -27,14 +27,18 @@ class RecordRepositoryImpl @Inject constructor( // 클래스명 변경
     private var mediaRecorder: MediaRecorder? = null
     private var currentOutputFile: File? = null
 
+
+
     override fun startRecording(): Result<File> { // outputFile 인자 제거
+
         return try {
             val cacheDir = context.externalCacheDir
                 ?: throw IllegalStateException("External cache directory not available.")
             val outputFile = createUniqueAudioFilePath(cacheDir) // 여기서 파일 경로 생성
             currentOutputFile = outputFile
 
-            mediaRecorder = MediaRecorder().apply {
+
+            mediaRecorder = MediaRecorder(context).apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
                 setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)

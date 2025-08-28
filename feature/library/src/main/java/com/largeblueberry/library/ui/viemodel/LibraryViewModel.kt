@@ -28,10 +28,9 @@ class LibraryViewModel @Inject constructor(
     private val deleteAudioRecordUseCase: DeleteAudioRecordUseCase,
     private val renameAudioRecordUseCase: RenameAudioRecordUseCase,
     private val uploadAudioRecordUseCase: UploadAudioRecordUseCase,
-    private val checkUploadAvailabilityUseCase: CheckUploadAvailabilityUseCase
+    private val checkUploadAvailabilityUseCase: CheckUploadAvailabilityUseCase,
+    private val audioPlayer: AudioPlayer
 ) : ViewModel() {
-
-    private val audioPlayer = AudioPlayer()
 
     private val _uiState = MutableStateFlow(LibraryUiState())
     val uiState: StateFlow<LibraryUiState> = _uiState.stateIn(

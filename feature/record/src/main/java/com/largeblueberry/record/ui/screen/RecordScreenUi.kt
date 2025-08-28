@@ -81,7 +81,7 @@ fun RecordScreenUi(
         Spacer(modifier = Modifier.height(32.dp)) // XML의 layout_marginTop="32dp"
         if (isRecording) { // 녹음 중일 때만 진행 바 표시
             LinearProgressIndicator(
-                progress = 0.5f, // 실제 진행률에 따라 ViewModel에서 값을 받아와야 합니다. (예: viewModel.recordingProgress)
+                progress = {0.5f}, // 그냥 항상 고정
                 modifier = Modifier
                     .fillMaxWidth() // layout_width="0dp" (match_parent)
                     .height(8.dp), // layout_height="8dp"

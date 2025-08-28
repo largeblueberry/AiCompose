@@ -1,9 +1,10 @@
 package com.largeblueberry.library.util
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
 
-class AudioPlayer {
+class AudioPlayer(private val context: Context) {
     private var mediaPlayer: MediaPlayer? = null
     private var onCompletionListener: (() -> Unit)? = null
 
@@ -19,7 +20,7 @@ class AudioPlayer {
             mediaPlayer = null // 이전 인스턴스 확실히 해제
 
             // 새로운 MediaPlayer 초기화
-            mediaPlayer = MediaPlayer().apply {
+            mediaPlayer = MediaPlayer(context).apply {
                 setDataSource(filePath) // 녹음 파일 경로 설정
 
                 // 오류 리스너 설정: 재생 중 발생할 수 있는 오류 처리

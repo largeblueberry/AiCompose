@@ -51,7 +51,6 @@ dependencies {
 
     //모듈
     implementation(project(":core:ui"))
-    implementation(project(":feature:auth"))
     implementation(project(":domain:usertracker"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))

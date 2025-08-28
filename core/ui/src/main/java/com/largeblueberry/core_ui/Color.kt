@@ -19,3 +19,9 @@ val AppPrimaryBlue = Color(0xFF4F8CFF) // 기존 PrimaryBlue
 val RecordingRed = Color(0xFFFF4F4F) // 녹음 중일 때 버튼 색상
 val ProgressBarBackgroundTint = Color(0xFFE0E7EF) // 기존 ProgressBackgroundTint
 val CardViewBackGround = Color(0xFF3B82F6) // 카드뷰 배경 색
+
+
+// setting screen colors
+val SettingArrowTint = Color(0xFF999999)
+val SettingItemMainText = Color(0xFF333333)
+val SettingItemSubText = Color(0xFF666666)

@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -259,13 +258,6 @@ private fun AppSettingsSection() {
             title = "언어",
             subtitle = "언어 설정",
             onClick = { /* TODO: 언어 설정 */ }
-        )
-
-        SettingItem(
-            icon = Icons.Default.Storage,
-            title = "저장소",
-            subtitle = "파일 저장 위치 설정",
-            onClick = { /* TODO: 저장소 설정 */ }
         )
     }
 }

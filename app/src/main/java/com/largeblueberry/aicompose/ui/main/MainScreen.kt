@@ -9,7 +9,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -29,34 +29,34 @@ fun MainScreen(navController: NavController){
     ) {
         TopAppBar(
             title = {
-                Text(text = "이어름", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(id = R.string.app_name),
+                    fontSize = 24.sp, fontWeight = FontWeight.Bold)
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = AppBackground
             )
         )
 
-
         CardViewScreen(
             iconResId = R.drawable.ic_mic,
-            mainText = "음성 녹음하기",
-            subText = "순간의 영감을 빨리 기록해요.",
+            mainText = stringResource(id = R.string.recordMainText),
+            subText = stringResource(id = R.string.recordSubText),
             applyTint = true,
             onClick = { navController.navigate("record_route") }
         )
 
         CardViewScreen(
             iconResId = R.drawable.ic_music_note,
-            mainText = "내 작품",
-            subText = "내가 만든 작품들을 확인해요.",
+            mainText = stringResource(id = R.string.libraryMainText),
+            subText = stringResource(id = R.string.librarySubText),
             applyTint = false,
             onClick = { navController.navigate("library_route") }
         )
 
         CardViewScreen(
             iconResId = R.drawable.ic_settings,
-            mainText = "설정",
-            subText = "앱 설정을 변경해요.",
+            mainText = stringResource(id = R.string.settingsMainText),
+            subText = stringResource(id = R.string.settingsSubText),
             applyTint = true,
             onClick = { navController.navigate("settings_route") }
         )

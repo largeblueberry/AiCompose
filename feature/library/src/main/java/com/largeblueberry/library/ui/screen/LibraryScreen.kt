@@ -203,7 +203,7 @@ fun EmptyView() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "녹음된 파일이 없습니다",
+                text = "녹음된 파일이 없습니다.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
