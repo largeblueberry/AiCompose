@@ -1,14 +1,15 @@
 package com.largeblueberry.aicompose.feature_auth.dataLayer.mapper
 
 import com.largeblueberry.aicompose.feature_auth.dataLayer.model.User
-import com.largeblueberry.aicompose.feature_auth.domainLayer.model.UserDomain
+
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
+import com.largeblueberry.auth.model.UserCore
 
 object UserMapper {
 
-    fun toDomain(user: User): UserDomain {
-        return UserDomain(
+    fun toDomain(user: User): UserCore {
+        return UserCore(
             id = user.id,
             name = user.name,
             email = user.email,
@@ -17,14 +18,14 @@ object UserMapper {
         )
     }
 
-    fun toData(userDomain: UserDomain): User {
+    fun toData(userCore: UserCore): User {
         return User(
-            id = userDomain.id,
-            name = userDomain.name,
-            email = userDomain.email,
-            profilePictureUrl = userDomain.profilePictureUrl,
+            id = userCore.id,
+            name = userCore.name,
+            email = userCore.email,
+            profilePictureUrl = userCore.profilePictureUrl,
             // Long (밀리초)을 Timestamp 객체로 변환
-            createdAt = Timestamp(java.util.Date(userDomain.createdAt))
+            createdAt = Timestamp(java.util.Date(userCore.createdAt))
         )
     }
 

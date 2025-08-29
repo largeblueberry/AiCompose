@@ -15,11 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.largeblueberry.core_ui.SettingUtilColor
+import com.largeblueberry.core_ui.SettingItemMainText
+import com.largeblueberry.core_ui.UtilTextColor
 
 @Composable
 fun SettingItem(
@@ -39,7 +41,7 @@ fun SettingItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color(0xFF666666),
+            tint = UtilTextColor,
             modifier = Modifier.size(24.dp)
         )
 
@@ -50,14 +52,14 @@ fun SettingItem(
                 text = title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF333333)
+                color = SettingItemMainText
             )
 
             subtitle?.let {
                 Text(
                     text = it,
                     fontSize = 14.sp,
-                    color = Color(0xFF666666)
+                    color = UtilTextColor
                 )
             }
         }
@@ -66,7 +68,7 @@ fun SettingItem(
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = Color(0xFF999999),
+                tint = SettingUtilColor,
                 modifier = Modifier.size(20.dp)
             )
         }

@@ -4,11 +4,11 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
-import com.largeblueberry.aicompose.feature_auth.domainLayer.model.AuthResultDomain
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LoginUseCase
-import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LogoutUseCase
-import com.largeblueberry.aicompose.feature_auth.ui.model.AuthUiState
-import com.largeblueberry.aicompose.feature_auth.ui.model.LoginUiState
+import com.largeblueberry.auth.model.AuthResult
+import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LogoutUseCaseImpl
+import com.largeblueberry.auth.model.AuthUiState
+import com.largeblueberry.auth.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ import kotlin.onSuccess
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val logOutUseCase: LogoutUseCase,
+    private val logOutUseCase: LogoutUseCaseImpl,
     private val googleAuthDataSource: GoogleAuthDataSource
 ): ViewModel() {
 
@@ -78,7 +78,7 @@ class LoginViewModel @Inject constructor(
 
 
             when (val result = loginUseCase(idToken)) {
-                is AuthResultDomain.Success -> {
+                is AuthResult.Success -> {
                     _authUiState.value = AuthUiState.Authenticated(result.user)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
@@ -88,7 +88,7 @@ class LoginViewModel @Inject constructor(
                     )
 
                 }
-                is AuthResultDomain.Error -> {
+                is AuthResult.Error -> {
                     _authUiState.value = AuthUiState.Error(result.message)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,

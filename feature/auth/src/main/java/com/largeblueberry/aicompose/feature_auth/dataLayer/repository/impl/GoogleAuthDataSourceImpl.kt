@@ -10,11 +10,12 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
 import com.largeblueberry.auth.BuildConfig
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 private const val TAG = "GoogleSignInHelper"
 
 class GoogleAuthDataSourceImpl(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ): GoogleAuthDataSource {
     private val googleSignInClient by lazy {
         // GoogleSignInOptions 설정

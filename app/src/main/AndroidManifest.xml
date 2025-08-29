@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AiCompose"
         tools:replace="android:icon,android:roundIcon"
+        android:localeConfig="@xml/locales_config"
         tools:targetApi="31">
         <activity
             android:name=".ui.splash.SplashActivity"
@@ -27,12 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".library.ui.LibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".record.ui.RecordActivity"
-            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

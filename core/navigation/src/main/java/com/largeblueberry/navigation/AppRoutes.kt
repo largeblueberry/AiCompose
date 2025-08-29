@@ -1,0 +1,9 @@
+package com.largeblueberry.navigation
+
+sealed class AppRoutes(val route: String) {
+    object MainScreen : AppRoutes("main_route")
+    object RecordScreen : AppRoutes("record_route")
+    object LibraryScreen : AppRoutes("library_route")
+    object SettingsScreen : AppRoutes("settings_route")
+    object LoginScreen : AppRoutes("login_route")
+}
