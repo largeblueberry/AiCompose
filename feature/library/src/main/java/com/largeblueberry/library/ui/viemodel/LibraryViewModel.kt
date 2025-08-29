@@ -2,6 +2,10 @@ package com.largeblueberry.library.ui.viemodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.largeblueberry.domain.AuthGateway
+import com.largeblueberry.domain.model.UploadAvailabilityResult
+import com.largeblueberry.domain.repository.UserUsageRepository
+import com.largeblueberry.domain.usecase.CheckUploadAvailabilityUseCase
 import com.largeblueberry.library.domainLayer.model.LibraryModel
 import com.largeblueberry.library.domainLayer.usecase.DeleteAudioRecordUseCase
 import com.largeblueberry.library.domainLayer.usecase.GetAudioRecordsUseCase
@@ -11,10 +15,6 @@ import com.largeblueberry.library.ui.LibraryUiState
 import com.largeblueberry.library.util.AudioPlayer
 import com.largeblueberry.remote.model.UploadState
 import com.largeblueberry.remote.model.UploadStatus
-import com.largeblueberry.usertracker.usecase.CheckUploadAvailabilityUseCase
-import com.largeblueberry.usertracker.model.UploadAvailabilityResult
-import com.largeblueberry.usertracker.repository.AuthGateway
-import com.largeblueberry.usertracker.repository.UserUsageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

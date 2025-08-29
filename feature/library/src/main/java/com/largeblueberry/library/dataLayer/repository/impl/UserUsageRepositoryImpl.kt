@@ -1,10 +1,11 @@
 package com.largeblueberry.library.dataLayer.repository.impl
 
 import android.content.SharedPreferences
-import com.largeblueberry.usertracker.repository.UserUsageRepository
+
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.content.edit
+import com.largeblueberry.domain.repository.UserUsageRepository
 
 @Singleton
 class UserUsageRepositoryImpl @Inject constructor(

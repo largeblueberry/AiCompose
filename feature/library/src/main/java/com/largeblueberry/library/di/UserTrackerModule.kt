@@ -1,8 +1,9 @@
 package com.largeblueberry.library.di
 
-import com.largeblueberry.usertracker.repository.AuthGateway
-import com.largeblueberry.usertracker.repository.UserUsageRepository
-import com.largeblueberry.usertracker.usecase.CheckUploadAvailabilityUseCase
+
+import com.largeblueberry.domain.AuthGateway
+import com.largeblueberry.domain.repository.UserUsageRepository
+import com.largeblueberry.domain.usecase.CheckUploadAvailabilityUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
