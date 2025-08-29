@@ -15,6 +15,6 @@ data class LibraryUiState(
     val isPlaying: Boolean = false, // 현재 오디오 재생 중인지 여부
     val isUploadingInProgress: Boolean = false, // 현재 업로드 작업이 진행 중인지 여부
     val showUploadInProgressMessage: Boolean = false, //  업로드 중 메시지 표시 여부
-    val currentUploads: Int = 0,
-    val maxUploads: Int = 0
+    val currentUploads: Int? = null,
+    val maxUploads: Int? = null
 )

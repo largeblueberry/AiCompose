@@ -85,6 +85,17 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.foundation:foundation")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.8.4")
+    androidTestImplementation("androidx.hilt:hilt-android-testing:1.1.0")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.56.2")
+
+    // 디버그용 (UI 테스트 시 필요)
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Mock 라이브러리
+    androidTestImplementation("io.mockk:mockk-android:1.13.8")
 
     // Material Design 3 (권장)
     implementation("androidx.compose.material3:material3")

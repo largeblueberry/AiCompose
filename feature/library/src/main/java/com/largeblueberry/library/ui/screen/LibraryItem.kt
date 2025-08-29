@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.largeblueberry.library.domainLayer.model.LibraryModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,27 +77,27 @@ fun AudioRecordItem(
                 IconButton(onClick = onPause) {
                     Icon(
                         imageVector = Icons.Default.Pause,
-                        contentDescription = "일시정지"
+                        contentDescription = stringResource(ResourceR.string.pauseDescription)
                     )
                 }
                 IconButton(onClick = onStop) {
                     Icon(
                         imageVector = Icons.Default.Stop,
-                        contentDescription = "정지"
+                        contentDescription = stringResource(ResourceR.string.stopDescription)
                     )
                 }
             } else if (isPaused) { // 재생 중이 아니지만 일시정지된 상태일 때 (같은 레코드)
                 IconButton(onClick = onResume) { // 이어서 재생
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "재생"
+                        contentDescription = stringResource(ResourceR.string.playDescription)
                     )
                 }
             } else { // 재생 중이 아니고 일시정지된 상태도 아닐 때 (새로운 재생 또는 다른 레코드)
                 IconButton(onClick = onPlay) { // 처음부터 재생
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "재생"
+                        contentDescription = stringResource(ResourceR.string.playDescription)
                     )
                 }
             }
@@ -109,7 +111,7 @@ fun AudioRecordItem(
                 IconButton(onClick = onUpload) {
                     Icon(
                         imageVector = Icons.Default.CloudUpload,
-                        contentDescription = "업로드"
+                        contentDescription = stringResource(ResourceR.string.uploadDescription)
                     )
                 }
             }
@@ -118,7 +120,7 @@ fun AudioRecordItem(
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "삭제",
+                    contentDescription = stringResource(ResourceR.string.deleteDescription),
                     tint = MaterialTheme.colorScheme.error
                 )
             }

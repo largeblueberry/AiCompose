@@ -13,12 +13,13 @@ import com.largeblueberry.remote.model.UploadState
 import com.largeblueberry.remote.model.UploadStatus
 import com.largeblueberry.usertracker.usecase.CheckUploadAvailabilityUseCase
 import com.largeblueberry.usertracker.model.UploadAvailabilityResult
+import com.largeblueberry.usertracker.repository.AuthGateway
+import com.largeblueberry.usertracker.repository.UserUsageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,28 +30,19 @@ class LibraryViewModel @Inject constructor(
     private val renameAudioRecordUseCase: RenameAudioRecordUseCase,
     private val uploadAudioRecordUseCase: UploadAudioRecordUseCase,
     private val checkUploadAvailabilityUseCase: CheckUploadAvailabilityUseCase,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val authGateway: AuthGateway,
+    private val userUsageRepository: UserUsageRepository
 ) : ViewModel() {
 
+
     private val _uiState = MutableStateFlow(LibraryUiState())
-    val uiState: StateFlow<LibraryUiState> = _uiState.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = LibraryUiState()
-    )
+    val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
 
     init {
+        loadInitialData()
         // 오디오 레코드 리스트와 isEmpty 상태를 함께 업데이트
-        viewModelScope.launch {
-            getAudioRecordsUseCase().collect { records ->
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        audioRecords = records,
-                        isEmpty = records.isEmpty()
-                    )
-                }
-            }
-        }
+        observeAudioRecords()
 
         // AudioPlayer 재생 완료 리스너 설정
         audioPlayer.setOnCompletionListener {
@@ -207,6 +199,37 @@ class LibraryViewModel @Inject constructor(
 
         }
     }
+
+    private fun loadInitialData() {
+        viewModelScope.launch {
+            val userId = authGateway.getCurrentUserId()
+            val maxUploads = authGateway.getUploadLimitForUser(userId)
+            val currentUploads = userUsageRepository.getCurrentUploadCount(userId)
+
+            _uiState.update {
+                it.copy(
+                    maxUploads = maxUploads,
+                    currentUploads = currentUploads
+                )
+            }
+        }
+    }
+
+
+
+    private fun observeAudioRecords() {
+        viewModelScope.launch {
+            getAudioRecordsUseCase().collect { records ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        audioRecords = records,
+                        isEmpty = records.isEmpty()
+                    )
+                }
+            }
+        }
+    }
+
 
     // 오디오 재생 관련 함수들
     fun playAudio(record: LibraryModel) {

@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import com.largeblueberry.record.ui.RecordingState
 
 @HiltViewModel
 class RecordViewModel @Inject constructor(
@@ -22,8 +23,8 @@ class RecordViewModel @Inject constructor(
     private val _isRecording = MutableLiveData(false)
     val isRecording: LiveData<Boolean> = _isRecording
 
-    private val _recordingStateText = MutableLiveData("대기 중")
-    val recordingStateText: LiveData<String> = _recordingStateText
+    private val _recordingStateText = MutableLiveData(RecordingState.WAITING)
+    val recordingStateText: LiveData<RecordingState> = _recordingStateText
 
     private val _lastSavedFileName = MutableLiveData<String>()
     val lastSavedFileName: LiveData<String> = _lastSavedFileName
@@ -34,10 +35,10 @@ class RecordViewModel @Inject constructor(
                 .onSuccess { file ->
                     currentRecordingFile = file
                     _isRecording.value = true
-                    _recordingStateText.value = "녹음 중..."
+                    _recordingStateText.value = RecordingState.RECORDING
                 }
                 .onFailure { e ->
-                    _recordingStateText.value = "녹음 시작 실패: ${e.message}"
+                    _recordingStateText.value = RecordingState.FAILED_START
                     _isRecording.value = false
                 }
         }
@@ -45,7 +46,7 @@ class RecordViewModel @Inject constructor(
     
     fun stopRecording() {
         val filePath = currentRecordingFile?.absolutePath ?: run {
-            _recordingStateText.value = "녹음 중지 실패: 파일 경로를 찾을 수 없습니다."
+            _recordingStateText.value = RecordingState.FAILED_FILE_PATH_NOT_FOUND
             return
         }
 
@@ -53,12 +54,12 @@ class RecordViewModel @Inject constructor(
             stopRecordingUseCase(filePath)
                 .onSuccess { audioRecord ->
                     _isRecording.value = false
-                    _recordingStateText.value = "녹음 완료"
+                    _recordingStateText.value = RecordingState.COMPLETED
                     stopRecordingUseCase.saveRecordToDatabase(audioRecord)
                     _lastSavedFileName.postValue(audioRecord.filename)
                 }
                 .onFailure { e ->
-                    _recordingStateText.value = "녹음 중지 실패: ${e.message}"
+                    _recordingStateText.value = RecordingState.FAILED_STOP
                 }
             currentRecordingFile = null
         }

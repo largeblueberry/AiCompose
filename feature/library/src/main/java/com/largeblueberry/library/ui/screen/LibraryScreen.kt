@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,6 +24,7 @@ import com.largeblueberry.library.ui.viemodel.LibraryViewModel
 import com.largeblueberry.core_ui.AppPrimaryBlue
 import com.largeblueberry.core_ui.AppBackground
 import com.largeblueberry.remote.model.UploadStatus
+import com.largeblueberry.resources.R as ResourcesR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,9 +44,13 @@ fun LibraryScreen(
     LaunchedEffect(uiState.deleteResult) {
         uiState.deleteResult?.let { result ->
             if (result.isSuccess) {
-                Toast.makeText(context, "파일 삭제 성공.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(ResourcesR.string.fileDeleteSuccess),
+                    Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "파일 삭제 실패.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(ResourcesR.string.fileDeleteError),
+                    Toast.LENGTH_SHORT).show()
             }
             viewModel.clearDeleteResult()
         }
@@ -52,7 +58,9 @@ fun LibraryScreen(
     // 업로드 중 메시지 처리
     LaunchedEffect(uiState.showUploadInProgressMessage) {
         if (uiState.showUploadInProgressMessage) {
-            Toast.makeText(context, "이미 업로드 중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context.getString(ResourcesR.string.serverUploading),
+                Toast.LENGTH_SHORT).show()
             viewModel.clearUploadInProgressMessage() // 메시지 표시 후 상태 초기화
         }
     }
@@ -64,11 +72,15 @@ fun LibraryScreen(
                 uiState.uploadState.url?.let { url ->
                     onUploadSuccess(url) // URL 공유 콜백 호출
                     viewModel.clearUploadState()
-                    Toast.makeText(context, "업로드 성공!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(ResourcesR.string.serverUploadSuccess),
+                        Toast.LENGTH_SHORT).show()
                 }
             }
             UploadStatus.ERROR -> {
-                Toast.makeText(context, "서버 업로드에 실패했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(ResourcesR.string.serverUploadError),
+                    Toast.LENGTH_SHORT).show()
                 viewModel.clearUploadState()
             }
             else -> {}
@@ -106,14 +118,14 @@ fun LibraryScreen(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack, // 뒤로가기 아이콘
-                        contentDescription = "뒤로가기",
+                        contentDescription = stringResource(ResourcesR.string.backButtonContentDescription),
                         tint = Color.White // 흰색으로 설정
                     )
                 }
 
                 // 제목 텍스트 (가운데 정렬)
                 Text(
-                    text = "내 작품",
+                    text = stringResource(ResourcesR.string.myLibrary),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -121,15 +133,21 @@ fun LibraryScreen(
                         .align(Alignment.Center)// Box의 가운데에 정렬
                         .padding(top = 20.dp)
                 )
-                Text(
-                    text = "(${uiState.currentUploads}/${uiState.maxUploads})",
-                    style = MaterialTheme.typography.headlineMedium, // 동일한 스타일 사용
-                    fontWeight = FontWeight.Normal, // 숫자는 일반 두께로
-                    color = Color.White,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 10.dp)
-                )
+                // 업로드 카운트가 로드되었을 때만 표시
+                uiState.currentUploads?.let { current ->
+                    uiState.maxUploads?.let { max ->
+                        Text(
+                            text = "($current/$max)",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 10.dp)
+                        )
+                    }
+                }
+
             }
         }
 
@@ -203,7 +221,7 @@ fun EmptyView() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "녹음된 파일이 없습니다.",
+                text = stringResource(ResourcesR.string.emptyLibrary),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

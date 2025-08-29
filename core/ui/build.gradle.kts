@@ -44,6 +44,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    api(project(":core:resources"))
 
     // ===== COMPOSE =====
     // Compose BOM - 모든 Compose 라이브러리 버전 관리 (필수)

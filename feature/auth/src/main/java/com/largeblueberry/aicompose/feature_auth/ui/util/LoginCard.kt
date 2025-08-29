@@ -16,9 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.largeblueberry.core_ui.SettingUtilColor
+import com.largeblueberry.core_ui.utilHorizontalDivider
+import com.largeblueberry.resources.R as ResourcesR
 
 @Composable
 fun LoginCard(
@@ -55,16 +58,16 @@ fun LoginCard(
             ) {
                 HorizontalDivider(
                     modifier = Modifier.weight(1f),
-                    color = Color(0xFFE0E0E0)
+                    color = utilHorizontalDivider
                 )
                 Text(
-                    text = "  또는  ",
-                    color = Color(0xFF999999),
+                    text = stringResource(id = ResourcesR.string.utilOr),
+                    color = SettingUtilColor, // 색상 동일함.
                     fontSize = 12.sp
                 )
                 HorizontalDivider(
                     modifier = Modifier.weight(1f),
-                    color = Color(0xFFE0E0E0)
+                    color = utilHorizontalDivider
                 )
             }
 
@@ -77,7 +80,7 @@ fun LoginCard(
                 enabled = !isLoading
             ) {
                 Text(
-                    text = "나중에 하기",
+                    text = stringResource(id = ResourcesR.string.userSkipButton),
                     color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(vertical = 4.dp)

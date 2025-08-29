@@ -14,13 +14,18 @@ android {
     namespace = "com.largeblueberry.aicompose"
     compileSdk = 35
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.largeblueberry.aicompose"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resourceConfigurations.addAll(listOf("ko", "en"))
     }
 
     buildTypes {

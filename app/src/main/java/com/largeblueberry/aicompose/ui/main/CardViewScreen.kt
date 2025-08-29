@@ -19,12 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.CardViewBackGround
 import com.largeblueberry.core_ui.CardViewMainText
 import com.largeblueberry.core_ui.CardViewSubText
@@ -49,7 +49,7 @@ fun CardViewScreen(
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = AppWhite),
 
     ){
         Row(
@@ -70,7 +70,7 @@ fun CardViewScreen(
             ){
                 Image(
                     painter = painterResource(iconResId), // 외부에서 받은 아이콘 사용
-                    colorFilter = if (applyTint) ColorFilter.tint(Color.White) else null,
+                    colorFilter = if (applyTint) ColorFilter.tint(AppWhite) else null,
                     contentDescription = null, // 접근성 고려하여 적절한 내용으로 변경 가능
                     modifier = Modifier.size(28.dp)
                 )

@@ -15,6 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.record.ui.RecordViewModel
+import com.largeblueberry.record.ui.RecordingState
+import com.largeblueberry.resources.R as ResourcesR
 
 @Composable
 fun RecordScreenState(
@@ -25,14 +27,16 @@ fun RecordScreenState(
 
     // ViewModel의 LiveData를 Compose State로 관찰
     val isRecording by viewModel.isRecording.observeAsState(false)
-    val recordingStateText by viewModel.recordingStateText.observeAsState("대기 중")
+    val recordingStateText by viewModel.recordingStateText.observeAsState(RecordingState.WAITING)
     val lastSavedFileName by viewModel.lastSavedFileName.observeAsState(null)
 
     // lastSavedFileName 변경 시 Toast 메시지 표시
     LaunchedEffect(lastSavedFileName) {
         lastSavedFileName?.let { fileName ->
             if (fileName.isNotBlank()) {
-                Toast.makeText(context, "녹음 파일이 저장되었습니다: $fileName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(ResourcesR.string.recordSavedMSG, fileName),
+                    Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -44,7 +48,9 @@ fun RecordScreenState(
         if (isGranted) {
             viewModel.startRecording()
         } else {
-            Toast.makeText(context, "녹음 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context.getString(ResourcesR.string.recordPermission),
+                Toast.LENGTH_SHORT).show()
         }
     }
 
