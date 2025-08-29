@@ -36,6 +36,7 @@ import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.SettingUtilColor
 import com.largeblueberry.core_ui.SettingBackground
 import com.largeblueberry.core_ui.SettingBasicUser
+import com.largeblueberry.setting.BuildConfig
 import com.largeblueberry.ui.R
 import com.largeblueberry.setting.ui.util.SettingItem
 import com.largeblueberry.setting.ui.util.SettingSection

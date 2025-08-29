@@ -25,12 +25,6 @@ abstract class UserTrackerBindsModule {
         userUsageRepositoryImpl: UserUsageRepositoryImpl
     ): UserUsageRepository
 
-    @Binds
-    @Singleton
-    abstract fun bindAuthGateway(
-        authGatewayImpl: AuthGatewayImpl
-    ): AuthGateway
-
 
     companion object {
         @Provides

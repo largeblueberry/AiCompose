@@ -22,8 +22,15 @@ android {
     namespace = "com.largeblueberry.setting"
     compileSdk = 35
 
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 35
+
+        buildConfigField("String", "VERSION_NAME", "\"1.0.0\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -59,10 +66,7 @@ android {
         jvmTarget = "11"
     }
 
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
+
 }
 
 dependencies {
@@ -80,7 +84,6 @@ dependencies {
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)
-    implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")

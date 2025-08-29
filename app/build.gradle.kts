@@ -15,7 +15,7 @@ android {
     compileSdk = 35
 
     androidResources {
-        generateLocaleConfig = true
+        generateLocaleConfig = false
     }
 
     defaultConfig {
@@ -25,7 +25,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations.addAll(listOf("ko", "en"))
+        resConfigs("ko", "en")
     }
 
     buildTypes {
