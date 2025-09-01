@@ -14,13 +14,18 @@ android {
     namespace = "com.largeblueberry.aicompose"
     compileSdk = 35
 
+    androidResources {
+        generateLocaleConfig = false
+    }
+
     defaultConfig {
         applicationId = "com.largeblueberry.aicompose"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs("ko", "en")
     }
 
     buildTypes {
@@ -59,26 +64,26 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         compose = true
         buildConfig = true
     }
 }
 
 dependencies {
+    //모듈
     implementation(project(":feature:sheetmusic"))
     implementation(project(":feature:setting"))
-    //모듈
     implementation(project(":core:ui"))
+    implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
-    implementation(project(":domain:usertracker"))
+    implementation(project(":feature:library"))
+    implementation(project(":feature:record"))
 
     // 기본 Android 라이브러리
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.hilt.android)
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
@@ -87,52 +92,22 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Room
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-
-    // Lifecycle & ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7") // 업데이트
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.4")
-
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0") // 안정 버전 사용
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // ===== COMPOSE =====
     // Compose BOM - 모든 Compose 라이브러리 버전 관리
     implementation(platform("androidx.compose:compose-bom:2025.05.00"))
 
-    // 핵심 Compose UI (BOM 사용 시 버전 명시 불필요)
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.05.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.foundation:foundation")
-
     // Material Design 3 (권장)
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
-
     // Compose 통합
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7") // 추가
-    implementation("androidx.compose.runtime:runtime-livedata")
-
-    // Navigation Compose (추가 권장)
-    implementation("androidx.navigation:navigation-compose:2.8.4")
-
-    // Compose Animation (추가 권장)
-    implementation("androidx.compose.animation:animation")
 
     // 디버깅 도구
     debugImplementation("androidx.compose.ui:ui-tooling")

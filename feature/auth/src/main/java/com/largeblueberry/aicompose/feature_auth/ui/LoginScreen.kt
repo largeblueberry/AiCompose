@@ -1,7 +1,5 @@
 package com.largeblueberry.aicompose.feature_auth.ui
 
-import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -20,18 +18,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.aicompose.feature_auth.ui.model.AuthUiState
+import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.aicompose.feature_auth.ui.util.AppLogo
 import com.largeblueberry.aicompose.feature_auth.ui.util.LoginCard
+import com.largeblueberry.core_ui.AppBackground
+import com.largeblueberry.core_ui.AppBlack
+import com.largeblueberry.core_ui.AppTextDark
+import com.largeblueberry.core_ui.UtilTextColor
 import kotlinx.coroutines.flow.collectLatest
+import com.largeblueberry.resources.R as ResourceR
 
-const val TAG = "LoginScreen"
+
 
 @Composable
 fun LoginScreen(
@@ -50,9 +53,6 @@ fun LoginScreen(
 
         viewModel.handleGoogleSignInResult(result.data)
 
-        if (result.resultCode != Activity.RESULT_OK) {
-            Log.d(TAG, "Google Sign-In cancelled or failed with result code: ${result.resultCode}")
-        }
     }
 
     // 2. ViewModel로부터 Google Sign-In Intent 요청을 관찰하고 실행
@@ -67,7 +67,7 @@ fun LoginScreen(
         modifier = modifier
             .fillMaxSize()
             .navigationBarsPadding()
-            .background(Color(0xFFF8F9FA))
+            .background(AppBackground)
             .padding(12.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,18 +75,18 @@ fun LoginScreen(
         AppLogo()
 
         Text(
-            text = "계정 연결",
+            text = stringResource(ResourceR.string.accountSync),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF333333)
+            color = AppTextDark
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Google 계정으로 로그인하여\n더 많은 기능을 이용해보세요",
+            text = stringResource(ResourceR.string.googleLoginExperienceMore),
             fontSize = 16.sp,
-            color = Color(0xFF666666),
+            color = UtilTextColor,
             textAlign = TextAlign.Center,
             lineHeight = 24.sp
         )
@@ -105,9 +105,9 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(40.dp))// 여백 필요
 
         Text(
-            text = "로그인하면 서비스 약관에 동의하는 것으로 간주됩니다",
+            text = stringResource(ResourceR.string.loginTermsAgreementNotice),
             style = MaterialTheme.typography.bodySmall,
-            color = Color.Black,
+            color = AppBlack,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp)
         )
@@ -127,7 +127,6 @@ fun LoginScreen(
         // 로그인 성공 시 화면 전환
         LaunchedEffect(authState) {
             if (authState is AuthUiState.Authenticated) {
-                Log.d(TAG,"Login successful, navigating back.")
                 onNavigateBack() // 로그인 성공 시 이전 화면으로 돌아갑니다.
             }
         }

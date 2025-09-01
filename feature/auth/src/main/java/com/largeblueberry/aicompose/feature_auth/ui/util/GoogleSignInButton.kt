@@ -17,12 +17,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.largeblueberry.core_ui.AppBlack
+import com.largeblueberry.core_ui.AppWhite
+import com.largeblueberry.core_ui.googleButtonBorderColor
+import com.largeblueberry.core_ui.googleDisabledContainerColor
+import com.largeblueberry.core_ui.googleDisabledContentColor
 import com.largeblueberry.ui.R
+import com.largeblueberry.resources.R as ResourceR
 
 
 @Composable
@@ -37,12 +43,12 @@ fun GoogleSignInButton(
             .height(50.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White, // 흰색 배경
-            contentColor = Color.Black, // 검은색 글자 (기본 텍스트 색상)
-            disabledContainerColor = Color(0xFFE0E0E0), // 비활성화 시 연한 회색 배경
-            disabledContentColor = Color(0xFF9E9E9E) // 비활성화 시 연한 회색 글자
+            containerColor = AppWhite, // 흰색 배경
+            contentColor = AppBlack, // 검은색 글자
+            disabledContainerColor = googleDisabledContainerColor,
+            disabledContentColor = googleDisabledContentColor
         ),
-        border = BorderStroke(1.dp, Color(0xFFDADCE0)), // 연한 회색 테두리
+        border = BorderStroke(1.dp, googleButtonBorderColor),
         enabled = enabled
     ) {
         Row(
@@ -52,17 +58,17 @@ fun GoogleSignInButton(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_google_logo),
-                contentDescription = "Google Logo",
+                contentDescription = stringResource(id = ResourceR.string.googleLogo),
                 modifier = Modifier.size(24.dp) // 로고 크기 조정 (구글 가이드라인 18-24dp)
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
-                text = "Google 계정으로 로그인",
+                text = stringResource(id = ResourceR.string.googleLogin),
                 fontSize = 15.sp, // 구글 가이드라인에 맞춰 폰트 크기 조정 (14-16sp)
                 fontWeight = FontWeight.Medium,
-                color = Color.Black
+                color = AppBlack
             )
         }
     }

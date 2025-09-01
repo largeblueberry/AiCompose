@@ -65,7 +65,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core:ui"))
-    implementation(project(":domain:usertracker"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:auth"))
+    implementation(project(":core:data"))
+
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)
