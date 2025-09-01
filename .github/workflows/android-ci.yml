@@ -1,0 +1,49 @@
+# 이 생산 라인의 이름
+name: Android CI
+
+# 이 생산 라인을 언제 가동할지 결정
+on:
+  # 1. 'dev' 브랜치에 새로운 코드가 push 될 때
+  push:
+    branches: [ "dev" ]
+  # 2. 'main' 브랜치로 Pull Request를 생성할 때
+  pull_request:
+    branches: [ "main" ]
+
+# 생산 라인에서 수행할 작업(Jobs) 목록
+jobs:
+  # 'build'라는 이름의 작업을 정의
+  build:
+    # 이 작업은 최신 우분투 환경에서 실행됩
+    runs-on: ubuntu-latest
+
+    # 작업이 수행할 세부 공정(Steps) 목록
+    steps:
+      # 1. 컨베이어 벨트에 코드 올리기 (소스 코드 체크아웃)
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      # 2. 조립에 필요한 도구 준비 (JDK 21 설치) -> 현재 내 빌드 환경
+      - name: 자바(JDK) 설치
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      # 3. 조립 로봇(Gradle)에 실행 권한 부여
+      # (CI 환경에서는 이 권한 부여가 필수)
+      - name: Gradle 실행 권한 부여
+        run: chmod +x gradlew
+
+      # 4. 1차 품질 검사 (Lint 검사로 코드 스타일 확인)
+      - name: 1차 품질 검사 (Lint)
+        run: ./gradlew lintDebug
+
+      # 5. 2차 품질 검사 (핵심 부품 테스트)
+      - name: 2차 품질 검사 (Unit Tests)
+        run: ./gradlew testDebugUnitTest
+
+      # 6. 최종 조립 (APK 파일 생성)
+      - name: 최종 조립 (Debug APK 빌드)
+        run: ./gradlew assembleDebug
