@@ -80,6 +80,7 @@ dependencies {
 
     implementation(project(":core:ui"))
     implementation(project(":core:auth"))
+    implementation(project(":core:navigation"))
 
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")

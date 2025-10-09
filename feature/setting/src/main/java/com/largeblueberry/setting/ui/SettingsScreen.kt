@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,10 +36,12 @@ import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.SettingUtilColor
 import com.largeblueberry.core_ui.SettingBackground
 import com.largeblueberry.core_ui.SettingBasicUser
+import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.setting.BuildConfig
 import com.largeblueberry.ui.R
 import com.largeblueberry.setting.ui.util.SettingItem
 import com.largeblueberry.setting.ui.util.SettingSection
+
 import com.largeblueberry.setting.ui.viewmodel.SettingViewModel
 import com.largeblueberry.resources.R as ResourceR
 
@@ -47,8 +49,7 @@ import com.largeblueberry.resources.R as ResourceR
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onNavigateToLogin: () -> Unit = {},
-    onNavigateBack: () -> Unit = {},
+    navigationActions : SettingsNavigationActions = SettingsNavigationActions(),
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     val authState by viewModel.authUiState.collectAsState()
@@ -68,7 +69,7 @@ fun SettingsScreen(
                 )
             },
             navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
+                IconButton(onClick = navigationActions.onNavigateBack) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(ResourceR.string.backButtonContentDescription),
@@ -98,7 +99,7 @@ fun SettingsScreen(
             item {
                 AccountSection(
                     authState = authState,
-                    onLoginClick = onNavigateToLogin,
+                    onLoginClick = navigationActions.onNavigateToLogin,
                     onLogoutClick = { viewModel.signOut() }
                 )
             }
@@ -106,11 +107,6 @@ fun SettingsScreen(
             // ️ 앱 설정 섹션
             item {
                 AppSettingsSection()
-            }
-
-            // ℹ 정보 섹션
-            item {
-                InfoSection()
             }
 
             //  앱 정보 섹션
@@ -252,66 +248,51 @@ private fun UserProfileItem(
 }
 
 @Composable
-private fun AppSettingsSection() {
+fun AppSettingsSection(
+    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
+) {
     SettingSection(title = stringResource(ResourceR.string.appSetting)) {
-        SettingItem(
-            icon = Icons.Default.Notifications,
-            title = stringResource(ResourceR.string.appAlarmMainText),
-            subtitle = stringResource(ResourceR.string.appAlarmSubText),
-            onClick = { /* TODO: 알림 설정 */ }
-        )
 
         SettingItem(
             icon = Icons.Default.Language,
             title = stringResource(ResourceR.string.languageMainText),
             subtitle = stringResource(ResourceR.string.languageSubText),
-            onClick = { /* TODO: 언어 설정 */ }
+            onClick = navigationActions.onNavigateToLanguage
         )
 
         SettingItem(
-            icon = Icons.Default.Language,
+            icon = Icons.Default.Palette,
             title = stringResource(ResourceR.string.themeMainText),
             subtitle = stringResource(ResourceR.string.themeSubText),
-            onClick = { /* TODO: 테마 설정 */ }
+            onClick = navigationActions.onNavigateToTheme
         )
     }
 }
 
 @Composable
-private fun InfoSection() {
-    SettingSection(title = stringResource(ResourceR.string.appHelper)) {
-        SettingItem(
-            icon = Icons.AutoMirrored.Filled.Help,
-            title = stringResource(ResourceR.string.appUseMainText),
-            subtitle = stringResource(ResourceR.string.appUseSubText),
-            onClick = { /* TODO: 사용법 */ }
-        )
-
-
-        SettingItem(
-            icon = Icons.Default.BugReport,
-            title = stringResource(ResourceR.string.appBugMainText),
-            subtitle = stringResource(ResourceR.string.appBugSubText),
-            onClick = { /* TODO: 버그 신고 */ }
-        )
-    }
-}
-
-@Composable
-private fun AboutSection() {
+private fun AboutSection(
+    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
+) {
     SettingSection(title = "정보") {
         SettingItem(
             icon = Icons.Default.Description,
             title = stringResource(ResourceR.string.serviceTermMainText),
             subtitle = stringResource(ResourceR.string.serviceTermSubText),
-            onClick = { /* TODO: 서비스 약관 */ }
+            onClick = navigationActions.onNavigateToServiceTerm
         )
 
         SettingItem(
             icon = Icons.AutoMirrored.Filled.ContactSupport,
             title = stringResource(ResourceR.string.aboutEareamMainText),
             subtitle = stringResource(ResourceR.string.aboutEareamSubText),
-            onClick = { /* TODO: 서비스 소개 */ }
+            onClick = navigationActions.onNavigateToAbout
+        )
+
+        SettingItem(
+            icon = Icons.Default.BugReport,
+            title = stringResource(ResourceR.string.appBugMainText),
+            subtitle = stringResource(ResourceR.string.appBugSubText),
+            onClick = navigationActions.onNavigateToBugReport
         )
     }
 }
