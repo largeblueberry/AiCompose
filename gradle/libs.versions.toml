@@ -1,6 +1,7 @@
 [versions]
 agp = "8.12.3"
 kotlin = "2.0.0"
+compose-bom = "2024.10.00"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -22,6 +23,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 
 
 [plugins]

@@ -11,16 +11,17 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
+// --- ViewModel Layer (제공해주신 코드) ---
+
 data class ThemeSettingsUiState(
-    val selectedTheme: ThemeOption = ThemeOption.SYSTEM,
-    val isDarkTheme: Boolean = false
+    val selectedTheme: ThemeOption = ThemeOption.SYSTEM
+    // isDarkTheme 필드는 앱 전체 테마 적용 시 필요하므로 여기서는 직접 사용하지 않습니다.
 )
 
 class ThemeViewModel(
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
-    // Repository의 Flow를 관찰
     val uiState: StateFlow<ThemeSettingsUiState> = themeRepository.themeOption
         .map { theme ->
             ThemeSettingsUiState(selectedTheme = theme)
@@ -28,11 +29,10 @@ class ThemeViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = ThemeSettingsUiState() // 초기 값
+            initialValue = ThemeSettingsUiState()
         )
 
     fun onThemeSelected(theme: ThemeOption) {
-        // 사용자 액션이 들어오면, Repository에 데이터 저장을 요청합니다.
         viewModelScope.launch {
             themeRepository.saveThemeOption(theme)
         }

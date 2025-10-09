@@ -4,9 +4,9 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
-    alias(libs.plugins.compose.compiler)
     id("com.google.dagger.hilt.android")
 }
 
@@ -16,6 +16,7 @@ android {
 
     androidResources {
         generateLocaleConfig = false
+        localeFilters += setOf("ko", "en")  // 이렇게 변경
     }
 
     defaultConfig {
@@ -25,7 +26,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations += setOf("ko", "en")
+
     }
 
     buildTypes {
@@ -35,14 +36,14 @@ android {
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
                 localProperties.load(FileInputStream(localPropertiesFile))
-            }else {
+            } else {
                 println("❌ local.properties 파일이 없습니다!")
             }
 
             buildConfigField("String", "GOOGLE_CLIENT_ID",
                 "\"${localProperties.getProperty("GOOGLE_CLIENT_ID")}\"")
 
-            buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL", 
+            buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL",
                 "https://teamproject.p-e.kr")}\"")
         }
         release {
@@ -70,7 +71,7 @@ android {
 }
 
 dependencies {
-    //모듈
+    // ===== 프로젝트 모듈 =====
     implementation(project(":feature:sheetmusic"))
     implementation(project(":feature:setting"))
     implementation(project(":core:ui"))
@@ -79,44 +80,44 @@ dependencies {
     implementation(project(":feature:library"))
     implementation(project(":feature:record"))
 
-    // 기본 Android 라이브러리
+    // ===== 기본 Android 라이브러리 (libs.versions.toml 활용) =====
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+
+    // ===== COMPOSE BOM - 모든 Compose 라이브러리 버전 통합 관리 =====
+    implementation(platform(libs.androidx.compose.bom))
+
+    // Compose 핵심 라이브러리들 (BOM에 의해 버전 자동 관리)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.runtime:runtime") // 명시적으로 추가하여 충돌 방지
+
+    // Material Design
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // Activity Compose 통합
+    implementation("androidx.activity:activity-compose")
+
+    // 디버깅 및 미리보기 도구
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // ===== Navigation =====
+    implementation("androidx.navigation:navigation-compose:2.8.4")
+
+    // ===== Hilt (중복 제거 및 정리) =====
     implementation(libs.hilt.android)
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
-    // 테스트
+    // ===== 테스트 =====
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.4")
-
-    // ===== COMPOSE =====
-    // Compose BOM - 모든 Compose 라이브러리 버전 관리
-    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
-
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.05.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.foundation:foundation")
-    // Material Design 3 (권장)
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    // Compose 통합
-    implementation("androidx.activity:activity-compose:1.10.1")
-
-    // 디버깅 도구
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // 테스트
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 }
