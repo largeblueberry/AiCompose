@@ -91,6 +91,6 @@
     <string name="theme_option_dark_title">다크 모드</string>
     <string name="theme_option_dark_subtitle">어두운 테마를 사용합니다</string>
 
-
+    <string name="language_setting_title"> 언어 설정</string>
 
 </resources>
