@@ -4,37 +4,37 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.setting.ui.theme.domain.ThemeOption
 import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
-import kotlinx.coroutines.flow.SharingStarted
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-// --- ViewModel Layer (제공해주신 코드) ---
-
-data class ThemeSettingsUiState(
-    val selectedTheme: ThemeOption = ThemeOption.SYSTEM
-    // isDarkTheme 필드는 앱 전체 테마 적용 시 필요하므로 여기서는 직접 사용하지 않습니다.
-)
-
-class ThemeViewModel(
+@HiltViewModel
+class ThemeViewModel @Inject constructor(
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<ThemeSettingsUiState> = themeRepository.themeOption
-        .map { theme ->
-            ThemeSettingsUiState(selectedTheme = theme)
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = ThemeSettingsUiState()
-        )
+    data class UiState(
+        val selectedTheme: ThemeOption = ThemeOption.SYSTEM
+    )
 
-    fun onThemeSelected(theme: ThemeOption) {
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
         viewModelScope.launch {
-            themeRepository.saveThemeOption(theme)
+            themeRepository.getThemeOption().collect { theme ->
+                _uiState.value = _uiState.value.copy(selectedTheme = theme)
+            }
+        }
+    }
+
+    fun onThemeSelected(option: ThemeOption) {
+        viewModelScope.launch {
+            themeRepository.setThemeOption(option)
         }
     }
 }
+

@@ -8,28 +8,36 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.largeblueberry.setting.ui.theme.domain.ThemeOption
 import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-// Context.dataStore를 최상위 속성으로 정의하여 앱 전체에서 싱글톤으로 사용
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "theme_settings")
 
-class ThemeRepositoryImpl(private val context: Context) : ThemeRepository {
+@Singleton
+class ThemeRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context
+) : ThemeRepository {
 
-    private object PreferencesKeys {
-        val THEME_OPTION = stringPreferencesKey("theme_option")
+    private val themeKey = stringPreferencesKey("theme_option")
+
+    override fun getThemeOption(): Flow<ThemeOption> {
+        return context.dataStore.data.map { preferences ->
+            val themeString = preferences[themeKey] ?: ThemeOption.SYSTEM.key
+            when(themeString) {
+                ThemeOption.SYSTEM.key -> ThemeOption.SYSTEM
+                ThemeOption.LIGHT.key -> ThemeOption.LIGHT
+                ThemeOption.DARK.key -> ThemeOption.DARK
+                else -> ThemeOption.SYSTEM // 기본값
+            }
+        }
     }
 
-    override val themeOption: Flow<ThemeOption> = context.dataStore.data
-        .map { preferences ->
-            val themeKey = preferences[PreferencesKeys.THEME_OPTION]
-            ThemeOption.fromKey(themeKey)
-        }
-
-    override suspend fun saveThemeOption(theme: ThemeOption) {
+    override suspend fun setThemeOption(option: ThemeOption) {
         context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.THEME_OPTION] = theme.key
+            preferences[themeKey] = option.key // name -> key로 변경
         }
     }
 }

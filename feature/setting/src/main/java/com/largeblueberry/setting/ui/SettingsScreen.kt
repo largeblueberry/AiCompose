@@ -106,7 +106,7 @@ fun SettingsScreen(
 
             // ️ 앱 설정 섹션
             item {
-                AppSettingsSection()
+                AppSettingsSection(navigationActions = navigationActions)
             }
 
             //  앱 정보 섹션
