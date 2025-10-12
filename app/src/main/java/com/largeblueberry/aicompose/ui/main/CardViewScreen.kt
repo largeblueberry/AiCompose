@@ -24,10 +24,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.largeblueberry.core_ui.AppWhite
-import com.largeblueberry.core_ui.CardViewBackGround
-import com.largeblueberry.core_ui.CardViewMainText
-import com.largeblueberry.core_ui.CardViewSubText
+import com.largeblueberry.core_ui.customColors
 
 @Composable
 fun CardViewScreen(
@@ -49,7 +46,7 @@ fun CardViewScreen(
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = AppWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 
     ){
         Row(
@@ -63,14 +60,14 @@ fun CardViewScreen(
                     .width(48.dp)
                     .height(48.dp)
                     .background(
-                        color = CardViewBackGround,
+                        color = MaterialTheme.customColors.cardViewBackground,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ){
                 Image(
                     painter = painterResource(iconResId), // 외부에서 받은 아이콘 사용
-                    colorFilter = if (applyTint) ColorFilter.tint(AppWhite) else null,
+                    colorFilter = if (applyTint) ColorFilter.tint(MaterialTheme.colorScheme.onPrimary) else null,
                     contentDescription = null, // 접근성 고려하여 적절한 내용으로 변경 가능
                     modifier = Modifier.size(28.dp)
                 )
@@ -82,12 +79,12 @@ fun CardViewScreen(
             ){
                 Text(
                     text = mainText,
-                    color = CardViewMainText,
+                    color = MaterialTheme.customColors.cardViewMainText,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text = subText,
-                    color = CardViewSubText,
+                    color = MaterialTheme.customColors.cardViewSubText,
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.Light
                     )

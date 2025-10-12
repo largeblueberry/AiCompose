@@ -53,7 +53,9 @@ data class CustomColors(
     val utilTextColor: Color,
     val settingBackground: Color,
     val settingBasicUser: Color,
-    val utilHorizontalDivider: Color
+    val utilHorizontalDivider: Color,
+    val appWhite : Color,
+    val appBlack : Color
 )
 
 
@@ -69,7 +71,9 @@ val LightCustomColors = CustomColors(
     utilTextColor = LightColors.UtilTextColor,
     settingBackground = LightColors.SettingBackground,
     settingBasicUser = LightColors.SettingBasicUser,
-    utilHorizontalDivider = LightColors.utilHorizontalDivider
+    utilHorizontalDivider = LightColors.utilHorizontalDivider,
+    appWhite = LightColors.AppWhite,
+    appBlack = LightColors.AppBlack
 )
 
 // 다크 모드일 때 사용할 CustomColors 객체
@@ -84,7 +88,9 @@ val DarkCustomColors = CustomColors(
     utilTextColor = DarkColors.UtilTextColor,
     settingBackground = DarkColors.SettingBackground,
     settingBasicUser = DarkColors.SettingBasicUser,
-    utilHorizontalDivider = DarkColors.UtilHorizontalDivider
+    utilHorizontalDivider = DarkColors.UtilHorizontalDivider,
+    appWhite = LightColors.AppBlack,
+    appBlack = LightColors.AppWhite
 )
 
 // CompositionLocal을 통해 커스텀 색상을 앱 전체에 제공

@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
@@ -34,14 +33,13 @@ import com.largeblueberry.core_ui.AppPrimaryBlue
 import com.largeblueberry.core_ui.AppRed
 import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.SettingUtilColor
-import com.largeblueberry.core_ui.SettingBackground
 import com.largeblueberry.core_ui.SettingBasicUser
+import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.setting.BuildConfig
 import com.largeblueberry.ui.R
 import com.largeblueberry.setting.ui.util.SettingItem
 import com.largeblueberry.setting.ui.util.SettingSection
-
 import com.largeblueberry.setting.ui.viewmodel.SettingViewModel
 import com.largeblueberry.resources.R as ResourceR
 
@@ -57,7 +55,7 @@ fun SettingsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(SettingBackground)
+            .background(MaterialTheme.customColors.settingBackground)
     ) {
         // 상단 앱바
         TopAppBar(
@@ -72,13 +70,16 @@ fun SettingsScreen(
                 IconButton(onClick = navigationActions.onNavigateBack) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(ResourceR.string.backButtonContentDescription),
-                        tint = AppBlack
+                        contentDescription = stringResource(ResourceR.string.backButtonContentDescription)
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = AppWhite
+                // 2. 컨테이너 색상: 테마의 surface 색상을 사용
+                containerColor = MaterialTheme.colorScheme.surface,
+                // 제목 및 아이콘 색상도 자동으로 onSurface로 지정
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface
             )
         )
 
@@ -145,14 +146,16 @@ private fun AppInfoCard() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // 버전 텍스트
             Text(
                 text = "버전 ${BuildConfig.VERSION_NAME}",
                 fontSize = 12.sp,
-                color = SettingUtilColor
+                color = MaterialTheme.customColors.settingUtilColor
             )
         }
     }
 }
+
 
 @Composable
 private fun AccountSection(

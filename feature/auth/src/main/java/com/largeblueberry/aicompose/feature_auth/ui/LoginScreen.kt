@@ -27,14 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.aicompose.feature_auth.ui.util.AppLogo
 import com.largeblueberry.aicompose.feature_auth.ui.util.LoginCard
-import com.largeblueberry.core_ui.AppBackground
-import com.largeblueberry.core_ui.AppBlack
-import com.largeblueberry.core_ui.AppTextDark
-import com.largeblueberry.core_ui.UtilTextColor
 import kotlinx.coroutines.flow.collectLatest
 import com.largeblueberry.resources.R as ResourceR
-
-
 
 @Composable
 fun LoginScreen(
@@ -46,19 +40,16 @@ fun LoginScreen(
     val uiState = viewModel.uiState.collectAsState().value
     val authState = viewModel.authUiState.collectAsState().value
 
-    // 1. Google Sign-In 결과를 처리할 ActivityResultLauncher 정의
+    // Google Sign-In 결과를 처리할 ActivityResultLauncher 정의
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-
         viewModel.handleGoogleSignInResult(result.data)
-
     }
 
-    // 2. ViewModel로부터 Google Sign-In Intent 요청을 관찰하고 실행
+    // ViewModel로부터 Google Sign-In Intent 요청을 관찰하고 실행
     LaunchedEffect(key1 = Unit) {
         viewModel.startGoogleSignInFlow.collectLatest { intent ->
-            // ViewModel이 제공한 Intent를 실행
             googleSignInLauncher.launch(intent)
         }
     }
@@ -67,18 +58,21 @@ fun LoginScreen(
         modifier = modifier
             .fillMaxSize()
             .navigationBarsPadding()
-            .background(AppBackground)
+            // 1. 배경색을 테마의 background 색상으로 변경
+            .background(MaterialTheme.colorScheme.background)
             .padding(12.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         AppLogo()
 
         Text(
             text = stringResource(ResourceR.string.accountSync),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = AppTextDark
+            // 2. 메인 텍스트 색상을 테마의 onBackground 색상으로 변경
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -86,35 +80,37 @@ fun LoginScreen(
         Text(
             text = stringResource(ResourceR.string.googleLoginExperienceMore),
             fontSize = 16.sp,
-            color = UtilTextColor,
+            // 3. 보조 텍스트 색상을 onSurfaceVariant로 변경하여 시각적 계층 구분
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             lineHeight = 24.sp
         )
 
         Spacer(modifier = Modifier.height(40.dp))
 
+        // LoginCard는 내부적으로 테마를 따르도록 수정이 필요합니다.
         LoginCard(
-            isLoading = uiState.isLoading, // ViewModel의 isLoading 상태 사용
+            isLoading = uiState.isLoading,
             onGoogleSignIn = {
-                // Google 로그인 버튼 클릭 시 ViewModel에 로그인 시작을 요청
                 viewModel.onGoogleSignInClicked()
             },
-            onSkip = onNavigateBack // 건너뛰기로 설정 화면 복귀
+            onSkip = onNavigateBack
         )
 
-        Spacer(modifier = Modifier.height(40.dp))// 여백 필요
+        Spacer(modifier = Modifier.height(40.dp))
 
         Text(
             text = stringResource(ResourceR.string.loginTermsAgreementNotice),
             style = MaterialTheme.typography.bodySmall,
-            color = AppBlack,
+            // 3. 약관 안내와 같은 텍스트도 onSurfaceVariant로 변경
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp)) // 고정 높이 공간
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // ViewModel에서 발생한 에러 메시지 표시
+        // 에러 메시지 (이미 MaterialTheme 색상을 잘 사용하고 있음)
         uiState.errorMessage?.let { errorMessage ->
             Text(
                 text = errorMessage,
@@ -124,10 +120,10 @@ fun LoginScreen(
             )
         }
 
-        // 로그인 성공 시 화면 전환
+        // 로그인 성공 시 화면 전환 (기존과 동일)
         LaunchedEffect(authState) {
             if (authState is AuthUiState.Authenticated) {
-                onNavigateBack() // 로그인 성공 시 이전 화면으로 돌아갑니다.
+                onNavigateBack()
             }
         }
     }
