@@ -21,8 +21,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.largeblueberry.library.ui.viemodel.LibraryViewModel
-import com.largeblueberry.core_ui.AppPrimaryBlue
-import com.largeblueberry.core_ui.AppBackground
 import com.largeblueberry.remote.model.UploadStatus
 import com.largeblueberry.resources.R as ResourcesR
 
@@ -91,11 +89,11 @@ fun LibraryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = AppPrimaryBlue,
+            color = MaterialTheme.colorScheme.primary,
             shadowElevation = 4.dp
         ) {
             Box( // Box를 사용하여 아이콘과 텍스트를 배치
@@ -216,7 +214,7 @@ fun EmptyView() {
                 contentDescription = null,
                 modifier = Modifier
                     .size(64.dp)
-                    .background(AppBackground),
+                    .background(MaterialTheme.colorScheme.background),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(16.dp))
