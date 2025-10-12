@@ -13,10 +13,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.largeblueberry.core_ui.ThemeOption
+import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,12 +31,12 @@ fun ThemeSettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("테마 설정") },
+                title = { Text(stringResource(id = ResourceR.string.theme_settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "뒤로가기"
+                            contentDescription = stringResource(id = ResourceR.string.back_button_description)
                         )
                     }
                 }
@@ -48,7 +50,7 @@ fun ThemeSettingsScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "앱 테마를 선택하세요",
+                text = stringResource(id = ResourceR.string.select_theme),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -71,8 +73,8 @@ private fun ThemeOptionsList(
     ) {
         ThemeOptionItem(
             theme = ThemeOption.SYSTEM,
-            title = "시스템 설정 따르기",
-            subtitle = "기기의 시스템 설정을 따릅니다",
+            title = stringResource(id = ResourceR.string.theme_option_system_title),
+            subtitle = stringResource(id = ResourceR.string.theme_option_system_subtitle),
             icon = Icons.Default.Settings,
             isSelected = selectedTheme == ThemeOption.SYSTEM,
             onSelected = onThemeSelected
@@ -82,8 +84,8 @@ private fun ThemeOptionsList(
 
         ThemeOptionItem(
             theme = ThemeOption.LIGHT,
-            title = "라이트 모드",
-            subtitle = "밝은 테마를 사용합니다",
+            title = stringResource(id = ResourceR.string.theme_option_light_title),
+            subtitle = stringResource(id = ResourceR.string.theme_option_light_subtitle),
             icon = Icons.Default.LightMode,
             isSelected = selectedTheme == ThemeOption.LIGHT,
             onSelected = onThemeSelected
@@ -93,14 +95,15 @@ private fun ThemeOptionsList(
 
         ThemeOptionItem(
             theme = ThemeOption.DARK,
-            title = "다크 모드",
-            subtitle = "어두운 테마를 사용합니다",
+            title = stringResource(id = ResourceR.string.theme_option_dark_title),
+            subtitle = stringResource(id = ResourceR.string.theme_option_dark_subtitle),
             icon = Icons.Default.DarkMode,
             isSelected = selectedTheme == ThemeOption.DARK,
             onSelected = onThemeSelected
         )
     }
 }
+
 
 @Composable
 private fun ThemeOptionItem(

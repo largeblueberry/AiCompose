@@ -73,10 +73,24 @@
     <string name="uploadDescription">업로드</string>
     <string name="deleteDescription">삭제</string>
 
-
-
     <string name="theme_light">라이트</string>
     <string name="theme_dark">다크</string>
     <string name="theme_system">시스템 설정</string>
+
+    <string name="select_theme">앱 테마를 선택하세요</string>
+
+    <string name="theme_settings_title">테마 설정</string>
+    <string name="back_button_description">뒤로가기</string>
+
+    <string name="theme_option_system_title">시스템 설정 따르기</string>
+    <string name="theme_option_system_subtitle">기기의 시스템 설정을 따릅니다</string>
+
+    <string name="theme_option_light_title">라이트 모드</string>
+    <string name="theme_option_light_subtitle">밝은 테마를 사용합니다</string>
+
+    <string name="theme_option_dark_title">다크 모드</string>
+    <string name="theme_option_dark_subtitle">어두운 테마를 사용합니다</string>
+
+
 
 </resources>
