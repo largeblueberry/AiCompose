@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.largeblueberry.setting.ui.language.ui.LanguageViewModel
+import com.largeblueberry.setting.ui.language.ui.Language
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +95,6 @@ fun LanguageItem(
 @Preview(showBackground = true)
 @Composable
 fun LanguageSettingScreenPreview() {
-    // Preview에서는 실제 ViewModel을 사용하기 어려우므로 가상으로 UI를 확인합니다.
     MaterialTheme {
 
         val languages = listOf(Language("English", "en"), Language("한국어", "ko"))

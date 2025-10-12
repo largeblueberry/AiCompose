@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LanguageViewModel @Inject constructor(
-    private val languageRepository: LanguageRepository // Hilt를 통해 Repository 주입
+    private val languageRepository: LanguageRepository
 ) : ViewModel() {
 
     // 지원할 언어 목록 정의

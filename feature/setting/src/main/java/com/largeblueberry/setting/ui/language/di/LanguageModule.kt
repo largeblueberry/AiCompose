@@ -1,11 +1,9 @@
-package com.largeblueberry.setting.ui.theme.di
+package com.largeblueberry.setting.ui.language.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-// 앱 설정 DataStore 인스턴스를 중앙에서 관리
+// DataStore 인스턴스 생성을 중앙에서 관리
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_settings")
 
 @Module
@@ -22,18 +20,9 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideThemePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile("theme_settings") }
-        )
-    }
-
-    @Provides
-    @Singleton
     fun providePreferencesDataStore(
         @ApplicationContext context: Context
     ): DataStore<Preferences> {
-        // 위에서 만든 확장 속성을 통해 DataStore 인스턴스를 반환
         return context.dataStore
     }
 }
