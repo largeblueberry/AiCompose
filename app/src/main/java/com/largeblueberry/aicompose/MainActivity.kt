@@ -3,25 +3,34 @@ package com.largeblueberry.aicompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.largeblueberry.aicompose.nav.AppNavigation
+import com.largeblueberry.aicompose.ui.main.MainViewModel
+import com.largeblueberry.core_ui.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme(
-                colorScheme = MaterialTheme.colorScheme,
-                typography = MaterialTheme.typography,
-                shapes = MaterialTheme.shapes
-            ) {
+
+            val themeOption by viewModel.themeOption.collectAsState()
+
+            // themeOption을 파라미터로 전달하여 테마가 동적으로 변경
+            AppTheme(themeOption = themeOption) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
+                    // AppTheme 내부에서 설정된 MaterialTheme의 배경색을 사용합니다.
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavigation()

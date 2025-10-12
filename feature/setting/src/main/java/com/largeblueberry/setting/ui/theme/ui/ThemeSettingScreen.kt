@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.setting.ui.theme.domain.ThemeOption
+import com.largeblueberry.core_ui.ThemeOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

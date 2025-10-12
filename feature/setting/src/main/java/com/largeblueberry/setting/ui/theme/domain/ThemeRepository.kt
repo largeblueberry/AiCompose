@@ -1,5 +1,6 @@
 package com.largeblueberry.setting.ui.theme.domain
 
+import com.largeblueberry.core_ui.ThemeOption
 import kotlinx.coroutines.flow.Flow
 
 interface ThemeRepository {

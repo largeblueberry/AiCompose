@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.theme
+package com.largeblueberry.setting.ui.theme.di
 
 import com.largeblueberry.setting.ui.theme.dataLayer.ThemeRepositoryImpl
 import com.largeblueberry.setting.ui.theme.domain.ThemeRepository

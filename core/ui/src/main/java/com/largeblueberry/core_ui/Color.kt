@@ -1,10 +1,6 @@
 package com.largeblueberry.core_ui
 
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
-
-
-val LocalThemeMode = compositionLocalOf<ThemeMode> { ThemeMode.Light }
 
 
 // 앱 전체에서 사용되는 공통 배경 색상
