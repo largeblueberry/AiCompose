@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)  // ✅ Compose 컴파일러 플러그인 추가 (필수!)
 }
 
 android {
@@ -9,7 +10,6 @@ android {
 
     defaultConfig {
         minSdk = 35
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -23,43 +23,58 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
 
     buildFeatures {
+        compose = true  // ✅ Compose 활성화 (필수!)
         buildConfig = true
     }
 }
 
 dependencies {
-
+    // ===== 기본 Android 라이브러리 =====
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
+
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // ===== 프로젝트 모듈 =====
     api(project(":core:resources"))
 
-    // ===== COMPOSE =====
-    // Compose BOM - 모든 Compose 라이브러리 버전 관리 (필수)
-    // BOM을 사용하면 아래 개별 라이브러리에서 버전을 명시할 필요가 없습니다.
-    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
+    // ===== COMPOSE BOM - 버전 통합 관리 =====
+    implementation(platform(libs.androidx.compose.bom))  // ✅ libs.versions.toml 사용
 
-    // 핵심 Compose UI (필수: Color 클래스 및 기본 UI 요소 포함)
+    // ===== 핵심 Compose 라이브러리 =====
+    // 핵심 UI (Color, Modifier 등 기본 요소)
     implementation("androidx.compose.ui:ui")
-    // UI 툴링 프리뷰 (개발 편의성: @Preview 사용을 위해 필요)
-    debugImplementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling") // Android Studio에서 UI 툴링 활성화
+    implementation("androidx.compose.ui:ui-graphics")
 
-    // Compose Foundation (필수: Box, Column, Row 등 기본 레이아웃 및 상호작용 요소)
+    // Foundation (Box, Column, Row 등 레이아웃)
     implementation("androidx.compose.foundation:foundation")
 
-    // Material Design 3 (권장: 대부분의 UI는 Material Design 기반이므로 포함하는 것이 좋음)
+    // Runtime (remember, State 등)
+    implementation("androidx.compose.runtime:runtime")
+
+    // Material Design 3
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // ===== 개발 도구 (디버그 빌드에서만) =====
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // ===== Compose 테스트 =====
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }

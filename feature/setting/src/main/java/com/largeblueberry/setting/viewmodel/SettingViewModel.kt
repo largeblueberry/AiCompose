@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 
 import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.auth.model.LoginUiState
-import com.largeblueberry.setting.ui.domain.usecase.LogoutUseCaseImpl
+import com.largeblueberry.setting.domain.usecase.LogoutUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

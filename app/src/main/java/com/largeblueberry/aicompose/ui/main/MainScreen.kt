@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -16,8 +17,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.R
-import com.largeblueberry.core_ui.AppBackground
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +24,7 @@ fun MainScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         TopAppBar(
             title = {
@@ -33,7 +32,7 @@ fun MainScreen(navController: NavController){
                     fontSize = 24.sp, fontWeight = FontWeight.Bold)
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = AppBackground
+                containerColor = MaterialTheme.colorScheme.background
             )
         )
 

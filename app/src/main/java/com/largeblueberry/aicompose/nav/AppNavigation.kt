@@ -6,12 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
 import com.largeblueberry.setting.ui.SettingsScreen
-import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.navigation.AppRoutes
+import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.record.ui.screen.RecordScreenState
+import com.largeblueberry.setting.language.LanguageSettingScreen
+import com.largeblueberry.setting.ui.theme.ui.ThemeSettingsScreen
 
 @Composable
 fun AppNavigation() {
@@ -44,12 +47,55 @@ fun AppNavigation() {
 
         composable(AppRoutes.SettingsScreen.route) {
             SettingsScreen(
-                onNavigateToLogin = { navController.navigate(AppRoutes.LoginScreen.route) }
-            ) // 설정 화면 컴포저블 함수 호출
+                navigationActions = SettingsNavigationActions(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToLogin = { navController.navigate(AppRoutes.LoginScreen.route) },
+                    onNavigateToLanguage = { navController.navigate(AppRoutes.LanguageSettingScreen.route) },
+                    onNavigateToTheme = { navController.navigate(AppRoutes.ThemeSettingScreen.route) },
+                    onNavigateToBugReport = { navController.navigate(AppRoutes.BugReportScreen.route) },
+                    onNavigateToServiceTerm = { navController.navigate(AppRoutes.ServiceTermScreen.route) },
+                    onNavigateToAbout = { navController.navigate(AppRoutes.AboutScreen.route) }
+                )
+            )
         }
 
+        // 추가된 화면들
         composable(AppRoutes.LoginScreen.route) {
-            LoginScreen() // 로그인 화면 컴포저블 함수 호출
+            LoginScreen(
+
+            )
+        }
+
+        composable(AppRoutes.LanguageSettingScreen.route) {
+            LanguageSettingScreen(
+
+            )
+        }
+
+        composable(AppRoutes.ThemeSettingScreen.route) {
+            ThemeSettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+
+        composable(AppRoutes.BugReportScreen.route) {
+           // BugReportScreen(
+           //     onBackClick = { navController.popBackStack() },
+           //     onReportSubmitted = { navController.popBackStack() }
+           // )
+        }
+
+        composable(AppRoutes.ServiceTermScreen.route) {
+           // ServiceTermScreen(
+            //    onBackClick = { navController.popBackStack() }
+          //  )
+        }
+
+        composable(AppRoutes.AboutScreen.route) {
+           // AboutScreen(
+           //     onBackClick = { navController.popBackStack() }
+           // )
         }
 
     }

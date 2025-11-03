@@ -39,7 +39,7 @@ android {
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
-            "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
+            "\"\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\"\""
         )
     }
 
@@ -70,6 +70,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:resources"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.preference)
@@ -80,6 +81,7 @@ dependencies {
 
     implementation(project(":core:ui"))
     implementation(project(":core:auth"))
+    implementation(project(":core:navigation"))
 
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
@@ -113,4 +115,16 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+
+
+    //test
+    // Kotlin Coroutines Test (코루틴 테스트를 위한 디스패처 및 유틸리티)
+    // runTest, StandardTestDispatcher, setMain, resetMain, advanceUntilIdle 등을 사용하기 위함
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // MockK (모의 객체 생성 및 행위 정의를 위한 라이브러리)
+    // mockk, every, coEvery, just, runs, any, coVerify 등을 사용하기 위함
+    testImplementation("io.mockk:mockk:1.13.8")
+    // JUnit (테스트 프레임워크) - 보통 기본으로 추가되어 있지만, 혹시 없다면 추가
+    testImplementation("junit:junit:4.13.2")
 }

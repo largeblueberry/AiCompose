@@ -8,30 +8,37 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.largeblueberry.core_ui.CustomColors
+import com.largeblueberry.core_ui.LocalCustomColors
 import com.largeblueberry.library.domainLayer.model.LibraryModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import com.largeblueberry.resources.R as ResourceR
+// 더 깔끔한 접근을 위해 Theme 객체를 만들어 사용하면 좋습니다.
+object Theme {
+    val customColors: CustomColors
+        @Composable
+        get() = LocalCustomColors.current
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioRecordItem(
     record: LibraryModel,
-    isPlaying: Boolean, // 현재 이 레코드가 재생 중인지 여부
+    isPlaying: Boolean,
     isUploading: Boolean,
-    isPaused: Boolean,  // 추가: 현재 이 레코드가 일시정지 상태인지 여부
+    isPaused: Boolean,
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onStop: () -> Unit,
     onDelete: () -> Unit,
     onUpload: () -> Unit,
     onRename: () -> Unit,
-    onResume: () -> Unit // 추가: 이어서 재생 콜백
+    onResume: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -39,7 +46,8 @@ fun AudioRecordItem(
             .padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        // 1. 카드 배경색을 커스텀 테마 색상으로 변경
+        colors = CardDefaults.cardColors(containerColor = Theme.customColors.cardViewBackground)
     ) {
         Row(
             modifier = Modifier
@@ -55,25 +63,29 @@ fun AudioRecordItem(
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
-                    modifier = Modifier.clickable { onRename() }
+                    modifier = Modifier.clickable { onRename() },
+                    // 2. 카드뷰의 메인 텍스트 색상을 커스텀 테마 색상으로 변경
+                    color = Theme.customColors.cardViewMainText
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = record.duration,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    // 3. 카드뷰의 서브 텍스트 색상을 커스텀 테마 색상으로 변경
+                    color = Theme.customColors.cardViewSubText
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = formatDate(record.createdAt),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    // 3. 카드뷰의 서브 텍스트 색상을 커스텀 테마 색상으로 변경
+                    color = Theme.customColors.cardViewSubText
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
 
-            // 재생/일시정지/정지 버튼 로직
-            if (isPlaying) { // 현재 재생 중일 때
+            // 재생/일시정지/정지 버튼 로직 (색상 관련 변경 없음 - LocalContentColor 상속)
+            if (isPlaying) {
                 IconButton(onClick = onPause) {
                     Icon(
                         imageVector = Icons.Default.Pause,
@@ -86,15 +98,15 @@ fun AudioRecordItem(
                         contentDescription = stringResource(ResourceR.string.stopDescription)
                     )
                 }
-            } else if (isPaused) { // 재생 중이 아니지만 일시정지된 상태일 때 (같은 레코드)
-                IconButton(onClick = onResume) { // 이어서 재생
+            } else if (isPaused) {
+                IconButton(onClick = onResume) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
                         contentDescription = stringResource(ResourceR.string.playDescription)
                     )
                 }
-            } else { // 재생 중이 아니고 일시정지된 상태도 아닐 때 (새로운 재생 또는 다른 레코드)
-                IconButton(onClick = onPlay) { // 처음부터 재생
+            } else {
+                IconButton(onClick = onPlay) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
                         contentDescription = stringResource(ResourceR.string.playDescription)
@@ -102,6 +114,7 @@ fun AudioRecordItem(
                 }
             }
 
+            // 업로드 버튼/인디케이터 (색상 관련 변경 없음)
             if (isUploading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
@@ -121,12 +134,14 @@ fun AudioRecordItem(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(ResourceR.string.deleteDescription),
+                    // MaterialTheme의 표준 error 색상을 사용하는 것은 매우 좋은 방법입니다.
                     tint = MaterialTheme.colorScheme.error
                 )
             }
         }
     }
 }
+
 
 //파일 타임스탬프를 읽기 좋은 형식으로 변환하는 함수
 fun formatDate(millis: Long): String {
