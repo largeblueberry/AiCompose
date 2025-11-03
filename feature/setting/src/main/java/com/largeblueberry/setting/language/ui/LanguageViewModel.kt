@@ -1,8 +1,10 @@
-package com.largeblueberry.setting.ui.language.ui
+package com.largeblueberry.setting.language.ui
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.setting.ui.language.domain.LanguageRepository
+import com.largeblueberry.setting.language.domain.LanguageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -41,5 +43,10 @@ class LanguageViewModel @Inject constructor(
         viewModelScope.launch {
             languageRepository.setLanguage(languageCode)
         }
+        // 2. 앱에 언어 변경 즉시 적용 (추가된 코드)
+        // 안드로이드 시스템에 어떤 언어를 사용할지 알려줍니다.
+        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(languageCode)
+        AppCompatDelegate.setApplicationLocales(appLocale)
     }
+
 }

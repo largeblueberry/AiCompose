@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.domain.usecase
+package com.largeblueberry.setting.domain.usecase
 
 import com.largeblueberry.auth.repository.AuthRepository
 import com.largeblueberry.auth.usecase.LogoutUseCase

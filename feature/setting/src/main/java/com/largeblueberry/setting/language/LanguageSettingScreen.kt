@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.language
+package com.largeblueberry.setting.language
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,8 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.setting.ui.language.ui.LanguageViewModel
-import com.largeblueberry.setting.ui.language.ui.Language
+import com.largeblueberry.setting.language.ui.LanguageViewModel
+import com.largeblueberry.setting.language.ui.Language
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)

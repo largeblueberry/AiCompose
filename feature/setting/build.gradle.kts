@@ -39,7 +39,7 @@ android {
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
-            "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
+            "\"\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\"\""
         )
     }
 
@@ -70,6 +70,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:resources"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.preference)

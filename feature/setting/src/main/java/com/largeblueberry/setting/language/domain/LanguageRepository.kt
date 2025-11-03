@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.language.domain
+package com.largeblueberry.setting.language.domain
 
 import kotlinx.coroutines.flow.Flow
 
@@ -15,4 +15,6 @@ interface LanguageRepository {
      * @param languageCode 저장할 언어 코드 (예: "en", "ko")
      */
     suspend fun setLanguage(languageCode: String)
+
+
 }

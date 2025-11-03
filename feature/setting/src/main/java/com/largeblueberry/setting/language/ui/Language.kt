@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.language.ui
+package com.largeblueberry.setting.language.ui
 
 // 언어 정보를 담는 데이터 클래스
 data class Language(

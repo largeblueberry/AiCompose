@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.language.ui
+package com.largeblueberry.setting.language.ui
 
 // UI 상태를 나타내는 데이터 클래스
 data class LanguageUiState(

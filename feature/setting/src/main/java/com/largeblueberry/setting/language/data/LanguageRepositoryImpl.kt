@@ -1,6 +1,6 @@
-package com.largeblueberry.setting.ui.language.data
+package com.largeblueberry.setting.language.data
 
-import com.largeblueberry.setting.ui.language.domain.LanguageRepository
+import com.largeblueberry.setting.language.domain.LanguageRepository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -9,9 +9,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Locale
 import javax.inject.Inject
+import javax.inject.Named
+import kotlin.collections.get
 
 class LanguageRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    @Named("language")private val dataStore: DataStore<Preferences>
 ) : LanguageRepository {
 
     private object PreferencesKeys {
