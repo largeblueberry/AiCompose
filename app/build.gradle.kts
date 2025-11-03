@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     id("com.google.dagger.hilt.android")
 }
 
@@ -79,6 +80,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:library"))
     implementation(project(":feature:record"))
+    implementation(project(":core:analytics-impl"))
 
     // ===== 기본 Android 라이브러리 (libs.versions.toml 활용) =====
     implementation(libs.androidx.core.ktx)

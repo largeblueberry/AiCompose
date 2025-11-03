@@ -70,7 +70,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:resources"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.preference)
@@ -79,9 +79,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(project(":core:resources"))
     implementation(project(":core:ui"))
     implementation(project(":core:auth"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:analytics-api"))
 
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
@@ -106,9 +108,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Hilt
