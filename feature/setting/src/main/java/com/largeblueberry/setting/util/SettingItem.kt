@@ -20,9 +20,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.largeblueberry.core_ui.SettingUtilColor
-import com.largeblueberry.core_ui.SettingItemMainText
-import com.largeblueberry.core_ui.UtilTextColor
 import com.largeblueberry.core_ui.customColors
 
 @Composable

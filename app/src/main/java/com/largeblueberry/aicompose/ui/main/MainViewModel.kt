@@ -2,7 +2,7 @@ package com.largeblueberry.aicompose.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.core_ui.ThemeOption
+import com.largeblueberry.aicompose.ui.ThemeOption
 import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.record.ui.RecordViewModel
 import com.largeblueberry.record.ui.RecordingState
-import com.largeblueberry.resources.R as ResourcesR
+
 
 @Composable
 fun RecordScreenState(
@@ -35,7 +35,7 @@ fun RecordScreenState(
         lastSavedFileName?.let { fileName ->
             if (fileName.isNotBlank()) {
                 Toast.makeText(context,
-                    context.getString(ResourcesR.string.recordSavedMSG, fileName),
+                    context.getString(R.string.recordSavedMSG, fileName),
                     Toast.LENGTH_SHORT).show()
             }
         }
@@ -49,7 +49,7 @@ fun RecordScreenState(
             viewModel.startRecording()
         } else {
             Toast.makeText(context,
-                context.getString(ResourcesR.string.recordPermission),
+                context.getString(R.string.recordPermission),
                 Toast.LENGTH_SHORT).show()
         }
     }

@@ -13,7 +13,7 @@ import com.largeblueberry.setting.ui.SettingsScreen
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.record.ui.screen.RecordScreenState
-import com.largeblueberry.setting.ui.language.LanguageSettingScreen
+import com.largeblueberry.setting.language.LanguageSettingScreen
 import com.largeblueberry.setting.ui.theme.ui.ThemeSettingsScreen
 
 @Composable
