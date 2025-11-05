@@ -76,6 +76,8 @@ dependencies {
     implementation(project(":feature:sheetmusic"))
     implementation(project(":feature:setting"))
     implementation(project(":core:ui"))
+    implementation(project(":core:resources"))
+    implementation(project(":core:domain"))
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:library"))

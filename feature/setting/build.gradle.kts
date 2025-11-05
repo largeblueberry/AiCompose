@@ -85,6 +85,7 @@ dependencies {
     implementation(project(":core:auth"))
     implementation(project(":core:navigation"))
     implementation(project(":core:analytics-api"))
+    implementation(project(":core:domain"))
 
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")

@@ -1,5 +1,6 @@
 package com.largeblueberry.setting.language.domain
 
+import com.largeblueberry.domain.repository.LanguageRepository
 import javax.inject.Inject
 
 class SetLanguageCodeUseCase @Inject constructor(

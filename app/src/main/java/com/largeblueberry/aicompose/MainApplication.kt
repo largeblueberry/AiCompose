@@ -3,7 +3,7 @@ package com.largeblueberry.aicompose
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
-import com.largeblueberry.setting.language.domain.LanguageRepository
+import com.largeblueberry.domain.repository.LanguageRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
