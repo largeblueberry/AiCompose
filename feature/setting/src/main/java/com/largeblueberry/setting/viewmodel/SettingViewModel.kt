@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.viewmodel
+package com.largeblueberry.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

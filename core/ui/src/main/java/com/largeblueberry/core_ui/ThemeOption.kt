@@ -1,8 +1,8 @@
-package com.largeblueberry.aicompose.ui
+package com.largeblueberry.core_ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.largeblueberry.aicompose.R
+import com.largeblueberry.resources.R
 
 
 enum class ThemeOption(val key: String) {

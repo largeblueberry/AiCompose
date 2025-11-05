@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
 import com.largeblueberry.aicompose.nav.AppNavigation
 import com.largeblueberry.aicompose.ui.main.MainViewModel
-import com.largeblueberry.aicompose.ui.AppTheme
+import com.largeblueberry.core_ui.AppTheme
 import com.largeblueberry.setting.language.ui.LanguageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

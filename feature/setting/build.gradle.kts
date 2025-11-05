@@ -39,8 +39,9 @@ android {
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
-            "\"\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\"\""
+            "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
         )
+
     }
 
     buildTypes {

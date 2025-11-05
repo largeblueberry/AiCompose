@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.largeblueberry.aicompose.ui.customColors
+import com.largeblueberry.core_ui.customColors
 
 @Composable
 fun CardViewScreen(

@@ -25,11 +25,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
+        // This line is now corrected
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
-            "\"\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\"\""
+            "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
         )
+
     }
 
     buildFeatures {

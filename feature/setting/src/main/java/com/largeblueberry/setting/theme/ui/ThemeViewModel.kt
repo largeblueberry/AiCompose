@@ -1,9 +1,9 @@
-package com.largeblueberry.setting.ui.theme.ui
+package com.largeblueberry.setting.theme.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.core_ui.ThemeOption
-import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
+import com.largeblueberry.setting.theme.domain.ThemeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
