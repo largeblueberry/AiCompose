@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":data:local"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:analytics-api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

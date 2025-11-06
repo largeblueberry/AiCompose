@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.record.ui.RecordViewModel
 import com.largeblueberry.record.ui.RecordingState
+import com.largeblueberry.resources.R
 
 
 @Composable

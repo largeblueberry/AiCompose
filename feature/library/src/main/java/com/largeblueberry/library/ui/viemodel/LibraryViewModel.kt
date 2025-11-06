@@ -1,7 +1,9 @@
 package com.largeblueberry.library.ui.viemodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.largeblueberry.analyticshelper.AnalyticsHelper
 import com.largeblueberry.domain.AuthGateway
 import com.largeblueberry.domain.model.UploadAvailabilityResult
 import com.largeblueberry.domain.repository.UserUsageRepository
@@ -32,9 +34,14 @@ class LibraryViewModel @Inject constructor(
     private val checkUploadAvailabilityUseCase: CheckUploadAvailabilityUseCase,
     private val audioPlayer: AudioPlayer,
     private val authGateway: AuthGateway,
-    private val userUsageRepository: UserUsageRepository
+    private val userUsageRepository: UserUsageRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
+    // Logcat 필터링을 위한 TAG 추가
+    private companion object {
+        private const val TAG = "LibraryViewModel"
+    }
 
     private val _uiState = MutableStateFlow(LibraryUiState())
     val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
@@ -54,12 +61,22 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 deleteAudioRecordUseCase(record)
+
+                Log.i(TAG, "Record deleted successfully: ${record.id}")
+                analyticsHelper.logEvent("delete_record_success", mapOf("record_id" to record.id.toString()))
+
                 _uiState.update { it.copy(deleteResult = Result.success(Unit)) }
                 // 만약 삭제된 레코드가 현재 재생 중이었다면 정지
                 if (uiState.value.currentPlayingRecordId == record.id) {
                     stopPlaying()
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "Failed to delete record: ${record.id}", e)
+                analyticsHelper.logEvent(
+                    "delete_record_failure",
+                    mapOf("record_id" to record.id.toString(), "error" to (e.message ?: "Unknown error"))
+                )
+
                 _uiState.update { it.copy(deleteResult = Result.failure(e)) }
             }
         }
@@ -67,12 +84,18 @@ class LibraryViewModel @Inject constructor(
 
     // 이름 변경 가능 함수
     fun renameRecord(record: LibraryModel, newName: String) {
+        Log.d(TAG, "Attempting to rename record: ${record.id} to $newName")
         viewModelScope.launch {
             try {
-                renameAudioRecordUseCase(record, newName) // invoke() 호출
-                // 필요하다면 이름 변경 성공/실패에 대한 StateFlow를 추가
+                renameAudioRecordUseCase(record, newName)
+                Log.i(TAG, "Record renamed successfully: ${record.id} to $newName")
+                analyticsHelper.logEvent("rename_record_success", mapOf("record_id" to record.id.toString()))
             } catch (e: Exception) {
-                // 필요하다면 오류 메시지 전달용 StateFlow 추가
+                Log.e(TAG, "Failed to rename record: ${record.id}", e)
+                analyticsHelper.logEvent(
+                    "rename_record_failure",
+                    mapOf("record_id" to record.id.toString(), "error" to (e.message ?: "Unknown error"))
+                )
             }
         }
     }
@@ -108,6 +131,8 @@ class LibraryViewModel @Inject constructor(
                         result.fold(
                             onSuccess = { midiUrl ->
                                 if (midiUrl.isNotEmpty()) {
+                                    Log.i(TAG, "Upload successful for record: $recordId. URL: $midiUrl")
+                                    analyticsHelper.logEvent("upload_record_success", mapOf("record_id" to recordId.toString()))
                                     _uiState.update {
                                         it.copy(
                                             uploadState = UploadState(
@@ -122,6 +147,8 @@ class LibraryViewModel @Inject constructor(
                                     checkUploadAvailabilityUseCase.uploadCounter()
                                 } else {
                                     _uiState.update {
+                                        Log.w(TAG, "Upload for record $recordId succeeded but returned an empty URL.")
+                                        analyticsHelper.logEvent("upload_record_empty_url", mapOf("record_id" to recordId.toString()))
                                         it.copy(
                                             uploadState = UploadState(
                                                 status = UploadStatus.ERROR,
@@ -133,6 +160,11 @@ class LibraryViewModel @Inject constructor(
                                 }
                             },
                             onFailure = { exception ->
+                                Log.e(TAG, "Upload failed for record: $recordId", exception)
+                                analyticsHelper.logEvent(
+                                    "upload_record_failure",
+                                    mapOf("record_id" to recordId.toString(), "error" to (exception.message ?: "Unknown error"))
+                                )
                                 _uiState.update {
                                     it.copy(
                                         uploadState = UploadState(
@@ -146,6 +178,11 @@ class LibraryViewModel @Inject constructor(
                         )
 
                     } catch (e: Exception) {
+                        Log.e(TAG, "An unexpected error occurred during upload for record: $recordId", e)
+                        analyticsHelper.logEvent(
+                            "upload_record_exception",
+                            mapOf("record_id" to recordId.toString(), "error" to (e.message ?: "Unknown error"))
+                        )
                         _uiState.update {
                             it.copy(
                                 uploadState = UploadState(
@@ -170,6 +207,8 @@ class LibraryViewModel @Inject constructor(
                     }
                 }
                 is UploadAvailabilityResult.LimitReached -> {
+                    Log.w(TAG, "Upload limit reached for user. Max: ${availabilityResult.maxUploads}")
+                    analyticsHelper.logEvent("upload_limit_reached", mapOf("max_uploads" to availabilityResult.maxUploads.toString()))
                     // 업로드 한도 초과: 사용자에게 메시지 표시
                     _uiState.update {
                         it.copy(
@@ -184,6 +223,8 @@ class LibraryViewModel @Inject constructor(
                     }
                 }
                 is UploadAvailabilityResult.Error -> {
+                    Log.e(TAG, "Error checking upload availability: ${availabilityResult.message}")
+                    analyticsHelper.logEvent("upload_availability_check_failure", mapOf("error" to availabilityResult.message))
                 // 업로드 가능 여부 확인 중 오류 발생
                     _uiState.update {
                         it.copy(
@@ -215,8 +256,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-
-
     private fun observeAudioRecords() {
         viewModelScope.launch {
             getAudioRecordsUseCase().collect { records ->
@@ -233,6 +272,8 @@ class LibraryViewModel @Inject constructor(
 
     // 오디오 재생 관련 함수들
     fun playAudio(record: LibraryModel) {
+        Log.d(TAG, "Playing audio for record: ${record.id}")
+        analyticsHelper.logEvent("play_audio", mapOf("record_id" to record.id.toString()))
         // 이미 재생 중인 레코드가 있다면 정지
         if (audioPlayer.isPlaying()) {
             audioPlayer.stop()
@@ -247,16 +288,22 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun pauseAudio() {
+        Log.d(TAG, "Pausing audio")
+        analyticsHelper.logEvent("pause_audio", emptyMap())
         audioPlayer.pause()
         _uiState.update { it.copy(isPlaying = false) }
     }
 
     fun resumeAudio() {
+        Log.d(TAG, "Resuming audio")
+        analyticsHelper.logEvent("resume_audio", emptyMap())
         audioPlayer.resume()
         _uiState.update { it.copy(isPlaying = true) }
     }
 
     fun stopPlaying() {
+        Log.d(TAG, "Stopping audio")
+        analyticsHelper.logEvent("stop_audio", emptyMap())
         audioPlayer.stop()
         _uiState.update { it.copy(currentPlayingRecordId = null, isPlaying = false) }
     }

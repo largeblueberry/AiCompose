@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":core:resources"))
+    implementation(project(":core:analytics-api"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

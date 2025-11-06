@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.language.domain
+package com.largeblueberry.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 

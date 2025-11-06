@@ -1,7 +1,7 @@
 package com.largeblueberry.setting.language.di
 
+import com.largeblueberry.domain.repository.LanguageRepository
 import com.largeblueberry.setting.language.data.LanguageRepositoryImpl
-import com.largeblueberry.setting.language.domain.LanguageRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

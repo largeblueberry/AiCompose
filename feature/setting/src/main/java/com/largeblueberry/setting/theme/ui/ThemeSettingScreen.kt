@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui.theme.ui
+package com.largeblueberry.setting.theme.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable

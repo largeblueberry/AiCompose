@@ -9,12 +9,12 @@ import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
-import com.largeblueberry.setting.ui.SettingsScreen
+import com.largeblueberry.setting.SettingsScreen
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.record.ui.screen.RecordScreenState
 import com.largeblueberry.setting.language.LanguageSettingScreen
-import com.largeblueberry.setting.ui.theme.ui.ThemeSettingsScreen
+import com.largeblueberry.setting.theme.ui.ThemeSettingsScreen
 
 @Composable
 fun AppNavigation() {

@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.largeblueberry.resources.R as ResourceR
 import com.largeblueberry.aicompose.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,7 +29,7 @@ fun MainScreen(navController: NavController){
     ) {
         TopAppBar(
             title = {
-                Text(text = stringResource(id = R.string.app_name),
+                Text(text = stringResource(id = ResourceR.string.app_name),
                     fontSize = 24.sp, fontWeight = FontWeight.Bold)
             },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -38,24 +39,24 @@ fun MainScreen(navController: NavController){
 
         CardViewScreen(
             iconResId = R.drawable.ic_mic,
-            mainText = stringResource(id = R.string.recordMainText),
-            subText = stringResource(id = R.string.recordSubText),
+            mainText = stringResource(id = ResourceR.string.recordMainText),
+            subText = stringResource(id = ResourceR.string.recordSubText),
             applyTint = true,
             onClick = { navController.navigate("record_route") }
         )
 
         CardViewScreen(
             iconResId = R.drawable.ic_music_note,
-            mainText = stringResource(id = R.string.libraryMainText),
-            subText = stringResource(id = R.string.librarySubText),
+            mainText = stringResource(id = ResourceR.string.libraryMainText),
+            subText = stringResource(id = ResourceR.string.librarySubText),
             applyTint = false,
             onClick = { navController.navigate("library_route") }
         )
 
         CardViewScreen(
             iconResId = R.drawable.ic_settings,
-            mainText = stringResource(id = R.string.settingsMainText),
-            subText = stringResource(id = R.string.settingsSubText),
+            mainText = stringResource(id = ResourceR.string.settingsMainText),
+            subText = stringResource(id = ResourceR.string.settingsSubText),
             applyTint = true,
             onClick = { navController.navigate("settings_route") }
         )
