@@ -8,6 +8,8 @@
     <string name="librarySubText">Check the works I\'ve created.</string>
     <string name="settingsMainText">Settings</string>
     <string name="settingsSubText">Change app settings.</string>
+    <string name="waveformMainText">Check your Record</string>
+    <string name="waveformSubText">Review, delete, and upload your recording.</string>
 
 
     <string name="emptyLibrary">No recorded files.</string>

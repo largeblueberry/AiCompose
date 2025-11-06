@@ -8,6 +8,8 @@
     <string name="librarySubText">내가 만든 작품들을 확인해요.</string>
     <string name="settingsMainText">설정</string>
     <string name="settingsSubText">앱 설정을 변경해요.</string>
+    <string name="waveformMainText">녹음을 확인하세요</string>
+    <string name="waveformSubText">내 녹음을 듣고, 삭제하고 업로드 합니다.</string>
 
     <string name="emptyLibrary">녹음된 파일이 없습니다.</string>
     <string name = "serverUploadError">서버 업로드에 실패했습니다. 잠시후 다시 시도해주세요.</string>
