@@ -1,10 +1,12 @@
 package com.largeblueberry.aicompose.feature_auth.ui
 
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LoginUseCase
+import com.largeblueberry.analyticshelper.AnalyticsHelper
 import com.largeblueberry.auth.model.AuthResult
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LogoutUseCaseImpl
 import com.largeblueberry.auth.model.AuthUiState
@@ -17,15 +19,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.onSuccess
-
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val logOutUseCase: LogoutUseCaseImpl,
-    private val googleAuthDataSource: GoogleAuthDataSource
+    private val googleAuthDataSource: GoogleAuthDataSource,
+    private val analyticsHelper: AnalyticsHelper
 ): ViewModel() {
+
+    private companion object {
+        private const val TAG = "LoginViewModel"
+    }
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -37,12 +42,21 @@ class LoginViewModel @Inject constructor(
     val startGoogleSignInFlow = _startGoogleSignInFlow.receiveAsFlow()
 
     fun onGoogleSignInClicked() {
+        Log.d(TAG, "onGoogleSignInClicked called")
+        // 수정: params = emptyMap() 추가
+        analyticsHelper.logEvent(name = "google_sign_in_clicked", params = emptyMap())
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             try {
-                // 데이터 소스에서 signInIntent를 가져와 UI로 보냅니다.
                 _startGoogleSignInFlow.send(googleAuthDataSource.getSignInIntent())
             } catch (e: Exception) {
+                Log.e(TAG, "Failed to get Google sign-in intent", e)
+                analyticsHelper.logEvent(
+                    name = "google_sign_in_intent_failed",
+                    params = mapOf("error_message" to (e.message ?: "Unknown error"))
+                )
+
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     errorMessage = "Google 로그인 준비 중 오류 발생: ${e.localizedMessage}"
@@ -51,17 +65,21 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    // 이 함수는 ActivityResultLauncher에서 받은 원본 Intent 데이터를 받음.
     fun handleGoogleSignInResult(data: Intent?) {
+        Log.d(TAG, "handleGoogleSignInResult called")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            // 데이터 소스를 통해 Intent에서 GoogleSignInAccount를 추출합니다.
             val account = googleAuthDataSource.getSignedInAccountFromIntent(data)
             val idToken = account?.idToken
 
             if (idToken != null) {
+                Log.d(TAG, "Successfully obtained ID token")
                 signInWithGoogle(idToken)
             } else {
+                Log.w(TAG, "Failed to get ID token from Google sign-in result")
+                // 수정: params = emptyMap() 추가
+                analyticsHelper.logEvent(name = "google_id_token_failed", params = emptyMap())
+
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     errorMessage = "Google 로그인 실패: ID 토큰을 가져올 수 없습니다."
@@ -72,13 +90,20 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signInWithGoogle(idToken: String) {
+        Log.d(TAG, "signInWithGoogle called")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             _authUiState.value = AuthUiState.Loading
 
-
             when (val result = loginUseCase(idToken)) {
                 is AuthResult.Success -> {
+                    // 수정: .uid 제거
+                    Log.i(TAG, "Sign-in with Google successful. User: ${result.user}")
+                    analyticsHelper.logEvent(
+                        name = "login_success",
+                        params = mapOf("method" to "google")
+                    )
+
                     _authUiState.value = AuthUiState.Authenticated(result.user)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
@@ -86,9 +111,17 @@ class LoginViewModel @Inject constructor(
                         currentUser = result.user,
                         errorMessage = null
                     )
-
                 }
                 is AuthResult.Error -> {
+                    Log.e(TAG, "Sign-in with Google failed: ${result.message}")
+                    analyticsHelper.logEvent(
+                        name = "login_failure",
+                        params = mapOf(
+                            "method" to "google",
+                            "error_message" to result.message
+                        )
+                    )
+
                     _authUiState.value = AuthUiState.Error(result.message)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
@@ -100,26 +133,34 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    // 🚪 로그아웃
     fun signOut() {
+        Log.d(TAG, "signOut called")
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-
             val result = logOutUseCase()
 
             result
                 .onSuccess {
+                    Log.i(TAG, "Sign out successful")
+                    // 수정: params = emptyMap() 추가
+                    analyticsHelper.logEvent(name = "sign_out", params = emptyMap())
+
                     _authUiState.value = AuthUiState.NotAuthenticated
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 }
                 .onFailure { exception ->
+                    Log.e(TAG, "Sign out failed", exception)
+                    analyticsHelper.logEvent(
+                        name = "sign_out_failure",
+                        params = mapOf("error_message" to (exception.message ?: "Unknown error"))
+                    )
+
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         errorMessage = exception.message
                     )
                     _authUiState.value = AuthUiState.Error(exception.message ?: "로그아웃 실패")
                 }
-
         }
     }
 
