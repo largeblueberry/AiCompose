@@ -104,4 +104,14 @@
     <string name="theme_option_dark_subtitle">Uses a dark theme</string>
 
     <string name="language_setting_title">Language Settings</string>
+
+
+    <string name="sheet_music_list_title">Sheet Music List</string>
+    <string name="navigate_back_content_description">Navigate Back</string>
+    <string name="empty_sheet_music_main_message">No sheet music yet</string>
+    <string name="empty_sheet_music_sub_message">Shall we start recording first?</string>
+    <string name="start_recording_button">🎤 Start Recording</string>
+
+    <string name="sheet_music_detail_title">Sheet Music Detail</string>
+    <string name="sheet_music_detail_screen_message">Sheet Music Detail Screen</string>
 </resources>

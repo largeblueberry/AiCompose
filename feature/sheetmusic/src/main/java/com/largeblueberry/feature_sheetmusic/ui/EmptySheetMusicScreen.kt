@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,7 @@ fun EmptySheetMusicScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "악보 목록",
+                    text = stringResource(id = ResourcesR.string.sheet_music_list_title),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -64,7 +65,7 @@ fun EmptySheetMusicScreen(
 
             // 메인 메시지
             Text(
-                text = "아직 악보가 없네요",
+                text = stringResource(id = ResourcesR.string.empty_sheet_music_main_message),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -74,7 +75,7 @@ fun EmptySheetMusicScreen(
 
             // 서브 메시지
             Text(
-                text = "녹음 먼저 시작해볼까요?",
+                text = stringResource(id = ResourcesR.string.empty_sheet_music_sub_message),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -89,7 +90,7 @@ fun EmptySheetMusicScreen(
                     .height(48.dp)
             ) {
                 Text(
-                    text = "🎤 녹음 시작하기",
+                    text = stringResource(id = ResourcesR.string.start_recording_button),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium
                 )

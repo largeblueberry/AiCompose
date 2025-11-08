@@ -12,6 +12,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.largeblueberry.resources.R
+import com.largeblueberry.feature_sheetmusic.R as ResourcesR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +44,7 @@ fun SheetMusicListScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "악보 목록",
+                        text = stringResource(id = R.string.sheet_music_list_title),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )

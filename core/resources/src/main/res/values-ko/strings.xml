@@ -9,7 +9,7 @@
     <string name="settingsMainText">설정</string>
     <string name="settingsSubText">앱 설정을 변경해요.</string>
     <string name="waveformMainText">녹음을 확인하세요</string>
-    <string name="waveformSubText">내 녹음을 듣고, 삭제하고 업로드 합니다.</string>
+    <string name="waveformSubText">내 녹음을 듣고, 삭제하고 업로드 해요.</string>
 
     <string name="emptyLibrary">녹음된 파일이 없습니다.</string>
     <string name = "serverUploadError">서버 업로드에 실패했습니다. 잠시후 다시 시도해주세요.</string>
@@ -103,5 +103,16 @@
     <string name="theme_option_dark_subtitle">어두운 테마를 사용합니다</string>
 
     <string name="language_setting_title"> 언어 설정</string>
+
+    <string name="sheet_music_list_title">악보 목록</string>
+    <string name="navigate_back_content_description">뒤로 가기</string>
+    <string name="empty_sheet_music_main_message">아직 악보가 없네요</string>
+    <string name="empty_sheet_music_sub_message">녹음 먼저 시작해볼까요?</string>
+    <string name="start_recording_button">🎤 녹음 시작하기</string>
+
+    <string name="sheet_music_detail_title">악보 상세</string>
+    <string name="sheet_music_detail_screen_message">악보 상세 화면</string>
+
+
 
 </resources>
