@@ -1,34 +1,25 @@
 package com.largeblueberry.feature_sheetmusic.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// 악보 데이터 클래스 (임시)
-data class SheetMusic(
-    val id: String,
-    val title: String,
-    val artist: String,
-    val duration: String,
-    val createdDate: String
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SheetMusicListScreen(
     sheetMusicList: List<SheetMusic> = emptyList(),
-    onSheetMusicClick: (SheetMusic) -> Unit = {}
+    onSheetMusicClick: (SheetMusic) -> Unit = {},
+    onNavigateToRecord: () -> Unit = {},
+    onNavigateBack: () -> Unit = {}
 ) {
     /**
      * 리사이클러 뷰로 구현된 악보 리스트 화면
@@ -38,86 +29,49 @@ fun SheetMusicListScreen(
      */
 
     if (sheetMusicList.isEmpty()) {
-        EmptySheetMusicScreen()
+        EmptySheetMusicScreen(
+            onNavigateToRecord = onNavigateToRecord,
+            onNavigateBack = onNavigateBack
+        )
     } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            items(sheetMusicList) { sheetMusic ->
-                SheetMusicItem(
-                    sheetMusic = sheetMusic,
-                    onClick = { onSheetMusicClick(sheetMusic) }
+            // TopAppBar 추가
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "악보 목록",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "뒤로 가기"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SheetMusicItem(
-    sheetMusic: SheetMusic,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // 이모지 사용 (가장 확실함)
-            Text(
-                text = "🎼",
-                fontSize = 24.sp,
-                modifier = Modifier
-                    .size(40.dp)
-                    .padding(end = 16.dp)
             )
 
-            // 악보 정보
-            Column(
-                modifier = Modifier.weight(1f)
+            // 악보 리스트
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = sheetMusic.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    text = sheetMusic.artist,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-
-                Row(
-                    modifier = Modifier.padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = "⏱️ ${sheetMusic.duration}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Text(
-                        text = "📅 ${sheetMusic.createdDate}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                items(sheetMusicList) { sheetMusic ->
+                    SheetMusicItem(
+                        sheetMusic = sheetMusic,
+                        onClick = { onSheetMusicClick(sheetMusic) }
                     )
                 }
             }

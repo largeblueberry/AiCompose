@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.largeblueberry.resources.R as ResourceR
 import com.largeblueberry.aicompose.R
+import com.largeblueberry.navigation.AppRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +61,7 @@ fun MainScreen(navController: NavController){
             mainText = stringResource(id = ResourceR.string.libraryMainText),
             subText = stringResource(id = ResourceR.string.librarySubText),
             applyTint = false,
-            onClick = { navController.navigate("music_generation_route") }
+            onClick = { navController.navigate(AppRoutes.SheetMusicListScreen.route) }
         )
 
         CardViewScreen(
