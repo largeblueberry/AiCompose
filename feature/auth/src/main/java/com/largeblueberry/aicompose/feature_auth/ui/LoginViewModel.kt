@@ -5,10 +5,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
+import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.CheckAuthStatusUseCase
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LoginUseCase
 import com.largeblueberry.analyticshelper.AnalyticsHelper
 import com.largeblueberry.auth.model.AuthResult
-import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LogoutUseCaseImpl
+import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LogoutUseCase
 import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.auth.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,15 +24,17 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val logOutUseCase: LogoutUseCaseImpl,
+    private val logOutUseCase: LogoutUseCase,
     private val googleAuthDataSource: GoogleAuthDataSource,
-    private val analyticsHelper: AnalyticsHelper
+    private val analyticsHelper: AnalyticsHelper,
+    private val checkAuthStatusUseCase: CheckAuthStatusUseCase
 ): ViewModel() {
 
     private companion object {
         private const val TAG = "LoginViewModel"
     }
 
+    // ✅ [수정] 프로퍼티 선언을 init 블록 위로 이동
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
@@ -41,9 +44,28 @@ class LoginViewModel @Inject constructor(
     private val _startGoogleSignInFlow = Channel<Intent>(Channel.BUFFERED)
     val startGoogleSignInFlow = _startGoogleSignInFlow.receiveAsFlow()
 
+    init {
+        checkCurrentUser()
+    }
+
+    private fun checkCurrentUser() {
+        viewModelScope.launch {
+            // 현재 로그인된 사용자가 있는지 확인합니다.
+            val currentUser = checkAuthStatusUseCase() // UseCase 실행
+            if (currentUser != null) {
+                // 로그인된 사용자가 있다면 Authenticated 상태로 변경
+                _authUiState.value = AuthUiState.Authenticated(currentUser)
+                _uiState.value = _uiState.value.copy(currentUser = currentUser)
+            } else {
+                // 로그인된 사용자가 없다면 NotAuthenticated 상태로 변경
+                _authUiState.value = AuthUiState.NotAuthenticated
+            }
+        }
+    }
+
+    // ... 이하 함수들은 동일 ...
     fun onGoogleSignInClicked() {
         Log.d(TAG, "onGoogleSignInClicked called")
-        // 수정: params = emptyMap() 추가
         analyticsHelper.logEvent(name = "google_sign_in_clicked", params = emptyMap())
 
         viewModelScope.launch {
@@ -77,7 +99,6 @@ class LoginViewModel @Inject constructor(
                 signInWithGoogle(idToken)
             } else {
                 Log.w(TAG, "Failed to get ID token from Google sign-in result")
-                // 수정: params = emptyMap() 추가
                 analyticsHelper.logEvent(name = "google_id_token_failed", params = emptyMap())
 
                 _uiState.value = _uiState.value.copy(
@@ -97,7 +118,6 @@ class LoginViewModel @Inject constructor(
 
             when (val result = loginUseCase(idToken)) {
                 is AuthResult.Success -> {
-                    // 수정: .uid 제거
                     Log.i(TAG, "Sign-in with Google successful. User: ${result.user}")
                     analyticsHelper.logEvent(
                         name = "login_success",
@@ -142,7 +162,6 @@ class LoginViewModel @Inject constructor(
             result
                 .onSuccess {
                     Log.i(TAG, "Sign out successful")
-                    // 수정: params = emptyMap() 추가
                     analyticsHelper.logEvent(name = "sign_out", params = emptyMap())
 
                     _authUiState.value = AuthUiState.NotAuthenticated

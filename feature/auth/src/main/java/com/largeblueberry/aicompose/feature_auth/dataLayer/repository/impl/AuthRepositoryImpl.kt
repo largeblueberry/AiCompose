@@ -44,4 +44,16 @@ class AuthRepositoryImpl @Inject constructor(
             Result.failure(e) // 실패 시 예외 반환
         }
     }
+
+    override suspend fun getCurrentUser(): com.largeblueberry.auth.model.UserCore? {
+        // 1. Firebase에서 현재 사용자 정보를 가져옵니다.
+        val firebaseUser = firebaseAuth.currentUser
+
+        // 2. firebaseUser가 null이 아니면, Mapper를 사용해 Domain 모델(UserCore)로 변환하여 반환합니다.
+        return firebaseUser?.let {
+            // FirebaseUser -> data.User -> domain.UserCore
+            val dataUser = UserMapper.toUser(it)
+            UserMapper.toDomain(dataUser)
+        }
+    }
 }
