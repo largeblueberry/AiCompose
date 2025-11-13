@@ -10,4 +10,6 @@ interface AuthRepository {
     suspend fun signOut(): Result<Unit>
 
     suspend fun getCurrentUser(): UserCore?
+
+    suspend fun signInAnonymously(): Result<String>
 }

@@ -68,10 +68,12 @@ class MainActivity : ComponentActivity() {
             lifecycleScope.launch {
                 delay(2000)
                 showSplash.value = false
+                viewModel.checkUserAuthentication()
             }
         } else {
             // 언어 변경으로 인한 재생성이면 즉시 스플래시 숨김
             showSplash.value = false
+            viewModel.checkUserAuthentication()
             isRecreatingForLanguage = false // 플래그 리셋
         }
 
