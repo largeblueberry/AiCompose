@@ -124,7 +124,7 @@ private fun AppInfoCard() {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.customColors.cardViewBackground
+            containerColor = MaterialTheme.customColors.appWhite
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
