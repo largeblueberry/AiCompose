@@ -9,5 +9,5 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.56.2" apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     id("com.google.firebase.crashlytics") version "3.0.2" apply false
-}
 
+}

@@ -11,6 +11,11 @@ object LightColors {
     val AppRed = Color(0xFFFF0000)
     val AppPrimaryBlue = Color(0xFF4F8CFF)
 
+    // 제목용 파란색 팔레트 (이어름)
+    val TitleBlueDark = Color(0xFF2362EB)    // 진한 파란색
+    // 부제목용 연한 파란색 팔레트 (듣고, 꿈꾸는 AI 작곡 서비스)
+    val SubtitleBlue = Color(0xFF7987F8)    // 연한 보라빛 파란색
+
     // 텍스트 색상
     val AppTextDark = Color(0xFF222222) // 기존 DarkTextColor
     val CardViewMainText = Color(0xFF2563EB) // 카드뷰 메인 제목 글자 색

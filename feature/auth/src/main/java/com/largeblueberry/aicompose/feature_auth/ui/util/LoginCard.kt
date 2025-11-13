@@ -34,8 +34,7 @@ fun LoginCard(
             .padding(horizontal = 8.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            // 1. 카드 배경색: MaterialTheme.customColors를 통해 접근
-            containerColor = MaterialTheme.customColors.cardViewBackground
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp

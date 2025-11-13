@@ -47,7 +47,7 @@ fun AudioRecordItem(
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         // 1. 카드 배경색을 커스텀 테마 색상으로 변경
-        colors = CardDefaults.cardColors(containerColor = Theme.customColors.cardViewBackground)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier

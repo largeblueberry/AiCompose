@@ -2,6 +2,7 @@ package com.largeblueberry.aicompose.feature_auth.ui.util
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme // 👈 1. import 추가
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +37,14 @@ fun GoogleSignInButton(
     onClick: () -> Unit,
     enabled: Boolean = true
 ){
+    // 👈 2. 현재 테마가 다크 모드인지 확인
+    val isDarkTheme = isSystemInDarkTheme()
+
+    // 👈 3. 테마에 따라 버튼 색상과 테두리 색상을 결정
+    val containerColor = if (isDarkTheme) AppBlack else AppWhite
+    val contentColor = if (isDarkTheme) AppWhite else AppBlack
+    val borderColor = if (isDarkTheme) googleButtonBorderColor.copy(alpha = 0.8f) else googleButtonBorderColor
+
     Button(
         onClick = onClick,
         modifier = Modifier
@@ -43,12 +52,12 @@ fun GoogleSignInButton(
             .height(50.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppWhite, // 흰색 배경
-            contentColor = AppBlack, // 검은색 글자
+            containerColor = containerColor, // 테마에 맞는 배경색 적용
+            contentColor = contentColor,     // 테마에 맞는 콘텐츠색 적용
             disabledContainerColor = googleDisabledContainerColor,
             disabledContentColor = googleDisabledContentColor
         ),
-        border = BorderStroke(1.dp, googleButtonBorderColor),
+        border = BorderStroke(1.dp, borderColor), // 테마에 맞는 테두리색 적용
         enabled = enabled
     ) {
         Row(
@@ -59,16 +68,16 @@ fun GoogleSignInButton(
             Image(
                 painter = painterResource(id = R.drawable.ic_google_logo),
                 contentDescription = stringResource(id = ResourceR.string.googleLogo),
-                modifier = Modifier.size(24.dp) // 로고 크기 조정 (구글 가이드라인 18-24dp)
+                modifier = Modifier.size(24.dp)
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
                 text = stringResource(id = ResourceR.string.googleLogin),
-                fontSize = 15.sp, // 구글 가이드라인에 맞춰 폰트 크기 조정 (14-16sp)
-                fontWeight = FontWeight.Medium,
-                color = AppBlack
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium
+                // 👈 4. color 속성 제거 (Button의 contentColor가 자동으로 적용됨)
             )
         }
     }

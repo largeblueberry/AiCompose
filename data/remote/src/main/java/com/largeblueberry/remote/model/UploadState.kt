@@ -5,6 +5,7 @@ data class UploadState(
     val progress: Float = 0f,
     val message: String? = null,
     val url: String? = null,
+    val scoreUrl: String? = null,
     val recordId: Int? = null
 )
 

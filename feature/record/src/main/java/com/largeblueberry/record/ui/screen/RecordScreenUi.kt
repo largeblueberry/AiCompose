@@ -1,7 +1,14 @@
 package com.largeblueberry.record.ui.screen
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
@@ -21,10 +29,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,11 +46,6 @@ import com.largeblueberry.core_ui.LocalCustomColors
 import com.largeblueberry.record.ui.RecordingState
 import com.largeblueberry.resources.R as ResourcesR
 
-/**
- * 녹음 화면의 UI 레이아웃을 정의하는 Composable 함수.
- * 상태와 이벤트 콜백을 파라미터로 받습니다.
- */
-// 이전 답변과 마찬가지로 Theme 객체를 사용하면 편리합니다.
 object Theme {
     val customColors: CustomColors
         @Composable
@@ -51,7 +59,17 @@ fun RecordScreenUi(
     onRecordToggleClick: () -> Unit,
     onViewRecordingsClick: () -> Unit
 ) {
-    // 녹음 상태에 따른 텍스트 설정 (기존 코드와 동일)
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val isSmallScreen = screenHeight < 600.dp
+
+    // 화면 크기에 따른 동적 크기 조정
+    val micButtonSize = if (isSmallScreen) 120.dp else 160.dp
+    val micIconSize = if (isSmallScreen) 48.dp else 64.dp
+    val titleFontSize = if (isSmallScreen) 24.sp else 28.sp
+    val topPadding = if (isSmallScreen) 24.dp else 48.dp
+    val buttonHeight = if (isSmallScreen) 48.dp else 56.dp
+
     val stateText = when (recordingStateText) {
         RecordingState.WAITING -> stringResource(ResourcesR.string.recordWaiting)
         RecordingState.RECORDING -> stringResource(ResourcesR.string.recording)
@@ -61,102 +79,176 @@ fun RecordScreenUi(
         RecordingState.FAILED_STOP -> stringResource(ResourcesR.string.recordFailedStop)
     }
 
+    // 녹음 중일 때의 애니메이션
+    val recordingTransition = rememberInfiniteTransition(label = "recording_animation")
+    val recordingPulseScale by recordingTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse_scale"
+    )
+    val recordingPulseAlpha by recordingTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse_alpha"
+    )
+
+    // 대기 중일 때의 애니메이션 (메인 버튼 + 배경 리플)
+    val waitingTransition = rememberInfiniteTransition(label = "waiting_animation")
+    val waitingPulseScale by waitingTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.08f, // 더 눈에 띄게 변경
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200), // 약간 더 빠르게
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "waiting_pulse_scale"
+    )
+    val waitingRippleScale by waitingTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.3f, // 배경원은 더 크게 퍼짐
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "waiting_ripple_scale"
+    )
+    val waitingRippleAlpha by waitingTransition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 0f, // 배경원은 사라짐
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "waiting_ripple_alpha"
+    )
+
+    // 상태에 따라 적용할 스케일과 알파 값 결정
+    val buttonScale = if (isRecording) {
+        recordingPulseScale
+    } else if (recordingStateText == RecordingState.WAITING) {
+        waitingPulseScale
+    } else {
+        1f
+    }
+    val buttonAlpha = if (isRecording) recordingPulseAlpha else 1f
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // 1. 화면 배경색을 테마의 background 색상으로 변경
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp),
+            .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 상단 상태 텍스트
-        Spacer(modifier = Modifier.height(48.dp))
+        // 상단 제목 영역
+        Spacer(modifier = Modifier.height(topPadding))
         Text(
             text = stateText,
-            fontSize = 26.sp,
+            fontSize = titleFontSize,
             fontWeight = FontWeight.Bold,
-            // 2. 텍스트 색상을 테마의 onBackground 색상으로 변경
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
-        // 마이크 아이콘 (원 배경 포함)
-        Spacer(modifier = Modifier.height(32.dp))
-        Box(
-            modifier = Modifier
-                .size(112.dp)
-                // 3. 원 배경을 테마의 primary 색상으로 변경
-                .background(MaterialTheme.colorScheme.primary, shape = CircleShape),
-            contentAlignment = Alignment.Center
+
+        // 중앙 마이크 버튼을 위한 Spacer (가변적)
+        Spacer(modifier = Modifier.weight(1f))
+
+        // 마이크 버튼 영역
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.Mic,
-                contentDescription = null,
-                // 4. 아이콘 색상을 테마의 onPrimary 색상으로 변경
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(48.dp)
-            )
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                // 배경 리플 효과 (대기 상태에서만 보임)
+                if (recordingStateText == RecordingState.WAITING) {
+                    Box(
+                        modifier = Modifier
+                            .size(micButtonSize)
+                            .scale(waitingRippleScale)
+                            .graphicsLayer(alpha = waitingRippleAlpha)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            )
+                    )
+                }
+
+                // 메인 마이크 버튼
+                Box(
+                    modifier = Modifier
+                        .size(micButtonSize)
+                        .clickable { onRecordToggleClick() }
+                        .background(
+                            color = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        )
+                        .scale(buttonScale)
+                        .graphicsLayer(alpha = buttonAlpha),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Mic,
+                        contentDescription = if (isRecording) {
+                            stringResource(ResourcesR.string.recordStop)
+                        } else {
+                            stringResource(ResourcesR.string.recordStart)
+                        },
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(micIconSize)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(if (isSmallScreen) 24.dp else 32.dp))
+
+            // 프로그레스 바 또는 공간
+            if (isRecording) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = Theme.customColors.progressBarBackground
+                )
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
 
-        // 진행 바
-        Spacer(modifier = Modifier.height(32.dp))
-        if (isRecording) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp),
-                // 5. 진행 바 색상을 테마의 primary 색상으로 변경
-                color = MaterialTheme.colorScheme.primary,
-                // 6. 진행 바 트랙 색상을 커스텀 테마의 색상으로 변경
-                trackColor = Theme.customColors.progressBarBackground
-            )
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+        // 하단 버튼을 위한 Spacer (가변적)
+        Spacer(modifier = Modifier.weight(1f))
 
-        // 녹음 시작/중지 토글 버튼
-        Spacer(modifier = Modifier.height(40.dp))
-        Button(
-            onClick = onRecordToggleClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(
-                // 7. 녹음 상태에 따라 커스텀 색상과 표준 색상을 사용하도록 변경
-                containerColor = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
-                // 8. 버튼 콘텐츠 색상을 onPrimary로 통일하여 일관성 확보
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            shape = MaterialTheme.shapes.small
-        ) {
-            Text(
-                text = if (isRecording) {
-                    stringResource(ResourcesR.string.recordStop)
-                } else {
-                    stringResource(ResourcesR.string.recordStart)
-                },
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // 녹음 파일 보기 버튼 (OutlinedButton으로 리팩토링하여 코드 간소화)
-        Spacer(modifier = Modifier.height(12.dp))
+        // 하단 버튼 영역
         OutlinedButton(
             onClick = onViewRecordingsClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
-            shape = MaterialTheme.shapes.small,
-            // 9. OutlinedButton은 기본적으로 primary 색상을 사용하므로 색상 지정 코드가 불필요
+                .widthIn(max = 400.dp)
+                .height(buttonHeight),
+            shape = MaterialTheme.shapes.medium,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
         ) {
             Text(
                 text = stringResource(ResourcesR.string.gotoLibrary),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary // 텍스트 색상 명시
+                fontSize = if (isSmallScreen) 14.sp else 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
             )
         }
+
+        // 하단 버튼이 너무 아래에 붙지 않도록 가중치를 주어 공간을 확보합니다.
+        Spacer(modifier = Modifier.weight(0.3f))
     }
 }
-
 
 @Preview
 @Composable
@@ -169,3 +261,28 @@ fun RecordScreenPreview() {
     )
 }
 
+@Preview(showBackground = true)
+@Composable
+fun RecordScreenUiRecordingPreview() {
+    MaterialTheme {
+        RecordScreenUi(
+            isRecording = true,
+            recordingStateText = RecordingState.RECORDING,
+            onRecordToggleClick = {},
+            onViewRecordingsClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, heightDp = 500)
+@Composable
+fun RecordScreenUiSmallScreenPreview() {
+    MaterialTheme {
+        RecordScreenUi(
+            isRecording = false,
+            recordingStateText = RecordingState.WAITING,
+            onRecordToggleClick = {},
+            onViewRecordingsClick = {}
+        )
+    }
+}

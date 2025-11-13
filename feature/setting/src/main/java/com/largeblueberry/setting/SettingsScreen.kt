@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +33,7 @@ import com.largeblueberry.core_ui.AppBlack
 import com.largeblueberry.core_ui.AppPrimaryBlue
 import com.largeblueberry.core_ui.AppRed
 import com.largeblueberry.core_ui.AppWhite
+import com.largeblueberry.core_ui.LightCustomColors
 import com.largeblueberry.core_ui.SettingBasicUser
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.navigation.SettingsNavigationActions
@@ -122,7 +124,7 @@ private fun AppInfoCard() {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = AppWhite
+            containerColor = MaterialTheme.customColors.appWhite
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -134,12 +136,36 @@ private fun AppInfoCard() {
         ) {
             // 앱 로고
             Image(
-                painter = painterResource(id = R.drawable.eareamsplash),
+                painter = painterResource(id = R.drawable.eareamlogo),
                 contentDescription = stringResource(ResourceR.string.eareamLogoDescription),
                 modifier = Modifier
-                    .size(200.dp)
-                    .padding(8.dp),
+                    .size(140.dp)
+                    .padding(8.dp)
+                    .offset(x = (30).dp, y = 0.dp),
                 contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 앱 제목
+            Text(
+                text = stringResource(id = ResourceR.string.app_name),
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                color = LightCustomColors.titleBlueDark, // 파란색
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // 부제목
+            Text(
+                text = stringResource(id = ResourceR.string.app_subtitle),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                color = LightCustomColors.subtitleBlue, // 연보라색
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp) // 긴 텍스트를 위한 패딩
             )
 
             Spacer(modifier = Modifier.height(8.dp))

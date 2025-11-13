@@ -13,12 +13,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.os.ConfigurationCompat
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
 import com.largeblueberry.aicompose.nav.AppNavigation
 import com.largeblueberry.aicompose.ui.main.MainViewModel
+import com.largeblueberry.aicompose.ui.splash.SplashScreen
 import com.largeblueberry.core_ui.AppTheme
 import com.largeblueberry.domain.repository.LanguageRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +36,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var languageRepository: LanguageRepository
+
+    // 스플래시 화면 표시 상태
+    private var showSplash = mutableStateOf(true)
 
     // recreate로 인한 재생성인지 구분하기 위한 플래그
     private var isRecreatingForLanguage = false
@@ -57,17 +62,37 @@ class MainActivity : ComponentActivity() {
 
         Log.d(TAG, "isRecreatingForLanguage: $isRecreatingForLanguage")
 
+        // 언어 변경으로 인한 재생성이 아닐 때만 스플래시 표시
+        if (!isRecreatingForLanguage) {
+            // 2초 후 스플래시 화면 숨기기
+            lifecycleScope.launch {
+                delay(2000)
+                showSplash.value = false
+                viewModel.checkUserAuthentication()
+            }
+        } else {
+            // 언어 변경으로 인한 재생성이면 즉시 스플래시 숨김
+            showSplash.value = false
+            viewModel.checkUserAuthentication()
+            isRecreatingForLanguage = false // 플래그 리셋
+        }
+
         handleLanguageChanges()
 
         setContent {
             val themeOption by viewModel.themeOption.collectAsState()
+            val isSplashVisible by showSplash
 
             AppTheme(themeOption = themeOption) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation()
+                    if (isSplashVisible) {
+                        SplashScreen() // 기존 스플래시 컴포저블 사용
+                    } else {
+                        AppNavigation()
+                    }
                 }
             }
         }

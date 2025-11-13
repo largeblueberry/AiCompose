@@ -78,6 +78,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:resources"))
     implementation(project(":core:domain"))
+    implementation(project(":core:auth"))
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:library"))
