@@ -16,10 +16,10 @@
 
 ## 앱 스크린샷
 <div align="center">
-    <img src="screenshots/mainScreen.jpg" width="250" alt="메인 화면">
-    <img src="screenshots/recordScreen.jpg" width="250" alt="녹음 화면">
-    <img src="screenshots/libraryScreen.jpg" width="250" alt="라이브러리 화면">
-    <img src="screenshots/settingScreen.jpg" width="250" alt="설정 화면">
+    <img src="screenshots/mainScreen.jpg" width="200" alt="메인 화면">
+    <img src="screenshots/recordScreen.jpg" width="200" alt="녹음 화면">
+    <img src="screenshots/libraryScreen.jpg" width="200" alt="라이브러리 화면">
+    <img src="screenshots/settingScreen.jpg" width="200" alt="설정 화면">
 </div>
 
 ### 개발 정보
