@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_subtitle">듣고, 꿈꾸는 AI 작곡 서비스</string>
+
     <string name="app_name">이어름</string>
     <string name="recordMainText">음성 녹음하기</string>
     <string name="recordSubText">순간의 영감을 빨리 기록해요.</string>
