@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Eaream</string>
+    <string name="recordMainText">Record Voice</string>
+    <string name="recordSubText">Quickly record moments of inspiration.</string>
+    <string name="libraryMainText">My Works</string>
+    <string name="librarySubText">Check the works I\'ve created.</string>
+    <string name="settingsMainText">Settings</string>
+    <string name="settingsSubText">Change app settings.</string>
+    <string name="waveformMainText">Check your Record</string>
+    <string name="waveformSubText">Review, delete, and upload your recording.</string>
+
+
+    <string name="emptyLibrary">No recorded files.</string>
+    <string name="serverUploadError">Server upload failed. Please try again later.</string>
+    <string name="serverUploadSuccess">Upload successful!</string>
+    <string name="serverUploading">Already uploading. Please wait.</string>
+    <string name="fileDeleteSuccess">File deletion successful.</string>
+    <string name="fileDeleteError">File deletion failed. Please try again later.</string>
+
+    <string name="renameFile">Rename file</string>
+    <string name="newName">New name</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="myLibrary">My Library</string>
+
+    <string name="recordPermission">Recording permission is required.</string>
+    <string name="recordSavedMSG">Recording saved: %1$s</string>
+
+    <string name="recordWaiting">Recording ...</string>
+    <string name="recording">Recording</string>
+    <string name="recordComplete">Recording stopped</string>
+    <string name="recordFailedFilePath">Recording path not found.</string>
+    <string name="recordFailedStart">Failed to start recording.</string>
+    <string name="recordFailedStop">Recording failed due to an unknown error.</string>
+
+    <string name="recordStart">Start recording</string>
+    <string name="recordStop">Stop recording</string>
+    <string name="gotoLibrary">View recordings</string>
+
+    <string name="googleLogin">Sign in with Google Account</string>
+
+    <string name="userSkipButton">Skip for now</string>
+    <string name="utilOr">  or  </string>
+
+    <string name="accountSync">Account Link</string>
+    <string name="googleLoginExperienceMore">Sign in with your Google Account to experience more features.</string>
+    <string name="loginTermsAgreementNotice">By logging in, you agree to the Terms of Service.</string>
+
+    <string name="settingTitle">Settings</string>
+    <string name="appSetting">App Settings</string>
+    <string name="appAlarmMainText">Notifications</string>
+    <string name="appAlarmSubText">Push Notification Settings</string>
+
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="loginSubText">Sign in with your Google Account</string>
+
+    <string name="languageMainText">Language</string>
+    <string name="languageSubText">Language Settings</string>
+
+    <string name="themeMainText">Theme</string>
+    <string name="themeSubText">Light/Dark Mode</string>
+
+    <string name="appHelper">Help</string>
+    <string name="appUseMainText">How to Use</string>
+    <string name="appUseSubText">User Guide</string>
+    <string name="aboutEareamMainText">About Eaream</string>
+    <string name="aboutEareamSubText">Service Introduction</string>
+    <string name="appBugMainText">Report a Bug</string>
+    <string name="appBugSubText">Please report any errors.</string>
+
+    <string name="serviceTermMainText">Terms of Service</string>
+    <string name="serviceTermSubText">Terms and Policies</string>
+
+
+    <string name="backButtonContentDescription">Back button</string>
+    <string name="eareamLogoDescription">Eaream logo</string>
+    <string name="googleLogo">Google logo</string>
+    <string name="pauseDescription">Pause</string>
+    <string name="stopDescription">Stop</string>
+    <string name="playDescription">Play</string>
+    <string name="uploadDescription">Upload</string>
+    <string name="deleteDescription">Delete</string>
+
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System default</string>
+
+    <string name="select_theme">Select app theme</string>
+
+    <string name="theme_settings_title">Theme Settings</string>
+    <string name="back_button_description">Back button</string>
+
+    <string name="theme_option_system_title">Follow system settings</string>
+    <string name="theme_option_system_subtitle">Follows the device\'s system settings</string>
+
+    <string name="theme_option_light_title">Light mode</string>
+    <string name="theme_option_light_subtitle">Uses a light theme</string>
+
+    <string name="theme_option_dark_title">Dark mode</string>
+    <string name="theme_option_dark_subtitle">Uses a dark theme</string>
+
+    <string name="language_setting_title">Language Settings</string>
+
+    <string name="sheet_music_list_title">Sheet Music List</string>
+    <string name="navigate_back_content_description">Navigate Back</string>
+    <string name="empty_sheet_music_main_message">No sheet music yet</string>
+    <string name="empty_sheet_music_sub_message">Shall we start recording first?</string>
+    <string name="start_recording_button">🎤 Start Recording</string>
+
+    <string name="sheet_music_detail_title">Sheet Music Detail</string>
+    <string name="sheet_music_detail_screen_message">Sheet Music Detail Screen</string>
+
+</resources>

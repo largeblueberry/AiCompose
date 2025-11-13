@@ -1,4 +1,4 @@
-package com.largeblueberry.setting.ui
+package com.largeblueberry.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,11 +35,10 @@ import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.SettingBasicUser
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.navigation.SettingsNavigationActions
-import com.largeblueberry.setting.BuildConfig
 import com.largeblueberry.ui.R
-import com.largeblueberry.setting.ui.util.SettingItem
-import com.largeblueberry.setting.ui.util.SettingSection
-import com.largeblueberry.setting.ui.viewmodel.SettingViewModel
+import com.largeblueberry.setting.util.SettingItem
+import com.largeblueberry.setting.util.SettingSection
+import com.largeblueberry.setting.viewmodel.SettingViewModel
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)

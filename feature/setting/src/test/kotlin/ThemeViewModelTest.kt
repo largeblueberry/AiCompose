@@ -1,8 +1,8 @@
 package com.largeblueberry.setting.presentation
 
 import com.largeblueberry.core_ui.ThemeOption
-import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
-import com.largeblueberry.setting.ui.theme.ui.ThemeViewModel
+import com.largeblueberry.setting.theme.domain.ThemeRepository
+import com.largeblueberry.setting.theme.ui.ThemeViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

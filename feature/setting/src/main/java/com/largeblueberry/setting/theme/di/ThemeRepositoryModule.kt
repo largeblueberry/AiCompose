@@ -1,7 +1,7 @@
-package com.largeblueberry.setting.ui.theme.di
+package com.largeblueberry.setting.theme.di
 
-import com.largeblueberry.setting.ui.theme.dataLayer.ThemeRepositoryImpl
-import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
+import com.largeblueberry.setting.theme.dataLayer.ThemeRepositoryImpl
+import com.largeblueberry.setting.theme.domain.ThemeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,11 +1,11 @@
-package com.largeblueberry.setting.ui.theme.dataLayer
+package com.largeblueberry.setting.theme.dataLayer
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.largeblueberry.core_ui.ThemeOption
-import com.largeblueberry.setting.ui.theme.domain.ThemeRepository
+import com.largeblueberry.setting.theme.domain.ThemeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

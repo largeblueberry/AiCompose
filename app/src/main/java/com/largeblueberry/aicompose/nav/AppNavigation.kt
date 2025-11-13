@@ -3,18 +3,22 @@ package com.largeblueberry.aicompose.nav
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
-import com.largeblueberry.setting.ui.SettingsScreen
+import com.largeblueberry.feature_sheetmusic.ui.SheetMusicDetailScreen
+import com.largeblueberry.feature_sheetmusic.ui.SheetMusicListScreen
+import com.largeblueberry.setting.SettingsScreen
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.record.ui.screen.RecordScreenState
 import com.largeblueberry.setting.language.LanguageSettingScreen
-import com.largeblueberry.setting.ui.theme.ui.ThemeSettingsScreen
+import com.largeblueberry.setting.theme.ui.ThemeSettingsScreen
 
 @Composable
 fun AppNavigation() {
@@ -96,6 +100,40 @@ fun AppNavigation() {
            // AboutScreen(
            //     onBackClick = { navController.popBackStack() }
            // )
+        }
+
+
+        composable(AppRoutes.SheetMusicListScreen.route) {
+            SheetMusicListScreen(
+                // 변경: 클릭 시 상세 화면으로 ID와 함께 이동
+                onSheetMusicClick = { sheetMusic ->
+                    navController.navigate("${AppRoutes.SheetMusicDetailScreen.route}/${sheetMusic.id}")
+                },
+                // 추가: 빈 화면에서 녹음 화면으로 이동하는 로직 연결
+                onNavigateToRecord = {
+                    navController.navigate(AppRoutes.RecordScreen.route)
+                },
+                // 추가: 뒤로가기 처리
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // 추가: 악보 상세 화면 라우트 정의
+        composable(
+            route = "${AppRoutes.SheetMusicDetailScreen.route}/{sheetMusicId}",
+            arguments = listOf(navArgument("sheetMusicId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            // 전달받은 ID를 상세 화면에 넘겨줌
+            val sheetMusicId = backStackEntry.arguments?.getString("sheetMusicId")
+            SheetMusicDetailScreen(
+                sheetMusicId = sheetMusicId,
+                // 추가: 뒤로가기 처리
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
     }

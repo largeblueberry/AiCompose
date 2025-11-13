@@ -40,18 +40,20 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:resources"))
+
     // ===== 기본 Android =====
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
     // ===== 모듈 =====
+    implementation(project(":core:resources"))
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))
+    implementation(project(":core:analytics-api"))
 
     // ===== HILT =====
     implementation("com.google.dagger:hilt-android:2.56.2")

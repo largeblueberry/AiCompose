@@ -1,6 +1,9 @@
 package com.largeblueberry.aicompose
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -8,41 +11,56 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.os.ConfigurationCompat
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.lifecycleScope
 import com.largeblueberry.aicompose.nav.AppNavigation
 import com.largeblueberry.aicompose.ui.main.MainViewModel
-import com.largeblueberry.aicompose.ui.AppTheme
-import com.largeblueberry.setting.language.ui.LanguageViewModel
+import com.largeblueberry.core_ui.AppTheme
+import com.largeblueberry.domain.repository.LanguageRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
-    private val languageViewModel: LanguageViewModel by viewModels()
+
+    @Inject
+    lateinit var languageRepository: LanguageRepository
+
+    // recreate로 인한 재생성인지 구분하기 위한 플래그
+    private var isRecreatingForLanguage = false
+
+    private companion object {
+        private const val TAG = "MainActivity"
+        private const val KEY_IS_RECREATING = "is_recreating_for_language"
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        Log.d(TAG, "attachBaseContext called")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate called")
+
+        // savedInstanceState에서 recreate 플래그 복원
+        isRecreatingForLanguage = savedInstanceState?.getBoolean(KEY_IS_RECREATING, false) ?: false
+
+        Log.d(TAG, "isRecreatingForLanguage: $isRecreatingForLanguage")
+
+        handleLanguageChanges()
 
         setContent {
             val themeOption by viewModel.themeOption.collectAsState()
-            val languageUiState by languageViewModel.uiState.collectAsState()
-
-            LaunchedEffect(languageUiState.selectedLanguageCode) {
-                // ⛔️ 수정 전: if (languageUiState.selectedLanguageCode.isNotBlank())
-                // ✅ 수정 후: isNullOrBlank()를 사용하여 null 안정성을 확보합니다.
-                if (!languageUiState.selectedLanguageCode.isNullOrBlank()) {
-                    // 이 블록 안에서는 selectedLanguageCode가 null이 아님이 보장됩니다.
-                    val appLocale = LocaleListCompat.forLanguageTags(languageUiState.selectedLanguageCode)
-                    if (AppCompatDelegate.getApplicationLocales() != appLocale) {
-                        AppCompatDelegate.setApplicationLocales(appLocale)
-                    }
-                }
-            }
 
             AppTheme(themeOption = themeOption) {
                 Surface(
@@ -53,5 +71,73 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // recreate 플래그를 저장
+        outState.putBoolean(KEY_IS_RECREATING, isRecreatingForLanguage)
+    }
+
+    private fun handleLanguageChanges() {
+        lifecycleScope.launch {
+            Log.d(TAG, "handleLanguageChanges: Coroutine launched.")
+
+            languageRepository.language
+                .collect { languageCode ->
+                    // 현재 Activity의 언어 코드만 추출 (ko-KR -> ko, en-US -> en)
+                    val currentLocale = ConfigurationCompat.getLocales(resources.configuration)[0]
+                    val currentLanguageCode = currentLocale?.language // ko, en 등만 추출
+
+                    Log.d(TAG, "Language collected: '$languageCode', Current Activity language: '$currentLanguageCode', Full locale: '${currentLocale?.toLanguageTag()}', isRecreatingForLanguage: $isRecreatingForLanguage")
+
+                    // recreate로 인한 재생성이라면 플래그를 리셋하고 처리하지 않음
+                    if (isRecreatingForLanguage) {
+                        Log.d(TAG, "This is a recreate call, resetting flag and skipping.")
+                        isRecreatingForLanguage = false
+                        return@collect
+                    }
+
+                    // 언어 코드만 비교 (ko vs ko, en vs en)
+                    if (currentLanguageCode != languageCode) {
+                        Log.d(TAG, "Language mismatch! Current: '$currentLanguageCode', Target: '$languageCode'. Applying and recreating.")
+                        isRecreatingForLanguage = true // 플래그 설정
+
+                        // 두 가지 방법 모두 시도
+                        try {
+                            // 방법 1: AppCompatDelegate 사용
+                            val localeList = LocaleListCompat.forLanguageTags(languageCode)
+                            AppCompatDelegate.setApplicationLocales(localeList)
+                            Log.d(TAG, "AppCompatDelegate.setApplicationLocales called with: $languageCode")
+
+                            // 방법 2: Configuration 직접 변경 (백업)
+                            val locale = Locale(languageCode)
+                            val config = Configuration(resources.configuration)
+                            config.setLocale(locale)
+                            resources.updateConfiguration(config, resources.displayMetrics)
+                            Log.d(TAG, "Configuration updated directly with: $languageCode")
+
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error setting language: ${e.message}")
+                        }
+
+                        // 시스템이 언어를 적용할 시간을 주기 위해 지연
+                        delay(200) // 지연 시간을 늘림
+                        recreate()
+                    } else {
+                        Log.d(TAG, "Language matches. Current: '$currentLanguageCode', Target: '$languageCode'. No action needed.")
+                    }
+                }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume called")
     }
 }

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">이어름</string>
+    <string name="recordMainText">음성 녹음하기</string>
+    <string name="recordSubText">순간의 영감을 빨리 기록해요.</string>
+    <string name="libraryMainText">내 작품</string>
+    <string name="librarySubText">내가 만든 작품들을 확인해요.</string>
+    <string name="settingsMainText">설정</string>
+    <string name="settingsSubText">앱 설정을 변경해요.</string>
+    <string name="waveformMainText">녹음을 확인하세요</string>
+    <string name="waveformSubText">내 녹음을 듣고, 삭제하고 업로드 해요.</string>
+
+    <string name="emptyLibrary">녹음된 파일이 없습니다.</string>
+    <string name = "serverUploadError">서버 업로드에 실패했습니다. 잠시후 다시 시도해주세요.</string>
+    <string name="serverUploadSuccess">업로드 성공!</string>
+    <string name="serverUploading">이미 업로드 중입니다. 잠시만 기다려주세요.</string>
+    <string name="fileDeleteSuccess">파일 삭제 성공.</string>
+    <string name="fileDeleteError">파일 삭제에 실패했습니다. 잠시후 다시 시도해주세요.</string>
+
+    <string name="renameFile">파일 이름 변경</string>
+    <string name="newName">새 이름</string>
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+    <string name="myLibrary">내 작품</string>
+
+    <string name="recordPermission">녹음 권한이 필요합니다.</string>
+    <string name="recordSavedMSG">녹음 파일이 저장되었습니다: %1$s</string>
+
+    <string name="recordWaiting">녹음 중 ...</string>
+    <string name="recording">녹음 중</string>
+    <string name="recordComplete">녹음 중지</string>
+    <string name="recordFailedFilePath">녹음 경로를 찾지 못 했습니다.</string>
+    <string name="recordFailedStart">녹음을 시작하지 못 했습니다.</string>
+    <string name="recordFailedStop">알 수 없는 오류로 녹음에 실패</string>
+
+    <string name="recordStart">녹음 시작</string>
+    <string name="recordStop">녹음 중지</string>
+    <string name="gotoLibrary">녹음 파일 보기</string>
+
+    <string name="googleLogin">Google 계정으로 로그인</string>
+
+    <string name="userSkipButton">나중에 하기</string>
+    <string name="utilOr">  또는  </string>
+
+    <string name="accountSync">계정 연결</string>
+    <string name="googleLoginExperienceMore">Google 계정으로 로그인하여 더 많은 기능을 이용해보세요</string>
+    <string name="loginTermsAgreementNotice">로그인 시 서비스 약관에 동의합니다.</string>
+
+    <string name="settingTitle">설정</string>
+    <string name ="appSetting">앱 설정</string>
+    <string name="appAlarmMainText">알림</string>
+    <string name="appAlarmSubText">푸쉬 알람 설정</string>
+
+    <string name="account">계정</string>
+    <string name="logout">로그아웃</string>
+    <string name="login">로그인</string>
+    <string name="loginSubText">Google 계정으로 로그인하세요</string>
+
+    <string name="languageMainText">언어</string>
+    <string name="languageSubText">언어 설정</string>
+
+    <string name="themeMainText">테마</string>
+    <string name="themeSubText">라이트/다크 모드</string>
+
+    <string name="appHelper">도움말</string>
+    <string name="appUseMainText">사용법</string>
+    <string name="appUseSubText">사용 가이드</string>
+    <string name="aboutEareamMainText">About Eaream</string>
+    <string name="aboutEareamSubText">서비스 소개</string>
+    <string name="appBugMainText">버그 신고</string>
+    <string name="appBugSubText">오류를 알려주세요.</string>
+
+    <string name ="serviceTermMainText">서비스 약관</string>
+    <string name="serviceTermSubText">이용약관 및 정책</string>
+
+
+    <string name="backButtonContentDescription">뒤로 가기</string>
+    <string name="eareamLogoDescription">이어름 로고</string>
+    <string name="googleLogo">구글 로고</string>
+    <string name="pauseDescription">일시 정지</string>
+    <string name="stopDescription">정지</string>
+    <string name="playDescription">재생</string>
+    <string name="uploadDescription">업로드</string>
+    <string name="deleteDescription">삭제</string>
+
+    <string name="theme_light">라이트</string>
+    <string name="theme_dark">다크</string>
+    <string name="theme_system">시스템 설정</string>
+
+    <string name="select_theme">앱 테마를 선택하세요</string>
+
+    <string name="theme_settings_title">테마 설정</string>
+    <string name="back_button_description">뒤로가기</string>
+
+    <string name="theme_option_system_title">시스템 설정 따르기</string>
+    <string name="theme_option_system_subtitle">기기의 시스템 설정을 따릅니다</string>
+
+    <string name="theme_option_light_title">라이트 모드</string>
+    <string name="theme_option_light_subtitle">밝은 테마를 사용합니다</string>
+
+    <string name="theme_option_dark_title">다크 모드</string>
+    <string name="theme_option_dark_subtitle">어두운 테마를 사용합니다</string>
+
+    <string name="language_setting_title"> 언어 설정</string>
+
+    <string name="sheet_music_list_title">악보 목록</string>
+    <string name="navigate_back_content_description">뒤로 가기</string>
+    <string name="empty_sheet_music_main_message">아직 악보가 없네요</string>
+    <string name="empty_sheet_music_sub_message">녹음 먼저 시작해볼까요?</string>
+    <string name="start_recording_button">🎤 녹음 시작하기</string>
+
+    <string name="sheet_music_detail_title">악보 상세</string>
+    <string name="sheet_music_detail_screen_message">악보 상세 화면</string>
+
+
+
+</resources>
