@@ -1,5 +1,6 @@
 package com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.AuthMapper
@@ -42,6 +43,39 @@ class AuthRepositoryImpl @Inject constructor(
             Result.success(Unit) // 성공 시 Unit 반환
         } catch (e: Exception) {
             Result.failure(e) // 실패 시 예외 반환
+        }
+    }
+
+    override suspend fun getCurrentUser(): com.largeblueberry.auth.model.UserCore? {
+        // 1. Firebase에서 현재 사용자 정보를 가져옵니다.
+        val firebaseUser = firebaseAuth.currentUser
+
+        // 2. firebaseUser가 null이 아니면, Mapper를 사용해 Domain 모델(UserCore)로 변환하여 반환합니다.
+        return firebaseUser?.let {
+            // FirebaseUser -> data.User -> domain.UserCore
+            val dataUser = UserMapper.toUser(it)
+            UserMapper.toDomain(dataUser)
+        }
+    }
+
+    override suspend fun signInAnonymously(): Result<String> {
+        return try {
+            // 1. 올바른 클라이언트용 함수인 signInAnonymously()를 호출합니다.
+            // 2. await() 함수를 사용해 작업이 끝날 때까지 기다립니다. (더 깔끔한 코루틴 방식)
+            val authResult = FirebaseAuth.getInstance().signInAnonymously().await()
+
+            val userId = authResult.user?.uid
+            if (userId != null) {
+                Log.i("AuthRepositoryImpl", "익명 인증 성공: $userId")
+                Result.success(userId)
+            } else {
+                Log.e("AuthRepositoryImpl", "익명 인증 후 UID가 null입니다.")
+                Result.failure(Exception("익명 인증 후 UID가 null입니다."))
+            }
+        } catch (e: Exception) {
+            // 네트워크 오류나 기타 Firebase 예외가 여기서 잡힙니다.
+            Log.e("AuthRepositoryImpl", "익명 인증 실패", e)
+            Result.failure(e)
         }
     }
 }

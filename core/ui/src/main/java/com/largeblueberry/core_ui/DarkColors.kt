@@ -9,10 +9,12 @@ object DarkColors {
     val AppRed = Color(0xFFFF6B6B) // 조금 더 밝은 빨강
     val AppPrimaryBlue = Color(0xFF6BA3FF) // 조금 더 밝은 파랑
 
+
     // 텍스트 색상
     val AppTextDark = Color(0xFFE0E0E0) // 밝은 회색
     val CardViewMainText = Color(0xFF60A5FA) // 밝은 파랑
     val CardViewSubText = Color(0xFFA1B5D8) // 밝은 회색-파랑
+
 
     // 특정 목적의 색상
     val RecordingRed = Color(0xFFFF6B6B)

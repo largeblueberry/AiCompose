@@ -126,18 +126,25 @@ class LibraryViewModel @Inject constructor(
                         )
                     }
                     try {
-                        val result: Result<String> = uploadAudioRecordUseCase(filePath)
+                        // --- 여기부터 수정 ---
+                        // 1. result 변수의 타입을 명시하지 않고, 타입 추론에 맡깁니다.
+                        //    (result는 이제 Result<UploadResponse> 타입이 됩니다)
+                        val result = uploadAudioRecordUseCase(filePath)
 
                         result.fold(
-                            onSuccess = { midiUrl ->
-                                if (midiUrl.isNotEmpty()) {
-                                    Log.i(TAG, "Upload successful for record: $recordId. URL: $midiUrl")
+                            // 2. onSuccess는 이제 String이 아닌 UploadResponse 객체를 받습니다.
+                            onSuccess = { uploadResponse ->
+                                // 3. UploadResponse 객체 안의 midiUrl을 사용합니다. (null일 수 있으므로 안전하게 체크)
+                                val urlToUse = uploadResponse.midiUrl
+
+                                if (!urlToUse.isNullOrEmpty()) {
+                                    Log.i(TAG, "Upload successful for record: $recordId. URL: $urlToUse")
                                     analyticsHelper.logEvent("upload_record_success", mapOf("record_id" to recordId.toString()))
                                     _uiState.update {
                                         it.copy(
                                             uploadState = UploadState(
                                                 status = UploadStatus.SUCCESS,
-                                                url = midiUrl,
+                                                url = urlToUse, // UI State에 URL 전달
                                                 recordId = recordId,
                                             ),
                                             currentUploads = availabilityResult.currentUploads,
@@ -146,9 +153,9 @@ class LibraryViewModel @Inject constructor(
                                     }
                                     checkUploadAvailabilityUseCase.uploadCounter()
                                 } else {
+                                    Log.w(TAG, "Upload for record $recordId succeeded but returned an empty URL.")
+                                    analyticsHelper.logEvent("upload_record_empty_url", mapOf("record_id" to recordId.toString()))
                                     _uiState.update {
-                                        Log.w(TAG, "Upload for record $recordId succeeded but returned an empty URL.")
-                                        analyticsHelper.logEvent("upload_record_empty_url", mapOf("record_id" to recordId.toString()))
                                         it.copy(
                                             uploadState = UploadState(
                                                 status = UploadStatus.ERROR,
@@ -159,6 +166,7 @@ class LibraryViewModel @Inject constructor(
                                     }
                                 }
                             },
+                            // onFailure 부분은 동일합니다.
                             onFailure = { exception ->
                                 Log.e(TAG, "Upload failed for record: $recordId", exception)
                                 analyticsHelper.logEvent(
@@ -176,6 +184,7 @@ class LibraryViewModel @Inject constructor(
                                 }
                             }
                         )
+                        // --- 여기까지 수정 ---
 
                     } catch (e: Exception) {
                         Log.e(TAG, "An unexpected error occurred during upload for record: $recordId", e)
@@ -193,14 +202,11 @@ class LibraryViewModel @Inject constructor(
                             )
                         }
                     } finally {
-                        // 업로드 완료 후 uploadingRecordId 초기화.
-                        // 여러 업로드를 동시에 처리하지 않는다는 가정 하에.
                         if (_uiState.value.uploadingRecordId == recordId) {
                             _uiState.update {
                                 it.copy(
                                     uploadingRecordId = null,
                                     isUploadingInProgress = false
-                                    // 업로드 결과에 상관없이 시 플래그
                                 )
                             }
                         }
@@ -209,13 +215,12 @@ class LibraryViewModel @Inject constructor(
                 is UploadAvailabilityResult.LimitReached -> {
                     Log.w(TAG, "Upload limit reached for user. Max: ${availabilityResult.maxUploads}")
                     analyticsHelper.logEvent("upload_limit_reached", mapOf("max_uploads" to availabilityResult.maxUploads.toString()))
-                    // 업로드 한도 초과: 사용자에게 메시지 표시
                     _uiState.update {
                         it.copy(
                             uploadState = UploadState(
                                 status = UploadStatus.ERROR,
                                 message = "업로드 한도 초과: 최대 ${availabilityResult.maxUploads}회 업로드 가능합니다.",
-                                recordId = recordId // 어떤 레코드에 대한 메시지인지 표시
+                                recordId = recordId
                             ),
                             currentUploads = availabilityResult.currentUploads,
                             maxUploads = availabilityResult.maxUploads
@@ -225,7 +230,6 @@ class LibraryViewModel @Inject constructor(
                 is UploadAvailabilityResult.Error -> {
                     Log.e(TAG, "Error checking upload availability: ${availabilityResult.message}")
                     analyticsHelper.logEvent("upload_availability_check_failure", mapOf("error" to availabilityResult.message))
-                // 업로드 가능 여부 확인 중 오류 발생
                     _uiState.update {
                         it.copy(
                             uploadState = UploadState(
@@ -237,9 +241,9 @@ class LibraryViewModel @Inject constructor(
                     }
                 }
             }
-
         }
     }
+
 
     private fun loadInitialData() {
         viewModelScope.launch {

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_subtitle">AI Music Composition Service that Listens and Dreams</string>
+
     <string name="app_name">Eaream</string>
     <string name="recordMainText">Record Voice</string>
     <string name="recordSubText">Quickly record moments of inspiration.</string>

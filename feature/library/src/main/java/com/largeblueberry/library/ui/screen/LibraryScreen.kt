@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.library.ui.viemodel.LibraryViewModel
 import com.largeblueberry.remote.model.UploadStatus
 import com.largeblueberry.resources.R as ResourcesR
@@ -93,7 +94,7 @@ fun LibraryScreen(
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 4.dp
         ) {
             Box( // Box를 사용하여 아이콘과 텍스트를 배치
@@ -117,7 +118,7 @@ fun LibraryScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack, // 뒤로가기 아이콘
                         contentDescription = stringResource(ResourcesR.string.backButtonContentDescription),
-                        tint = Color.White // 흰색으로 설정
+                        tint = MaterialTheme.customColors.appBlack// 아이콘 색상을 커스텀 테마 색상으로 변경
                     )
                 }
 
@@ -126,7 +127,7 @@ fun LibraryScreen(
                     text = stringResource(ResourcesR.string.myLibrary),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = MaterialTheme.customColors.appBlack, // 텍스트 색상을 커스텀 테마 색상으로 변경
                     modifier = Modifier
                         .align(Alignment.Center)// Box의 가운데에 정렬
                         .padding(top = 20.dp)
@@ -138,9 +139,10 @@ fun LibraryScreen(
                             text = "($current/$max)",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Normal,
-                            color = Color.White,
+                            color = MaterialTheme.customColors.appBlack, // 텍스트 색상을 커스텀 테마 색상으로 변경
                             modifier = Modifier
                                 .align(Alignment.CenterEnd)
+                                .padding(top = 20.dp)
                                 .padding(end = 10.dp)
                         )
                     }

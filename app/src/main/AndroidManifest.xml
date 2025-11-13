@@ -17,21 +17,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AiCompose"
         tools:replace="android:icon,android:roundIcon"
-        android:localeConfig="@xml/locales_config"
-        tools:targetApi="31">
+        android:localeConfig="@xml/locales_config">
+
         <activity
-            android:name=".ui.splash.SplashActivity"
-            android:theme="@style/Theme.MyApp.Splash"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AiCompose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+
     </application>
 
 </manifest>

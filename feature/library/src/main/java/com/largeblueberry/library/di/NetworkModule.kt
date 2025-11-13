@@ -1,5 +1,6 @@
 package com.largeblueberry.library.di
 
+import com.largeblueberry.data.AuthInterceptor
 import com.largeblueberry.library.dataLayer.repository.AudioUploadRepository
 import com.largeblueberry.library.dataLayer.repository.impl.AudioUploadRepositoryImpl
 import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
@@ -26,6 +27,7 @@ object NetworkModule {
             .connectTimeout(30, TimeUnit.SECONDS) // 연결 타임아웃
             .readTimeout(30, TimeUnit.SECONDS)    // 읽기 타임아웃
             .writeTimeout(30, TimeUnit.SECONDS)   // 쓰기 타임아웃
+            .addInterceptor(AuthInterceptor())
             // .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }) // 로깅 인터셉터 추가 (디버그용)
             .build()
     }
