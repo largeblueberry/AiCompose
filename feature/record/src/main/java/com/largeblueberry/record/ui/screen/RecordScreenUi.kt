@@ -1,7 +1,14 @@
 package com.largeblueberry.record.ui.screen
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +28,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,99 +71,115 @@ fun RecordScreenUi(
         RecordingState.FAILED_STOP -> stringResource(ResourcesR.string.recordFailedStop)
     }
 
+    // 녹음 중 애니메이션을 위한 무한 전환
+    val infiniteTransition = rememberInfiniteTransition(label = "recording_animation")
+
+    // 펄스 애니메이션 (크기 변화)
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse_scale"
+    )
+
+    // 투명도 애니메이션
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse_alpha"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             // 1. 화면 배경색을 테마의 background 색상으로 변경
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // 상단 상태 텍스트
-        Spacer(modifier = Modifier.height(48.dp))
-        Text(
-            text = stateText,
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            // 2. 텍스트 색상을 테마의 onBackground 색상으로 변경
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        // 마이크 아이콘 (원 배경 포함)
-        Spacer(modifier = Modifier.height(32.dp))
-        Box(
-            modifier = Modifier
-                .size(112.dp)
-                // 3. 원 배경을 테마의 primary 색상으로 변경
-                .background(MaterialTheme.colorScheme.primary, shape = CircleShape),
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.Mic,
-                contentDescription = null,
-                // 4. 아이콘 색상을 테마의 onPrimary 색상으로 변경
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(48.dp)
+            Spacer(modifier = Modifier.height(48.dp))
+            Text(
+                text = stateText,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
-        // 진행 바
-        Spacer(modifier = Modifier.height(32.dp))
-        if (isRecording) {
-            LinearProgressIndicator(
+        // 중앙 영역 : 마이크 버튼 (클릭 가능)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(160.dp)
+                    .clickable { onRecordToggleClick() }
+                    .background(
+                        color = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+                    .scale(if (isRecording) pulseScale else 1f)
+                    .graphicsLayer(alpha = if (isRecording) pulseAlpha else 1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Mic,
+                    contentDescription = if (isRecording) {
+                        stringResource(ResourcesR.string.recordStop)
+                    } else {
+                        stringResource(ResourcesR.string.recordStart)
+                    },
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(64.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+            if (isRecording) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = Theme.customColors.progressBarBackground
+                )
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OutlinedButton(
+                onClick = onViewRecordingsClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp),
-                // 5. 진행 바 색상을 테마의 primary 색상으로 변경
-                color = MaterialTheme.colorScheme.primary,
-                // 6. 진행 바 트랙 색상을 커스텀 테마의 색상으로 변경
-                trackColor = Theme.customColors.progressBarBackground
-            )
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
+                    .height(56.dp),
+                shape = MaterialTheme.shapes.medium,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = stringResource(ResourcesR.string.gotoLibrary),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // 녹음 시작/중지 토글 버튼
-        Spacer(modifier = Modifier.height(40.dp))
-        Button(
-            onClick = onRecordToggleClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(
-                // 7. 녹음 상태에 따라 커스텀 색상과 표준 색상을 사용하도록 변경
-                containerColor = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
-                // 8. 버튼 콘텐츠 색상을 onPrimary로 통일하여 일관성 확보
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            shape = MaterialTheme.shapes.small
-        ) {
-            Text(
-                text = if (isRecording) {
-                    stringResource(ResourcesR.string.recordStop)
-                } else {
-                    stringResource(ResourcesR.string.recordStart)
-                },
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // 녹음 파일 보기 버튼 (OutlinedButton으로 리팩토링하여 코드 간소화)
-        Spacer(modifier = Modifier.height(12.dp))
-        OutlinedButton(
-            onClick = onViewRecordingsClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = MaterialTheme.shapes.small,
-            // 9. OutlinedButton은 기본적으로 primary 색상을 사용하므로 색상 지정 코드가 불필요
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-        ) {
-            Text(
-                text = stringResource(ResourcesR.string.gotoLibrary),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary // 텍스트 색상 명시
-            )
-        }
     }
 }
 
@@ -167,5 +193,18 @@ fun RecordScreenPreview() {
         onRecordToggleClick = {},
         onViewRecordingsClick = {}
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecordScreenUiRecordingPreview() {
+    MaterialTheme {
+        RecordScreenUi(
+            isRecording = true,
+            recordingStateText = RecordingState.RECORDING,
+            onRecordToggleClick = {},
+            onViewRecordingsClick = {}
+        )
+    }
 }
 
