@@ -34,7 +34,7 @@ class LoginViewModel @Inject constructor(
         private const val TAG = "LoginViewModel"
     }
 
-    // ✅ [수정] 프로퍼티 선언을 init 블록 위로 이동
+    // [수정] 프로퍼티 선언을 init 블록 위로 이동
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
@@ -63,7 +63,6 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    // ... 이하 함수들은 동일 ...
     fun onGoogleSignInClicked() {
         Log.d(TAG, "onGoogleSignInClicked called")
         analyticsHelper.logEvent(name = "google_sign_in_clicked", params = emptyMap())
