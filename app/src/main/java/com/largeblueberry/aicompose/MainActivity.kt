@@ -1,7 +1,10 @@
 package com.largeblueberry.aicompose
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -14,13 +17,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
 import com.largeblueberry.aicompose.nav.AppNavigation
 import com.largeblueberry.aicompose.ui.main.MainViewModel
-import com.largeblueberry.aicompose.ui.splash.SplashScreen
+import com.largeblueberry.aicompose.ui.onboarding.OnboardingScreen
 import com.largeblueberry.core_ui.AppTheme
 import com.largeblueberry.domain.repository.LanguageRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +39,8 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
+    private var isOnboardingCompleted by mutableStateOf(false)
+
     @Inject
     lateinit var languageRepository: LanguageRepository
 
@@ -42,6 +49,23 @@ class MainActivity : ComponentActivity() {
 
     // recreate로 인한 재생성인지 구분하기 위한 플래그
     private var isRecreatingForLanguage = false
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            // RECORD_AUDIO 권한이 허용되었는지 확인
+            val isRecordAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
+
+            if (isRecordAudioGranted) {
+                Log.d(TAG, "RECORD_AUDIO permission granted.")
+                // 권한이 허용되었을 때 필요한 작업 수행
+            } else {
+                Log.d(TAG, "RECORD_AUDIO permission denied.")
+                // 권한이 거부되었을 때 사용자에게 알림 (필요한 경우)
+            }
+            // 다른 권한들에 대한 처리도 추가할 수 있습니다.
+        }
 
     private companion object {
         private const val TAG = "MainActivity"
@@ -81,15 +105,23 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val themeOption by viewModel.themeOption.collectAsState()
-            val isSplashVisible by showSplash
 
             AppTheme(themeOption = themeOption) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (isSplashVisible) {
-                        SplashScreen() // 기존 스플래시 컴포저블 사용
+                    if (!isOnboardingCompleted) {
+                        // 온보딩 화면 (Splash + 온보딩 페이저)
+                        OnboardingScreen(
+                            onPermissionRequest = {
+                                requestPermissions()
+                            },
+                            onComplete = {
+                                // 온보딩 완료 후 메인 앱으로
+                                completeOnboarding()
+                            }
+                        )
                     } else {
                         AppNavigation()
                     }
@@ -155,6 +187,25 @@ class MainActivity : ComponentActivity() {
                 }
         }
     }
+
+    private fun requestPermissions() {
+        val permissionsToRequest = mutableListOf<String>()
+
+        // RECORD_AUDIO 권한 확인 및 요청 목록에 추가
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
+        }
+
+        if (permissionsToRequest.isNotEmpty()) {
+            requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
+        }
+    }
+
+    private fun completeOnboarding() {
+        // TODO: SharedPreferences 등에 온보딩 완료 상태를 저장하는 로직 추가 예정
+        isOnboardingCompleted = true
+    }
+
 
     override fun onPause() {
         super.onPause()
