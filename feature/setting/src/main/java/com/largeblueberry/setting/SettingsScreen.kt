@@ -112,7 +112,7 @@ fun SettingsScreen(
 
             //  앱 정보 섹션
             item {
-                AboutSection()
+                AboutSection(navigationActions = navigationActions)
             }
         }
     }

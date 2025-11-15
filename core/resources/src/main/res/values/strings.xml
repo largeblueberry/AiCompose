@@ -116,4 +116,23 @@
     <string name="sheet_music_detail_title">Sheet Music Detail</string>
     <string name="sheet_music_detail_screen_message">Sheet Music Detail Screen</string>
 
+
+    <string name="about_us_title">About Eareum</string>
+    <string name="navigate_back_description">Navigate back</string>
+    <string name="app_slogan">Listen and Dream, AI Composing Service</string>
+    <string name="app_description">Born to help anyone easily create their own melodies without missing a moment of inspiration, just like humming a tune.</string>
+
+    <string name="section_title_team">Our Team</string>
+    <string name="team_role_ai">AI Development</string>
+    <string name="team_description_ai">Researched AI models to break down the barriers of music.</string>
+    <string name="team_role_server">Server Development</string>
+    <string name="team_description_server">Ensured your precious inspirations are stored and processed securely.</string>
+    <string name="team_role_android">Android Development</string>
+    <string name="team_description_android">Focused on providing an easy and enjoyable composing experience.</string>
+
+    <string name="section_title_license">License &amp; Contact</string>
+    <string name="license_description">This app is built with various open-source libraries. Check license information.</string>
+    <string name="contact_description">For feedback or inquiries, please email us at:\ncontact.eareum@email.com</string>
+    <string name="version_info">Version %1$s</string>
+
 </resources>
