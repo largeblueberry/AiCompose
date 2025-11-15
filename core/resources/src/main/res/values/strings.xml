@@ -132,7 +132,7 @@
 
     <string name="section_title_license">License &amp; Contact</string>
     <string name="license_description">This app is built with various open-source libraries. Check license information.</string>
-    <string name="contact_description">For feedback or inquiries, please email us at:\ncontact.eareum@email.com</string>
+    <string name="contact_description">For feedback or inquiries, please email us at:\ncontact: onlym6659@gmail.com</string>
     <string name="version_info">Version %1$s</string>
 
     <string name="bugreport">Bug Report</string>
@@ -158,5 +158,7 @@
     <string name="onboarding_permission_success_title">Ready!</string>
     <string name="onboarding_permission_success_description">Now, quickly record your instant musical ideas and check them as songs and sheet music!</string>
     <string name="onboarding_permission_success_button_text">Start</string>
+
+    <string name="error_term_not_found">Error: Term not found.</string>
 
 </resources>

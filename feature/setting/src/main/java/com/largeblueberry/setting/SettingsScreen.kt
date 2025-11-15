@@ -314,12 +314,5 @@ private fun AboutSection(
             subtitle = stringResource(ResourceR.string.aboutEareamSubText),
             onClick = navigationActions.onNavigateToAbout
         )
-
-        SettingItem(
-            icon = Icons.Default.BugReport,
-            title = stringResource(ResourceR.string.appBugMainText),
-            subtitle = stringResource(ResourceR.string.appBugSubText),
-            onClick = navigationActions.onNavigateToBugReport
-        )
     }
 }
