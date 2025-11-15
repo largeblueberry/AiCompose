@@ -36,11 +36,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+import androidx.core.content.edit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+
+    private val sharedPreferences by lazy {
+        getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    }
 
     private var isOnboardingCompleted by mutableStateOf(false)
     private var showSettingsDialog by mutableStateOf(false)
@@ -78,6 +83,7 @@ class MainActivity : ComponentActivity() {
     private companion object {
         private const val TAG = "MainActivity"
         private const val KEY_IS_RECREATING = "is_recreating_for_language"
+        private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -95,17 +101,18 @@ class MainActivity : ComponentActivity() {
         Log.d(TAG, "isRecreatingForLanguage: $isRecreatingForLanguage")
 
         // 언어 변경으로 인한 재생성이 아닐 때만 스플래시 표시
-        if (!isRecreatingForLanguage) {
+        if (!isOnboardingCompleted && !isRecreatingForLanguage) {
             // 2초 후 스플래시 화면 숨기기
             lifecycleScope.launch {
                 delay(2000)
                 showSplash.value = false
-                viewModel.checkUserAuthentication()
             }
         } else {
-            // 언어 변경으로 인한 재생성이면 즉시 스플래시 숨김
+            // 온보딩이 완료되었거나 언어 변경으로 인한 재생성이면 즉시 스플래시 숨김
             showSplash.value = false
-            viewModel.checkUserAuthentication()
+            if (isOnboardingCompleted) {
+                viewModel.checkUserAuthentication()
+            }
             isRecreatingForLanguage = false // 플래그 리셋
         }
 
@@ -122,6 +129,7 @@ class MainActivity : ComponentActivity() {
                     if (!isOnboardingCompleted) {
                         // 온보딩 화면 (Splash + 온보딩 페이저)
                         OnboardingScreen(
+                            showSplash = showSplash.value,
                             showSettingsDialog = showSettingsDialog,
                             onDismissSettingsDialog = { showSettingsDialog = false },
                             onGoToSettingsClick = {
@@ -216,8 +224,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun completeOnboarding() {
-        // TODO: SharedPreferences 등에 온보딩 완료 상태를 저장하는 로직 추가 예정
+        sharedPreferences.edit {
+            putBoolean(KEY_ONBOARDING_COMPLETED, true)
+        }
         isOnboardingCompleted = true
+        viewModel.checkUserAuthentication()
+        Log.d(TAG, "Onboarding completed and saved to SharedPreferences")
     }
 
     private fun openAppSettings() {

@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun OnboardingScreen(
+    showSplash: Boolean,
     showSettingsDialog: Boolean,
     onDismissSettingsDialog: () -> Unit,
     onGoToSettingsClick: () -> Unit,

@@ -1,5 +1,6 @@
 package com.largeblueberry.setting
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -190,10 +191,12 @@ private fun AccountSection(
     SettingSection(title = stringResource(ResourceR.string.account)) {
         when (authState) {
             is AuthUiState.Authenticated -> {
-                // 로그인된 상태
+                // 로그인된 상태 - 환영 메시지와 함께 표시
                 UserProfileItem(
                     user = authState.user,
-                    onLogoutClick = onLogoutClick
+                    onLogoutClick = onLogoutClick,
+                    title = stringResource(ResourceR.string.welcome_message, authState.user.name), // "환영합니다, {이름}님!"
+                    subtitle = stringResource(ResourceR.string.login_success_message) // "성공적으로 로그인되었습니다."
                 )
             }
             else -> {
@@ -210,10 +213,13 @@ private fun AccountSection(
     }
 }
 
+
 @Composable
 private fun UserProfileItem(
     user: UserCore,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    title: String,
+    subtitle: String
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -224,6 +230,27 @@ private fun UserProfileItem(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            // 환영 메시지 섹션 (title이 있을 때만 표시)
+            if (title.isNotEmpty()) {
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AppPrimaryBlue
+                )
+
+                if (subtitle.isNotEmpty()) {
+                    Text(
+                        text = subtitle,
+                        fontSize = 14.sp,
+                        color = AppBlack.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {

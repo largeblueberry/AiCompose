@@ -3,6 +3,8 @@
 
     <string name="app_subtitle">AI Music Composition Service that Listens and Dreams</string>
 
+    <string name="home_title">Compose Now\nYour own unique melody</string>
+
     <string name="app_name">Eaream</string>
     <string name="recordMainText">Record Voice</string>
     <string name="recordSubText">Quickly record moments of inspiration.</string>
@@ -147,7 +149,7 @@
     <!-- Problem Solution Page -->
     <string name="onboarding_problem_solution_title">Struggled to record musical ideas that pop up instantly?</string>
     <string name="onboarding_problem_solution_description">Record your instant inspiration quickly!</string>
-    <string name="onboarding_problem_solution_button_text">Start</string>
+    <string name="onboarding_problem_solution_button_text">Next</string>
 
     <!-- Permission Request Page -->
     <string name="onboarding_permission_request_title">Permission required</string>
@@ -160,5 +162,9 @@
     <string name="onboarding_permission_success_button_text">Start</string>
 
     <string name="error_term_not_found">Error: Term not found.</string>
+
+
+    <string name="welcome_message">Welcome, %s!</string>
+    <string name="login_success_message">Login was successful.</string>
 
 </resources>
