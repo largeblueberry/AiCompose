@@ -13,17 +13,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.res.stringResource // 이 import가 추가되었습니다.
 
 @Composable
 fun OnboardingPagerScreen(
     onPermissionRequest: () -> Unit = {},
     onComplete: () -> Unit
 ) {
-    // 동적으로 페이지 수 계산
     val pageCount by remember { derivedStateOf { OnboardingPageData.getPageCount() } }
     val pagerState = rememberPagerState(pageCount = { pageCount })
     val scope = rememberCoroutineScope()
+
+    val currentPageData = OnboardingPageData.getPageData(pagerState.currentPage)
 
     Column(
         modifier = Modifier
@@ -31,14 +32,12 @@ fun OnboardingPagerScreen(
             .background(Color.White)
             .padding(24.dp)
     ) {
-        // Page Indicator
         PageIndicator(
             currentPage = pagerState.currentPage,
             pageCount = pageCount,
             modifier = Modifier.padding(top = 40.dp)
         )
 
-        // Content Pager
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
@@ -46,32 +45,31 @@ fun OnboardingPagerScreen(
             OnboardingPage(pageData = OnboardingPageData.getPageData(page))
         }
 
-        // Bottom Buttons - 개선된 로직
+        // Bottom Buttons
         when {
-            // 권한 요청 페이지 (index 1)에서는 2개 버튼
+            // 권한 요청 페이지
             OnboardingPageData.isPermissionRequestPage(pagerState.currentPage) -> {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // 권한 설정 버튼 (메인)
                     Button(
                         onClick = {
                             onPermissionRequest()
                             scope.launch {
-                                pagerState.animateScrollToPage(2) // PermissionSuccess로
+                                pagerState.animateScrollToPage(2)
                             }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF22C55E)
+                            containerColor = currentPageData.buttonColor()
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
-                            text = "권한 설정하러 가기",
+                            text = stringResource(currentPageData.buttonTextResId),
                             color = Color.White,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
@@ -80,10 +78,8 @@ fun OnboardingPagerScreen(
                 }
             }
 
-            // 나머지 페이지에서는 1개 버튼
+            // 나머지 페이지
             else -> {
-                val currentPageData = OnboardingPageData.getPageData(pagerState.currentPage)
-
                 Button(
                     onClick = {
                         if (OnboardingPageData.isLastPage(pagerState.currentPage)) {
@@ -98,12 +94,13 @@ fun OnboardingPagerScreen(
                         .fillMaxWidth()
                         .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(currentPageData.buttonColor.toColorInt())
+                        containerColor = currentPageData.buttonColor()
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = currentPageData.buttonText,
+                        // 수정: buttonTextResId를 사용하여 stringResource로 변환
+                        text = stringResource(currentPageData.buttonTextResId),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium

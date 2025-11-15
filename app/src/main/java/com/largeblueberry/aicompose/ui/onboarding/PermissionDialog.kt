@@ -4,9 +4,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.largeblueberry.resources.R
 
-// 권한 요청 다이얼로그
 @Composable
 fun PermissionDialog(
     onDismiss: () -> Unit,
@@ -16,21 +17,21 @@ fun PermissionDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "권한 허용",
+                text = stringResource(id = R.string.permission_dialog_title),
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
-            Text("앱이 정상적으로 작동하려면 다음 권한이 필요합니다:\n\n• 마이크 권한\n• 접근성 서비스")
+            Text(text = stringResource(id = R.string.permission_dialog_message))
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("설정으로 이동")
+                Text(stringResource(id = R.string.permission_dialog_confirm_button))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("취소")
+                Text(stringResource(id = R.string.permission_dialog_dismiss_button))
             }
         }
     )

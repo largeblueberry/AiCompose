@@ -136,4 +136,26 @@
 
     <string name="bugreport">버그 신고</string>
 
+    <string name="permission_dialog_title">권한 허용</string>
+    <string name="permission_dialog_message">앱이 정상적으로 작동하려면 다음 권한이 필요합니다:\n\n• 마이크 권한\n• 접근성 서비스</string>
+    <string name="permission_dialog_confirm_button">설정으로 이동</string>
+    <string name="permission_dialog_dismiss_button">취소</string>
+
+    <string name="onboarding_default_button_text">다음 ></string>
+
+    <!-- Problem Solution Page -->
+    <string name="onboarding_problem_solution_title">순간 떠오르는 악상 기록하기 힘들었나요?</string>
+    <string name="onboarding_problem_solution_description">순간의 영감을 빨리 기록하세요!</string>
+    <string name="onboarding_problem_solution_button_text">시작하기</string>
+
+    <!-- Permission Request Page -->
+    <string name="onboarding_permission_request_title">접근성 권한이 필요해요</string>
+    <string name="onboarding_permission_request_description">녹음을 위해서는 마이크 권한이 필요해요</string>
+    <string name="onboarding_permission_request_button_text">권한 설정하기</string>
+
+    <!-- Permission Success Page -->
+    <string name="onboarding_permission_success_title">준비 완료!</string>
+    <string name="onboarding_permission_success_description">이제 순간의 악상을 빠르게 녹음하고 노래와 악보로 확인해보세요!</string>
+    <string name="onboarding_permission_success_button_text">시작하기</string>
+
 </resources>

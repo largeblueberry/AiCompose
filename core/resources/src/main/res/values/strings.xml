@@ -137,4 +137,26 @@
 
     <string name="bugreport">Bug Report</string>
 
+    <string name="permission_dialog_title">Permission Required</string>
+    <string name="permission_dialog_message">The app needs the following permissions to function properly:\n\n• Microphone\n• Accessibility Service</string>
+    <string name="permission_dialog_confirm_button">Go to Settings</string>
+    <string name="permission_dialog_dismiss_button">Cancel</string>
+
+    <string name="onboarding_default_button_text">Next ></string>
+
+    <!-- Problem Solution Page -->
+    <string name="onboarding_problem_solution_title">Struggled to record musical ideas that pop up instantly?</string>
+    <string name="onboarding_problem_solution_description">Record your instant inspiration quickly!</string>
+    <string name="onboarding_problem_solution_button_text">Start</string>
+
+    <!-- Permission Request Page -->
+    <string name="onboarding_permission_request_title">Permission required</string>
+    <string name="onboarding_permission_request_description">Microphone permission is needed for recording</string>
+    <string name="onboarding_permission_request_button_text">Set Permissions</string>
+
+    <!-- Permission Success Page -->
+    <string name="onboarding_permission_success_title">Ready!</string>
+    <string name="onboarding_permission_success_description">Now, quickly record your instant musical ideas and check them as songs and sheet music!</string>
+    <string name="onboarding_permission_success_button_text">Start</string>
+
 </resources>

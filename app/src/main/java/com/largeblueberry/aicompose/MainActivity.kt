@@ -1,5 +1,8 @@
 package com.largeblueberry.aicompose
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -40,6 +43,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     private var isOnboardingCompleted by mutableStateOf(false)
+    private var showSettingsDialog by mutableStateOf(false)
 
     @Inject
     lateinit var languageRepository: LanguageRepository
@@ -50,11 +54,11 @@ class MainActivity : ComponentActivity() {
     // recreate로 인한 재생성인지 구분하기 위한 플래그
     private var isRecreatingForLanguage = false
 
+    // 이 부분을 아래 코드로 교체하세요.
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            // RECORD_AUDIO 권한이 허용되었는지 확인
             val isRecordAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
 
             if (isRecordAudioGranted) {
@@ -62,9 +66,13 @@ class MainActivity : ComponentActivity() {
                 // 권한이 허용되었을 때 필요한 작업 수행
             } else {
                 Log.d(TAG, "RECORD_AUDIO permission denied.")
-                // 권한이 거부되었을 때 사용자에게 알림 (필요한 경우)
+                // 권한이 거부되었고, 사용자가 '다시 묻지 않음'을 선택했는지 확인합니다.
+                // shouldShowRequestPermissionRationale가 false를 반환하면 영구 거부 상태일 가능성이 높습니다.
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    Log.d(TAG, "Permission might be permanently denied. Showing settings dialog.")
+                    showSettingsDialog = true
+                }
             }
-            // 다른 권한들에 대한 처리도 추가할 수 있습니다.
         }
 
     private companion object {
@@ -114,6 +122,12 @@ class MainActivity : ComponentActivity() {
                     if (!isOnboardingCompleted) {
                         // 온보딩 화면 (Splash + 온보딩 페이저)
                         OnboardingScreen(
+                            showSettingsDialog = showSettingsDialog,
+                            onDismissSettingsDialog = { showSettingsDialog = false },
+                            onGoToSettingsClick = {
+                                openAppSettings()
+                                showSettingsDialog = false
+                            },
                             onPermissionRequest = {
                                 requestPermissions()
                             },
@@ -204,6 +218,13 @@ class MainActivity : ComponentActivity() {
     private fun completeOnboarding() {
         // TODO: SharedPreferences 등에 온보딩 완료 상태를 저장하는 로직 추가 예정
         isOnboardingCompleted = true
+    }
+
+    private fun openAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+        }
+        startActivity(intent)
     }
 
 

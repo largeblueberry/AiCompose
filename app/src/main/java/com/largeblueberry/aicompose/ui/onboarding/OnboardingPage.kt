@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 
 
 @Composable
@@ -40,7 +41,7 @@ fun OnboardingPage(pageData: OnboardingPageData) {
 
         // Title
         Text(
-            text = pageData.title,
+            text = stringResource(pageData.titleResId), // Resource ID를 문자열로 변환
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
@@ -52,7 +53,7 @@ fun OnboardingPage(pageData: OnboardingPageData) {
 
         // Description
         Text(
-            text = pageData.description,
+            text = stringResource(pageData.descriptionResId), // Resource ID를 문자열로 변환
             fontSize = 16.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center,

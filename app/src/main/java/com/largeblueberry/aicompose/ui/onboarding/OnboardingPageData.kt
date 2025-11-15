@@ -1,50 +1,48 @@
 package com.largeblueberry.aicompose.ui.onboarding
 
+import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import com.largeblueberry.resources.R
+
 // Sealed class로 온보딩 페이지 정의
 sealed class OnboardingPageData(
     val icon: String,
-    val title: String,
-    val description: String,
-    val backgroundColor: String = "#FFFFFF", // 배경색 추가
-    val buttonText: String = "다음 >",
-    val buttonColor: String = "#4A90E2"
+    @StringRes val titleResId: Int, // Resource ID로 변경
+    @StringRes val descriptionResId: Int, // Resource ID로 변경
+    @StringRes val buttonTextResId: Int = R.string.onboarding_default_button_text,
+    val buttonColor: @Composable () -> Color
 ) {
-    // 1단계: 문제 공감 (빨간색 테마)
+    // 1단계: 문제 공감
     object ProblemSolution : OnboardingPageData(
         icon = "😤",
-        title = "순간 떠오르는 악상 기록하기 힘들었나요?",
-        description = "순간의 영감을 빨리 기록하세요!",
-        backgroundColor = "#FEF2F2", // red-50
-        buttonText = "시작하기",
-        buttonColor = "#EF4444" // red-500
+        titleResId = R.string.onboarding_problem_solution_title,
+        descriptionResId = R.string.onboarding_problem_solution_description,
+        buttonTextResId = R.string.onboarding_problem_solution_button_text,
+        buttonColor = { MaterialTheme.colorScheme.primary }
     )
-
-    // 2단계: 신뢰 구축 (초록색 테마)
+    // 2단계: 권한 요청
     object PermissionRequest : OnboardingPageData(
         icon = "🛡️",
-        title = "접근성 권한이 필요해요",
-        description = "녹음을 위해서는 마이크 권한이 필요해요",
-        backgroundColor = "#F0FDF4", // green-50
-        buttonText = "권한 설정하기",
-        buttonColor = "#22C55E" // green-500
+        titleResId = R.string.onboarding_permission_request_title,
+        descriptionResId = R.string.onboarding_permission_request_description,
+        buttonTextResId = R.string.onboarding_permission_request_button_text,
+        buttonColor = { MaterialTheme.colorScheme.primary }
     )
 
     // 3단계: 권한 허용 완료
     object PermissionSuccess : OnboardingPageData(
         icon = "⚡",
-        title = "준비 완료!",
-        description = "이제 순간의 악상을 빠르게 녹음하고 노래와 악보로 확인해보세요!",
-        backgroundColor = "#FEFCE8", // yellow-50
-        buttonText = "시작하기",
-        buttonColor = "#EAB308" // yellow-500
+        titleResId = R.string.onboarding_permission_success_title,
+        descriptionResId = R.string.onboarding_permission_success_description,
+        buttonTextResId = R.string.onboarding_permission_success_button_text,
+        buttonColor = { MaterialTheme.colorScheme.primary }
     )
 
     /**
      * 문제 의식 -> 권한 요청 -> 권한 허용 완료
-     *
-     *
      */
-
     companion object {
         // 권한 허용 경로: 1 -> 2 -> 3
         val permissionPath = listOf(ProblemSolution, PermissionRequest, PermissionSuccess)
