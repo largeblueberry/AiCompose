@@ -7,21 +7,26 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,31 +57,49 @@ import com.largeblueberry.aicompose.feature_auth.ui.util.LoginCard
 import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.auth.model.LoginUiState
 import com.largeblueberry.auth.model.UserCore
+import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.resources.R
 import kotlinx.coroutines.flow.collectLatest
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun AccountManageScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val authState = viewModel.authUiState.collectAsState().value
+    val reauthState = viewModel.reauthenticationState.collectAsState().value
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    // Google Sign-In 런처 (일반 로그인용)
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         viewModel.handleGoogleSignInResult(result.data)
     }
 
+    // Google Sign-In 런처 (재인증용)
+    val reauthenticationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        viewModel.handleReauthenticationResult(result.data)
+    }
+
+    // 일반 로그인 플로우
     LaunchedEffect(key1 = Unit) {
         viewModel.startGoogleSignInFlow.collectLatest { intent ->
             googleSignInLauncher.launch(intent)
+        }
+    }
+
+    // 재인증 플로우
+    LaunchedEffect(key1 = Unit) {
+        viewModel.startReauthenticationFlow.collectLatest { intent ->
+            reauthenticationLauncher.launch(intent)
         }
     }
 
@@ -88,7 +111,7 @@ fun LoginScreen(
                     Text(
                         text = when (authState) {
                             is AuthUiState.Authenticated -> "계정 관리"
-                            else -> stringResource(id = R.string.sheet_music_list_title)
+                            else -> "로그인"
                         },
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -125,6 +148,7 @@ fun LoginScreen(
                     // 로그인된 상태 - 완전한 계정 관리 화면
                     AccountManagementContent(
                         user = authState.user,
+                        isLoading = uiState.isLoading,
                         onSignOut = { viewModel.signOut() },
                         onDeleteAccount = { showDeleteDialog = true }
                     )
@@ -154,10 +178,40 @@ fun LoginScreen(
             onDismiss = { showDeleteDialog = false }
         )
     }
+
+    // 재인증 관련 다이얼로그들
+    when (reauthState) {
+        is ReauthenticationState.Required -> {
+            ReauthenticationRequiredDialog(
+                onConfirm = { viewModel.startReauthentication() },
+                onDismiss = { viewModel.clearReauthenticationState() }
+            )
+        }
+        is ReauthenticationState.Loading -> {
+            ReauthenticationLoadingDialog()
+        }
+        is ReauthenticationState.Success -> {
+            LaunchedEffect(reauthState) {
+                // 성공 시 자동으로 상태 클리어 (ViewModel에서 자동 처리됨)
+            }
+        }
+        is ReauthenticationState.Error -> {
+            ReauthenticationErrorDialog(
+                errorMessage = reauthState.message,
+                onRetry = { viewModel.startReauthentication() },
+                onDismiss = { viewModel.clearReauthenticationState() }
+            )
+        }
+        ReauthenticationState.None -> {
+            // 아무것도 표시하지 않음
+        }
+    }
 }
+
 @Composable
 private fun AccountManagementContent(
     user: UserCore,
+    isLoading: Boolean,
     onSignOut: () -> Unit,
     onDeleteAccount: () -> Unit
 ) {
@@ -174,6 +228,7 @@ private fun AccountManagementContent(
 
         // 계정 관리 메뉴들
         AccountManagementMenu(
+            isLoading = isLoading,
             onSignOut = onSignOut,
             onDeleteAccount = onDeleteAccount
         )
@@ -221,6 +276,7 @@ private fun ProfileSection(user: UserCore) {
 
 @Composable
 private fun AccountManagementMenu(
+    isLoading: Boolean,
     onSignOut: () -> Unit,
     onDeleteAccount: () -> Unit
 ) {
@@ -230,7 +286,10 @@ private fun AccountManagementMenu(
     ) {
         // 계정 정보 카드
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -238,13 +297,14 @@ private fun AccountManagementMenu(
                 Text(
                     text = "계정 정보",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.customColors.titleBlueDark
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Google 계정으로 로그인됨",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.customColors.subtitleBlue
                 )
             }
         }
@@ -253,10 +313,18 @@ private fun AccountManagementMenu(
         Button(
             onClick = onSignOut,
             modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary
             )
         ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             Text("로그아웃")
         }
 
@@ -264,11 +332,19 @@ private fun AccountManagementMenu(
         OutlinedButton(
             onClick = onDeleteAccount,
             modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading,
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.error
             ),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
         ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             Text("회원 탈퇴")
         }
     }
@@ -370,6 +446,100 @@ private fun DeleteAccountDialog(
                 )
             ) {
                 Text("탈퇴")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("취소")
+            }
+        }
+    )
+}
+
+// 재인증 필요 다이얼로그
+@Composable
+private fun ReauthenticationRequiredDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                Icons.Default.Security,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        title = { Text("재인증 필요") },
+        text = {
+            Text(
+                "계정 삭제를 위해 본인 확인이 필요합니다.\n\n" +
+                        "Google 계정으로 다시 로그인해주세요.",
+                textAlign = TextAlign.Center
+            )
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("재인증하기")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("취소")
+            }
+        }
+    )
+}
+
+// 재인증 진행 중 다이얼로그
+@Composable
+private fun ReauthenticationLoadingDialog() {
+    AlertDialog(
+        onDismissRequest = { /* 진행 중에는 닫을 수 없음 */ },
+        title = { Text("재인증 중") },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "Google 계정 재인증을 진행하고 있습니다...",
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        confirmButton = { /* 버튼 없음 */ }
+    )
+}
+
+// 재인증 에러 다이얼로그
+@Composable
+private fun ReauthenticationErrorDialog(
+    errorMessage: String,
+    onRetry: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                Icons.Default.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        title = { Text("재인증 실패") },
+        text = {
+            Text(
+                "재인증에 실패했습니다.\n\n$errorMessage",
+                textAlign = TextAlign.Center
+            )
+        },
+        confirmButton = {
+            Button(onClick = onRetry) {
+                Text("다시 시도")
             }
         },
         dismissButton = {

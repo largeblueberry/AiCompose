@@ -14,4 +14,5 @@ sealed class AppRoutes(val route: String) {
     object SheetMusicListScreen : AppRoutes("sheet_music_list_route")
     object SheetMusicDetailScreen : AppRoutes("sheet_music_detail_route/{sheetMusicId}")
     object TermDetailScreen : AppRoutes("term_detail_route/{termId}")
+    object AccountManageScreen : AppRoutes("account_manage_route")
 }

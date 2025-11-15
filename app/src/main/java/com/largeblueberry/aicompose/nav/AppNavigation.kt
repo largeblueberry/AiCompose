@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.largeblueberry.aicompose.feature_auth.ui.AccountManageScreen
 import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
@@ -65,7 +66,8 @@ fun AppNavigation() {
                     onNavigateToTheme = { navController.navigate(AppRoutes.ThemeSettingScreen.route) },
                     onNavigateToBugReport = { navController.navigate(AppRoutes.BugReportScreen.route) },
                     onNavigateToServiceTerm = { navController.navigate(AppRoutes.ServiceTermScreen.route) },
-                    onNavigateToAbout = { navController.navigate(AppRoutes.AboutUsScreen.route) }
+                    onNavigateToAbout = { navController.navigate(AppRoutes.AboutUsScreen.route) },
+                    onNavigateToAccountManage = { navController.navigate(AppRoutes.AccountManageScreen.route) }
                 )
             )
         }
@@ -78,6 +80,14 @@ fun AppNavigation() {
                 }
             )
         }
+
+        composable(AppRoutes.AccountManageScreen.route) {
+            // AccountManageScreen 컴포넌트를 여기에 추가
+            AccountManageScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
 
         composable(AppRoutes.LanguageSettingScreen.route) {
             LanguageSettingScreen(

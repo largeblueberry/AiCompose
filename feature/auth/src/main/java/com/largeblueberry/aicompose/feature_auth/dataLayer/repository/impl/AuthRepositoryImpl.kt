@@ -2,6 +2,7 @@ package com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.AuthMapper
 import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.UserMapper
@@ -104,4 +105,56 @@ class AuthRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun deleteAccount(): Result<Unit> {
+        return try {
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser != null) {
+                // Firebase에서 계정 삭제
+                currentUser.delete().await()
+
+                // 상태 업데이트
+                _authState.value = null
+
+                Log.i("AuthRepositoryImpl", "계정 삭제 성공")
+                Result.success(Unit)
+            } else {
+                Log.e("AuthRepositoryImpl", "삭제할 사용자가 없습니다.")
+                Result.failure(Exception("로그인된 사용자가 없습니다."))
+            }
+        } catch (e: Exception) {
+            Log.e("AuthRepositoryImpl", "계정 삭제 실패", e)
+
+            // 재인증이 필요한 경우 특별 처리
+            if (e is FirebaseAuthRecentLoginRequiredException) {
+                Log.w("AuthRepositoryImpl", "재인증이 필요합니다.")
+                Result.failure(ReauthenticationRequiredException("계정 삭제를 위해 재인증이 필요합니다."))
+            } else {
+                Result.failure(e)
+            }
+        }
+    }
+
+    // 재인증 함수 추가
+    override suspend fun reauthenticate(idToken: String): Result<Unit> {
+        return try {
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser != null) {
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                currentUser.reauthenticate(credential).await()
+
+                Log.i("AuthRepositoryImpl", "재인증 성공")
+                Result.success(Unit)
+            } else {
+                Log.e("AuthRepositoryImpl", "재인증할 사용자가 없습니다.")
+                Result.failure(Exception("로그인된 사용자가 없습니다."))
+            }
+        } catch (e: Exception) {
+            Log.e("AuthRepositoryImpl", "재인증 실패", e)
+            Result.failure(e)
+        }
+    }
 }
+
+// 재인증이 필요한 경우를 나타내는 커스텀 예외
+class ReauthenticationRequiredException(message: String) : Exception(message)

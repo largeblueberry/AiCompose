@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -102,7 +103,8 @@ fun SettingsScreen(
                 AccountSection(
                     authState = authState,
                     onLoginClick = navigationActions.onNavigateToLogin,
-                    onLogoutClick = { viewModel.signOut() }
+                    onLogoutClick = { viewModel.signOut() },
+                    onAccountManageClick = navigationActions.onNavigateToAccountManage
                 )
             }
 
@@ -186,17 +188,27 @@ private fun AppInfoCard() {
 private fun AccountSection(
     authState: AuthUiState,
     onLoginClick: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onAccountManageClick: () -> Unit // 새로 추가
 ) {
     SettingSection(title = stringResource(ResourceR.string.account)) {
         when (authState) {
             is AuthUiState.Authenticated -> {
-                // 로그인된 상태 - 환영 메시지와 함께 표시
+                // 로그인된 상태 - 사용자 정보 표시
                 UserProfileItem(
                     user = authState.user,
                     onLogoutClick = onLogoutClick,
-                    title = stringResource(ResourceR.string.welcome_message, authState.user.name), // "환영합니다, {이름}님!"
-                    subtitle = stringResource(ResourceR.string.login_success_message) // "성공적으로 로그인되었습니다."
+                    title = stringResource(ResourceR.string.welcome_message, authState.user.name),
+                    subtitle = stringResource(ResourceR.string.login_success_message)
+                )
+
+                // 계정 관리 메뉴 추가
+                SettingItem(
+                    icon = Icons.Default.ManageAccounts, // 또는 적절한 아이콘
+                    title = "계정 관리",
+                    subtitle = "회원 정보 수정, 탈퇴 등",
+                    onClick = onAccountManageClick,
+                    showArrow = true
                 )
             }
             else -> {
@@ -212,6 +224,7 @@ private fun AccountSection(
         }
     }
 }
+
 
 
 @Composable

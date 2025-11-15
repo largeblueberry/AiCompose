@@ -7,5 +7,6 @@ data class SettingsNavigationActions(
     val onNavigateToTheme: () -> Unit = {},
     val onNavigateToBugReport: () -> Unit = {},
     val onNavigateToServiceTerm: () -> Unit = {},
-    val onNavigateToAbout: () -> Unit = {}
+    val onNavigateToAbout: () -> Unit = {},
+    val onNavigateToAccountManage: () -> Unit = {}
 )

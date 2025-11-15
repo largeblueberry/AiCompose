@@ -21,7 +21,8 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val logOutUseCase: LogoutUseCaseImpl,
     private val authRepository: AuthRepository,
-    private val analyticsHelper: AnalyticsHelper
+    private val analyticsHelper: AnalyticsHelper,
+
 ) : ViewModel() {
 
     private companion object {

@@ -76,7 +76,11 @@ fun AboutUsScreen(
                 lineHeight = 22.sp
             )
 
-            Divider(modifier = Modifier.padding(vertical = 24.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 24.dp),
+                thickness = DividerDefaults.Thickness,
+                color = DividerDefaults.color
+            )
 
             SectionTitle(stringResource(id = R.string.section_title_team))
             TeamMember(
@@ -92,7 +96,11 @@ fun AboutUsScreen(
                 description = stringResource(id = R.string.team_description_android)
             )
 
-            Divider(modifier = Modifier.padding(vertical = 24.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 24.dp),
+                thickness = DividerDefaults.Thickness,
+                color = DividerDefaults.color
+            )
 
             SectionTitle(stringResource(id = R.string.section_title_license))
             Text(

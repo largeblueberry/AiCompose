@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.tasks.Task
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
 import com.largeblueberry.auth.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -60,4 +61,15 @@ class GoogleAuthDataSourceImpl(
         }
     }
 
+    // 재인증을 위한 Google Sign-In Intent 반환
+    override fun getReauthenticationIntent(): Intent {
+        // 재인증 시에는 기존 세션을 무시하고 새로 로그인하도록 함
+        return googleSignInClient.signInIntent
+    }
+
+    // Google Sign-In 클라이언트에서 로그아웃
+    override fun signOut(): Task<Void> {
+        Log.d(TAG, "Signing out from Google Sign-In client")
+        return googleSignInClient.signOut()
+    }
 }
