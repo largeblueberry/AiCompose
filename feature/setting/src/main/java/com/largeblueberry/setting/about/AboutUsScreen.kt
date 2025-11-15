@@ -17,12 +17,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.largeblueberry.core_ui.LightCustomColors
+import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.resources.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutUsScreen(onNavigateBack: () -> Unit) {
+fun AboutUsScreen(
+    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
+) {
     // 실제 버전 정보를 가져오는 로직이 있다면 여기에서 처리
     val appVersion = "1.0.0"
 
@@ -31,13 +34,13 @@ fun AboutUsScreen(onNavigateBack: () -> Unit) {
             TopAppBar(
                 title = { Text(stringResource(id = R.string.about_us_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = navigationActions.onNavigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.navigate_back_description)
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.backButtonContentDescription)
                         )
                     }
-                }
+                },
             )
         }
     ) { paddingValues ->
@@ -137,5 +140,7 @@ private fun TeamMember(role: String, description: String) {
 @Preview
 @Composable
 fun AboutUsScreenPreview() {
-    AboutUsScreen(onNavigateBack = {})
+    AboutUsScreen(
+        navigationActions = SettingsNavigationActions()
+    )
 }

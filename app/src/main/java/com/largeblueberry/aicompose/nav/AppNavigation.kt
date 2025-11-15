@@ -20,6 +20,7 @@ import com.largeblueberry.record.ui.screen.RecordScreenState
 import com.largeblueberry.setting.language.LanguageSettingScreen
 import com.largeblueberry.setting.theme.ui.ThemeSettingsScreen
 import com.largeblueberry.setting.about.AboutUsScreen
+import com.largeblueberry.setting.bugreport.BugReportScreen
 
 @Composable
 fun AppNavigation() {
@@ -73,22 +74,27 @@ fun AppNavigation() {
 
         composable(AppRoutes.LanguageSettingScreen.route) {
             LanguageSettingScreen(
-
+                navigationActions = SettingsNavigationActions(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             )
         }
 
         composable(AppRoutes.ThemeSettingScreen.route) {
             ThemeSettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                navigationActions = SettingsNavigationActions(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             )
         }
 
 
         composable(AppRoutes.BugReportScreen.route) {
-           // BugReportScreen(
-           //     onBackClick = { navController.popBackStack() },
-           //     onReportSubmitted = { navController.popBackStack() }
-           // )
+            BugReportScreen(
+                navigationActions = SettingsNavigationActions(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            )
         }
 
         composable(AppRoutes.ServiceTermScreen.route) {
@@ -99,7 +105,9 @@ fun AppNavigation() {
 
         composable(AppRoutes.AboutUsScreen.route) {
             AboutUsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                navigationActions = SettingsNavigationActions(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             )
         }
 

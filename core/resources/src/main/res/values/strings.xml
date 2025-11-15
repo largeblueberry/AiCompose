@@ -135,4 +135,6 @@
     <string name="contact_description">For feedback or inquiries, please email us at:\ncontact.eareum@email.com</string>
     <string name="version_info">Version %1$s</string>
 
+    <string name="bugreport">Bug Report</string>
+
 </resources>

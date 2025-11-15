@@ -133,4 +133,7 @@
     <string name="contact_description">앱에 대한 의견이나 문의사항은 아래 이메일로 보내주세요.\ncontact.eareum@email.com</string>
     <string name="version_info">버전 %1$s</string>
 
+
+    <string name="bugreport">버그 신고</string>
+
 </resources>
