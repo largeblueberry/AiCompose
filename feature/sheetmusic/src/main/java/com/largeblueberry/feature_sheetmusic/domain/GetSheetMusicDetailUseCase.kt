@@ -1,18 +1,14 @@
 package com.largeblueberry.feature_sheetmusic.domain
 
+import com.largeblueberry.feature_sheetmusic.domain.repository.SheetMusicRepository
 import javax.inject.Inject
 
-class GetSheetMusicDetailUseCase @Inject constructor(
-    private val sheetMusicRepository: SheetMusicRepository
+class GenerateSheetMusicUseCase @Inject constructor(
+    private val repository: SheetMusicRepository
 ) {
-    suspend operator fun invoke(sheetMusicId: String): Result<SheetMusicDetail> {
+    suspend operator fun invoke(requestBody: Any): Result<SheetMusic> {
         return try {
-            val sheetMusic = sheetMusicRepository.getSheetMusicDetail(sheetMusicId)
-            if (sheetMusic != null) {
-                Result.success(sheetMusic)
-            } else {
-                Result.failure(Exception("해당 악보를 찾을 수 없습니다."))
-            }
+            repository.generateSheetMusic(requestBody)
         } catch (e: Exception) {
             Result.failure(e)
         }

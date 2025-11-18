@@ -66,6 +66,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation("com.google.firebase:firebase-auth")
+
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

@@ -1,11 +1,10 @@
-package com.largeblueberry.data
+package com.largeblueberry.network.interceptor
 
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import okhttp3.Interceptor
 import okhttp3.Response
-
 
 class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {

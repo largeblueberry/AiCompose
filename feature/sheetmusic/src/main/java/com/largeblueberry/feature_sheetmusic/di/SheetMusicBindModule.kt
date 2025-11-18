@@ -1,38 +1,18 @@
 package com.largeblueberry.feature_sheetmusic.di
 
-import com.largeblueberry.feature_sheetmusic.data.SheetMusicLocalDataSource
-import com.largeblueberry.feature_sheetmusic.data.SheetMusicLocalDataSourceImpl
 import com.largeblueberry.feature_sheetmusic.data.SheetMusicRepositoryImpl
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusicRepository
+import com.largeblueberry.feature_sheetmusic.domain.repository.SheetMusicRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class SheetMusicBindModule {
+abstract class SheetMusicModule {
 
     @Binds
-    @Singleton
     abstract fun bindSheetMusicRepository(
-        sheetMusicRepositoryImpl: SheetMusicRepositoryImpl
+        impl: SheetMusicRepositoryImpl
     ): SheetMusicRepository
-
-    @Binds
-    abstract fun bindSheetMusicLocalDataSource(
-        sheetMusicLocalDataSourceImpl: SheetMusicLocalDataSourceImpl
-    ): SheetMusicLocalDataSource
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object SheetMusicProvideModule {
-
-    // UseCase들이 있다면 여기에 추가
-    // @Provides
-    // fun provideGetSheetMusicUseCase(repository: SheetMusicRepository): GetSheetMusicUseCase {
-    //     return GetSheetMusicUseCase(repository)
-    // }
 }

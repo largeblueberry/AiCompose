@@ -19,9 +19,4 @@ interface SheetMusicApiService {
     @POST("api/score")
     suspend fun generateScore(@Body requestBody: Any): Response<SheetMusicDto>
 
-    /**
-     * 특정 악보 URL 조회 (필요시)
-     */
-    @GET("api/score/{id}")
-    suspend fun getScore(@Path("id") scoreId: String): Response<SheetMusicDto>
 }

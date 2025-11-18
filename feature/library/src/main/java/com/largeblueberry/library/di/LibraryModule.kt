@@ -5,7 +5,9 @@ import com.largeblueberry.library.dataLayer.repository.impl.LibraryRepositoryImp
 import com.largeblueberry.library.domainLayer.usecase.DeleteAudioRecordUseCase
 import com.largeblueberry.library.domainLayer.usecase.GetAudioRecordsUseCase
 import com.largeblueberry.library.domainLayer.usecase.RenameAudioRecordUseCase
+import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
 import com.largeblueberry.local.audio.AudioRecordDao
+import com.largeblueberry.network.repository.AudioUploadRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,5 +37,10 @@ object LibraryModule {
     @Provides
     fun provideRenameAudioRecordUseCase(repository: LibraryRepository): RenameAudioRecordUseCase {
         return RenameAudioRecordUseCase(repository)
+    }
+
+    @Provides
+    fun provideUploadAudioRecordUseCase(repository: AudioUploadRepository): UploadAudioRecordUseCase {
+        return UploadAudioRecordUseCase(repository)
     }
 }
