@@ -5,11 +5,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.GoogleAuthDataSource
+import com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl.ReauthenticationRequiredException
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.CheckAuthStatusUseCase
+import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.DeleteAccountUseCase
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LoginUseCase
 import com.largeblueberry.analyticshelper.AnalyticsHelper
 import com.largeblueberry.auth.model.AuthResult
 import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.LogoutUseCase
+import com.largeblueberry.aicompose.feature_auth.domainLayer.usecase.ReauthenticateUseCase
 import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.auth.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +30,9 @@ class LoginViewModel @Inject constructor(
     private val logOutUseCase: LogoutUseCase,
     private val googleAuthDataSource: GoogleAuthDataSource,
     private val analyticsHelper: AnalyticsHelper,
-    private val checkAuthStatusUseCase: CheckAuthStatusUseCase
+    private val checkAuthStatusUseCase: CheckAuthStatusUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val reauthenticateUseCase: ReauthenticateUseCase, // 재인증 UseCase 추가
 ): ViewModel() {
 
     private companion object {
@@ -43,6 +48,13 @@ class LoginViewModel @Inject constructor(
 
     private val _startGoogleSignInFlow = Channel<Intent>(Channel.BUFFERED)
     val startGoogleSignInFlow = _startGoogleSignInFlow.receiveAsFlow()
+
+    // 재인증 관련 상태 추가
+    private val _reauthenticationState = MutableStateFlow<ReauthenticationState>(ReauthenticationState.None)
+    val reauthenticationState: StateFlow<ReauthenticationState> = _reauthenticationState.asStateFlow()
+
+    private val _startReauthenticationFlow = Channel<Intent>(Channel.BUFFERED)
+    val startReauthenticationFlow = _startReauthenticationFlow.receiveAsFlow()
 
     init {
         checkCurrentUser()
@@ -107,6 +119,161 @@ class LoginViewModel @Inject constructor(
                 _authUiState.value = AuthUiState.Error("ID 토큰 없음")
             }
         }
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+
+            val result = deleteAccountUseCase()
+
+            result
+                .onSuccess {
+                    analyticsHelper.logEvent(name = "account_deleted", params = emptyMap())
+
+                    // 상태를 NotAuthenticated로 즉시 변경
+                    _authUiState.value = AuthUiState.NotAuthenticated
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        currentUser = null,
+                        errorMessage = null
+                    )
+                    _reauthenticationState.value = ReauthenticationState.None
+                }
+                .onFailure { exception ->
+                    analyticsHelper.logEvent(
+                        name = "account_deletion_failure",
+                        params = mapOf("error_message" to (exception.message ?: "Unknown error"))
+                    )
+
+                    // 재인증이 필요한 경우 처리
+                    if (exception is ReauthenticationRequiredException) {
+                        Log.w(TAG, "Reauthentication required for account deletion")
+                        _reauthenticationState.value = ReauthenticationState.Required
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            errorMessage = "계정 삭제를 위해 재인증이 필요합니다."
+                        )
+                    } else {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            errorMessage = exception.message ?: "회원 탈퇴에 실패했습니다."
+                        )
+                    }
+                }
+        }
+    }
+
+    // 재인증 시작
+    fun startReauthentication() {
+        Log.d(TAG, "startReauthentication called")
+        analyticsHelper.logEvent(name = "reauthentication_started", params = emptyMap())
+
+        viewModelScope.launch {
+            _reauthenticationState.value = ReauthenticationState.Loading
+            try {
+                _startReauthenticationFlow.send(googleAuthDataSource.getSignInIntent())
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get Google reauthentication intent", e)
+                analyticsHelper.logEvent(
+                    name = "reauthentication_intent_failed",
+                    params = mapOf("error_message" to (e.message ?: "Unknown error"))
+                )
+
+                _reauthenticationState.value = ReauthenticationState.Error("재인증 준비 중 오류 발생: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    // 재인증 결과 처리
+    fun handleReauthenticationResult(data: Intent?) {
+        Log.d(TAG, "handleReauthenticationResult called")
+        viewModelScope.launch {
+            _reauthenticationState.value = ReauthenticationState.Loading
+            val account = googleAuthDataSource.getSignedInAccountFromIntent(data)
+            val idToken = account?.idToken
+
+            if (idToken != null) {
+                Log.d(TAG, "Successfully obtained ID token for reauthentication")
+                performReauthentication(idToken)
+            } else {
+                Log.w(TAG, "Failed to get ID token from reauthentication result")
+                analyticsHelper.logEvent(name = "reauthentication_id_token_failed", params = emptyMap())
+
+                _reauthenticationState.value = ReauthenticationState.Error("재인증 실패: ID 토큰을 가져올 수 없습니다.")
+            }
+        }
+    }
+
+    // 재인증 수행
+    private fun performReauthentication(idToken: String) {
+        Log.d(TAG, "performReauthentication called")
+        viewModelScope.launch {
+            val result = reauthenticateUseCase(idToken)
+
+            result
+                .onSuccess {
+                    Log.i(TAG, "Reauthentication successful")
+                    analyticsHelper.logEvent(name = "reauthentication_success", params = emptyMap())
+
+                    _reauthenticationState.value = ReauthenticationState.Success
+
+                    // 재인증 성공 후 계정 삭제 재시도
+                    retryDeleteAccount()
+                }
+                .onFailure { exception ->
+                    Log.e(TAG, "Reauthentication failed", exception)
+                    analyticsHelper.logEvent(
+                        name = "reauthentication_failure",
+                        params = mapOf("error_message" to (exception.message ?: "Unknown error"))
+                    )
+
+                    _reauthenticationState.value = ReauthenticationState.Error(
+                        exception.message ?: "재인증에 실패했습니다."
+                    )
+                }
+        }
+    }
+
+    // 재인증 후 계정 삭제 재시도
+    private fun retryDeleteAccount() {
+        Log.d(TAG, "retryDeleteAccount called")
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+
+            val result = deleteAccountUseCase()
+
+            result
+                .onSuccess {
+                    analyticsHelper.logEvent(name = "account_deleted_after_reauth", params = emptyMap())
+
+                    // 상태를 NotAuthenticated로 즉시 변경
+                    _authUiState.value = AuthUiState.NotAuthenticated
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        currentUser = null,
+                        errorMessage = null
+                    )
+                    _reauthenticationState.value = ReauthenticationState.None
+                }
+                .onFailure { exception ->
+                    analyticsHelper.logEvent(
+                        name = "account_deletion_failure_after_reauth",
+                        params = mapOf("error_message" to (exception.message ?: "Unknown error"))
+                    )
+
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = exception.message ?: "재인증 후 회원 탈퇴에 실패했습니다."
+                    )
+                    _reauthenticationState.value = ReauthenticationState.Error("계정 삭제에 실패했습니다.")
+                }
+        }
+    }
+
+    // 재인증 상태 초기화
+    fun clearReauthenticationState() {
+        _reauthenticationState.value = ReauthenticationState.None
     }
 
     fun signInWithGoogle(idToken: String) {
@@ -185,4 +352,13 @@ class LoginViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
     }
+}
+
+// 재인증 상태를 나타내는 sealed class
+sealed class ReauthenticationState {
+    object None : ReauthenticationState()
+    object Required : ReauthenticationState()
+    object Loading : ReauthenticationState()
+    object Success : ReauthenticationState()
+    data class Error(val message: String) : ReauthenticationState()
 }

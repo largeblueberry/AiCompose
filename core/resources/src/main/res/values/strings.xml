@@ -3,6 +3,8 @@
 
     <string name="app_subtitle">AI Music Composition Service that Listens and Dreams</string>
 
+    <string name="home_title">Compose Now\nYour own unique melody</string>
+
     <string name="app_name">Eaream</string>
     <string name="recordMainText">Record Voice</string>
     <string name="recordSubText">Quickly record moments of inspiration.</string>
@@ -115,5 +117,76 @@
 
     <string name="sheet_music_detail_title">Sheet Music Detail</string>
     <string name="sheet_music_detail_screen_message">Sheet Music Detail Screen</string>
+
+
+    <string name="about_us_title">About Eareum</string>
+    <string name="navigate_back_description">Navigate back</string>
+    <string name="app_slogan">Listen and Dream, AI Composing Service</string>
+    <string name="app_description">Born to help anyone easily create their own melodies without missing a moment of inspiration, just like humming a tune.</string>
+
+    <string name="section_title_team">Our Team</string>
+    <string name="team_role_ai">AI Development</string>
+    <string name="team_description_ai">Researched AI models to break down the barriers of music.</string>
+    <string name="team_role_server">Server Development</string>
+    <string name="team_description_server">Ensured your precious inspirations are stored and processed securely.</string>
+    <string name="team_role_android">Android Development</string>
+    <string name="team_description_android">Focused on providing an easy and enjoyable composing experience.</string>
+
+    <string name="section_title_license">License &amp; Contact</string>
+    <string name="license_description">This app is built with various open-source libraries. Check license information.</string>
+    <string name="contact_description">For feedback or inquiries, please email us at:\ncontact: onlym6659@gmail.com</string>
+    <string name="version_info">Version %1$s</string>
+
+    <string name="bugreport">Bug Report</string>
+
+    <string name="permission_dialog_title">Permission Required</string>
+    <string name="permission_dialog_message">The app needs the following permissions to function properly:\n\n• Microphone\n• Accessibility Service</string>
+    <string name="permission_dialog_confirm_button">Go to Settings</string>
+    <string name="permission_dialog_dismiss_button">Cancel</string>
+
+    <string name="onboarding_default_button_text">Next ></string>
+
+    <!-- Problem Solution Page -->
+    <string name="onboarding_problem_solution_title">Struggled to record musical ideas that pop up instantly?</string>
+    <string name="onboarding_problem_solution_description">Record your instant inspiration quickly!</string>
+    <string name="onboarding_problem_solution_button_text">Next</string>
+
+    <!-- Permission Request Page -->
+    <string name="onboarding_permission_request_title">Permission required</string>
+    <string name="onboarding_permission_request_description">Microphone permission is needed for recording</string>
+    <string name="onboarding_permission_request_button_text">Set Permissions</string>
+
+    <!-- Permission Success Page -->
+    <string name="onboarding_permission_success_title">Ready!</string>
+    <string name="onboarding_permission_success_description">Now, quickly record your instant musical ideas and check them as songs and sheet music!</string>
+    <string name="onboarding_permission_success_button_text">Start</string>
+
+    <string name="error_term_not_found">Error: Term not found.</string>
+
+    <string name="welcome_message">Welcome, %s!</string>
+    <string name="login_success_message">Login was successful.</string>
+
+
+    <string name="reauth_required_title">Reauthentication Required</string>
+    <string name="reauth_required_message">Verification is required to delete the account.\n\nPlease log in again with your Google account.</string>
+    <string name="reauth_required_confirm">Reauthenticate</string>
+    <string name="reauth_cancel">Cancel</string>
+
+    <!-- Reauthentication Loading Dialog -->
+    <string name="reauth_loading_title">Reauthenticating</string>
+    <string name="reauth_loading_message">We are proceeding with Google account reauthentication...</string>
+
+    <!-- Reauthentication Error Dialog -->
+    <string name="reauth_error_title">Reauthentication Failed</string>
+    <string name="reauth_error_message_prefix">Reauthentication failed.\n\n</string>
+    <string name="reauth_error_retry">Retry</string>
+
+
+    <string name="delete_account_title">Delete Account</string>
+    <string name="delete_account_message">Are you sure you want to delete your account?\n\n• All data will be deleted\n• This action cannot be undone</string>
+    <string name="delete_account_confirm">Delete</string>
+
+    <!-- Loading Content -->
+    <string name="loading_login">Logging in...</string>
 
 </resources>

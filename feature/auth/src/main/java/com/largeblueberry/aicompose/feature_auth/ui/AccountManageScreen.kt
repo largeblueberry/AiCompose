@@ -2,7 +2,6 @@ package com.largeblueberry.aicompose.feature_auth.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,15 +18,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -48,35 +44,55 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.largeblueberry.aicompose.feature_auth.ui.util.AccountManagementMenu
 import com.largeblueberry.aicompose.feature_auth.ui.util.LoginCard
+import com.largeblueberry.aicompose.feature_auth.ui.util.ReauthenticationErrorDialog
+import com.largeblueberry.aicompose.feature_auth.ui.util.ReauthenticationLoadingDialog
+import com.largeblueberry.aicompose.feature_auth.ui.util.ReauthenticationRequiredDialog
 import com.largeblueberry.auth.model.AuthUiState
 import com.largeblueberry.auth.model.LoginUiState
 import com.largeblueberry.auth.model.UserCore
-import com.largeblueberry.resources.R
 import kotlinx.coroutines.flow.collectLatest
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun AccountManageScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val authState = viewModel.authUiState.collectAsState().value
+    val reauthState = viewModel.reauthenticationState.collectAsState().value
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    // Google Sign-In 런처 (일반 로그인용)
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         viewModel.handleGoogleSignInResult(result.data)
     }
 
+    // Google Sign-In 런처 (재인증용)
+    val reauthenticationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        viewModel.handleReauthenticationResult(result.data)
+    }
+
+    // 일반 로그인 플로우
     LaunchedEffect(key1 = Unit) {
         viewModel.startGoogleSignInFlow.collectLatest { intent ->
             googleSignInLauncher.launch(intent)
+        }
+    }
+
+    // 재인증 플로우
+    LaunchedEffect(key1 = Unit) {
+        viewModel.startReauthenticationFlow.collectLatest { intent ->
+            reauthenticationLauncher.launch(intent)
         }
     }
 
@@ -88,7 +104,7 @@ fun LoginScreen(
                     Text(
                         text = when (authState) {
                             is AuthUiState.Authenticated -> "계정 관리"
-                            else -> stringResource(id = R.string.sheet_music_list_title)
+                            else -> "로그인"
                         },
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -125,6 +141,7 @@ fun LoginScreen(
                     // 로그인된 상태 - 완전한 계정 관리 화면
                     AccountManagementContent(
                         user = authState.user,
+                        isLoading = uiState.isLoading,
                         onSignOut = { viewModel.signOut() },
                         onDeleteAccount = { showDeleteDialog = true }
                     )
@@ -154,10 +171,40 @@ fun LoginScreen(
             onDismiss = { showDeleteDialog = false }
         )
     }
+
+    // 재인증 관련 다이얼로그들
+    when (reauthState) {
+        is ReauthenticationState.Required -> {
+            ReauthenticationRequiredDialog(
+                onConfirm = { viewModel.startReauthentication() },
+                onDismiss = { viewModel.clearReauthenticationState() }
+            )
+        }
+        is ReauthenticationState.Loading -> {
+            ReauthenticationLoadingDialog()
+        }
+        is ReauthenticationState.Success -> {
+            LaunchedEffect(reauthState) {
+                // 성공 시 자동으로 상태 클리어 (ViewModel에서 자동 처리됨)
+            }
+        }
+        is ReauthenticationState.Error -> {
+            ReauthenticationErrorDialog(
+                errorMessage = reauthState.message,
+                onRetry = { viewModel.startReauthentication() },
+                onDismiss = { viewModel.clearReauthenticationState() }
+            )
+        }
+        ReauthenticationState.None -> {
+            // 아무것도 표시하지 않음
+        }
+    }
 }
+
 @Composable
-private fun AccountManagementContent(
+fun AccountManagementContent(
     user: UserCore,
+    isLoading: Boolean,
     onSignOut: () -> Unit,
     onDeleteAccount: () -> Unit
 ) {
@@ -174,6 +221,7 @@ private fun AccountManagementContent(
 
         // 계정 관리 메뉴들
         AccountManagementMenu(
+            isLoading = isLoading,
             onSignOut = onSignOut,
             onDeleteAccount = onDeleteAccount
         )
@@ -216,61 +264,6 @@ private fun ProfileSection(user: UserCore) {
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-    }
-}
-
-@Composable
-private fun AccountManagementMenu(
-    onSignOut: () -> Unit,
-    onDeleteAccount: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // 계정 정보 카드
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = "계정 정보",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Google 계정으로 로그인됨",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        // 로그아웃 버튼
-        Button(
-            onClick = onSignOut,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
-        ) {
-            Text("로그아웃")
-        }
-
-        // 회원 탈퇴 버튼
-        OutlinedButton(
-            onClick = onDeleteAccount,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.error
-            ),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
-        ) {
-            Text("회원 탈퇴")
-        }
     }
 }
 
@@ -340,7 +333,7 @@ private fun LoadingContent() {
         CircularProgressIndicator()
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "로그인 중...",
+            text = stringResource(ResourceR.string.loading_login),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -354,12 +347,10 @@ private fun DeleteAccountDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("회원 탈퇴") },
+        title = { Text(stringResource(ResourceR.string.delete_account_title)) },
         text = {
             Text(
-                "정말로 회원 탈퇴하시겠습니까?\n\n" +
-                        "• 모든 데이터가 삭제됩니다\n" +
-                        "• 이 작업은 되돌릴 수 없습니다"
+                stringResource(ResourceR.string.delete_account_message)
             )
         },
         confirmButton = {
@@ -369,12 +360,12 @@ private fun DeleteAccountDialog(
                     contentColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("탈퇴")
+                Text(stringResource(ResourceR.string.delete_account_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("취소")
+                Text(stringResource(ResourceR.string.reauth_cancel)) // 기존 '취소' 리소스 재사용
             }
         }
     )

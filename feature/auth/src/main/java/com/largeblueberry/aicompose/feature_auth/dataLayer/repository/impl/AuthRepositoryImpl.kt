@@ -2,34 +2,64 @@ package com.largeblueberry.aicompose.feature_auth.dataLayer.repository.impl
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.AuthMapper
 import com.largeblueberry.aicompose.feature_auth.dataLayer.mapper.UserMapper
 import com.largeblueberry.aicompose.feature_auth.dataLayer.model.AuthResultData
 import com.largeblueberry.auth.model.AuthResult
+import com.largeblueberry.auth.model.UserCore
 import com.largeblueberry.auth.repository.AuthRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth, // Firebase Authentication 인스턴스를 주입받음
-    private val authMapper: AuthMapper // AuthResult (Data) -> AuthResultDomain (Domain) 매핑을 위한 Mapper 주입
+    private val firebaseAuth: FirebaseAuth,
+    private val authMapper: AuthMapper
 ) : AuthRepository {
+
+    private val _authState = MutableStateFlow<UserCore?>(null)
+    override val authState: StateFlow<UserCore?> = _authState.asStateFlow()
+
+    init {
+        // Firebase Auth 상태 변화 리스너 등록
+        firebaseAuth.addAuthStateListener { auth ->
+            val firebaseUser = auth.currentUser
+            val userCore = firebaseUser?.let {
+                val dataUser = UserMapper.toUser(it)
+                UserMapper.toDomain(dataUser)
+            }
+            _authState.value = userCore
+            Log.d("AuthRepositoryImpl", "Auth state changed: ${userCore?.name ?: "null"}")
+        }
+    }
 
     override suspend fun signIn(idToken: String): AuthResult {
         return try {
-            // Firebase 인증 로직: idToken을 사용하여 Firebase에 로그인
-            val credential = GoogleAuthProvider.getCredential(idToken, null) // 토큰 타입에 따라 변경
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
             val authResult = firebaseAuth.signInWithCredential(credential).await()
 
-            // FirebaseUser를 dataLayer.model.User로 변환
             val dataUser = authResult.user?.let { UserMapper.toUser(it) }
                 ?: throw IllegalStateException("Firebase user is null after successful sign-in.")
 
-            // 변환된 dataUser를 사용하여 dataLayer.model.AuthResult.Success 생성
+            authResult.user?.getIdToken(false)?.addOnSuccessListener { result ->
+                val firebaseIdToken = result.token
+                // "MyFirebaseToken" 태그로 Logcat에 Firebase ID 토큰을 출력합니다.
+                Log.d("MyFirebaseToken", "Firebase ID Token: $firebaseIdToken")
+
+            }
+
             val dataAuthResultData = AuthResultData.Success(dataUser)
 
-            // Data Layer의 AuthResult를 Domain Layer의 AuthResultDomain으로 매핑
+            // 로그인 성공 시 상태 업데이트 (AuthStateListener에서도 호출되지만 명시적으로)
+            val userCore = UserMapper.toDomain(dataUser)
+            _authState.value = userCore
+
             authMapper.toDomain(dataAuthResultData)
         } catch (e: Exception) {
             val dataAuthResultData = AuthResultData.Error(e.localizedMessage ?: "알 수 없는 로그인 오류 발생")
@@ -39,20 +69,18 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signOut(): Result<Unit> {
         return try {
-            firebaseAuth.signOut() // Firebase 로그아웃
-            Result.success(Unit) // 성공 시 Unit 반환
+            firebaseAuth.signOut()
+            // 로그아웃 시 상태 업데이트 (AuthStateListener에서도 호출되지만 명시적으로)
+            _authState.value = null
+            Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e) // 실패 시 예외 반환
+            Result.failure(e)
         }
     }
 
-    override suspend fun getCurrentUser(): com.largeblueberry.auth.model.UserCore? {
-        // 1. Firebase에서 현재 사용자 정보를 가져옵니다.
+    override suspend fun getCurrentUser(): UserCore? {
         val firebaseUser = firebaseAuth.currentUser
-
-        // 2. firebaseUser가 null이 아니면, Mapper를 사용해 Domain 모델(UserCore)로 변환하여 반환합니다.
         return firebaseUser?.let {
-            // FirebaseUser -> data.User -> domain.UserCore
             val dataUser = UserMapper.toUser(it)
             UserMapper.toDomain(dataUser)
         }
@@ -60,22 +88,80 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signInAnonymously(): Result<String> {
         return try {
-            // 1. 올바른 클라이언트용 함수인 signInAnonymously()를 호출합니다.
-            // 2. await() 함수를 사용해 작업이 끝날 때까지 기다립니다. (더 깔끔한 코루틴 방식)
-            val authResult = FirebaseAuth.getInstance().signInAnonymously().await()
-
+            val authResult = firebaseAuth.signInAnonymously().await()
             val userId = authResult.user?.uid
+
             if (userId != null) {
                 Log.i("AuthRepositoryImpl", "익명 인증 성공: $userId")
+
+                // 익명 로그인 성공 시 상태 업데이트
+                val firebaseUser = authResult.user
+                val userCore = firebaseUser?.let {
+                    val dataUser = UserMapper.toUser(it)
+                    UserMapper.toDomain(dataUser)
+                }
+                _authState.value = userCore
+
                 Result.success(userId)
             } else {
                 Log.e("AuthRepositoryImpl", "익명 인증 후 UID가 null입니다.")
                 Result.failure(Exception("익명 인증 후 UID가 null입니다."))
             }
         } catch (e: Exception) {
-            // 네트워크 오류나 기타 Firebase 예외가 여기서 잡힙니다.
             Log.e("AuthRepositoryImpl", "익명 인증 실패", e)
             Result.failure(e)
         }
     }
+
+    override suspend fun deleteAccount(): Result<Unit> {
+        return try {
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser != null) {
+                // Firebase에서 계정 삭제
+                currentUser.delete().await()
+
+                // 상태 업데이트
+                _authState.value = null
+
+                Log.i("AuthRepositoryImpl", "계정 삭제 성공")
+                Result.success(Unit)
+            } else {
+                Log.e("AuthRepositoryImpl", "삭제할 사용자가 없습니다.")
+                Result.failure(Exception("로그인된 사용자가 없습니다."))
+            }
+        } catch (e: Exception) {
+            Log.e("AuthRepositoryImpl", "계정 삭제 실패", e)
+
+            // 재인증이 필요한 경우 특별 처리
+            if (e is FirebaseAuthRecentLoginRequiredException) {
+                Log.w("AuthRepositoryImpl", "재인증이 필요합니다.")
+                Result.failure(ReauthenticationRequiredException("계정 삭제를 위해 재인증이 필요합니다."))
+            } else {
+                Result.failure(e)
+            }
+        }
+    }
+
+    // 재인증 함수 추가
+    override suspend fun reauthenticate(idToken: String): Result<Unit> {
+        return try {
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser != null) {
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                currentUser.reauthenticate(credential).await()
+
+                Log.i("AuthRepositoryImpl", "재인증 성공")
+                Result.success(Unit)
+            } else {
+                Log.e("AuthRepositoryImpl", "재인증할 사용자가 없습니다.")
+                Result.failure(Exception("로그인된 사용자가 없습니다."))
+            }
+        } catch (e: Exception) {
+            Log.e("AuthRepositoryImpl", "재인증 실패", e)
+            Result.failure(e)
+        }
+    }
 }
+
+// 재인증이 필요한 경우를 나타내는 커스텀 예외
+class ReauthenticationRequiredException(message: String) : Exception(message)
