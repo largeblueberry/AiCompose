@@ -13,8 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
+import com.largeblueberry.feature_sheetmusic.ui.util.SheetMusic
 import com.largeblueberry.resources.R
-import com.largeblueberry.feature_sheetmusic.R as ResourcesR
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

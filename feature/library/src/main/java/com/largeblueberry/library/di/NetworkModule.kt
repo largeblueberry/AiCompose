@@ -1,7 +1,7 @@
 package com.largeblueberry.library.di
 
 import com.largeblueberry.data.AuthInterceptor
-import com.largeblueberry.library.dataLayer.repository.AudioUploadRepository
+import com.largeblueberry.remote.AudioUploadRepository
 import com.largeblueberry.library.dataLayer.repository.impl.AudioUploadRepositoryImpl
 import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
 import com.largeblueberry.remote.BuildConfig
@@ -15,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import com.largeblueberry.remote.NetworkService
+import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,12 +24,23 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
+
+        val logger = HttpLoggingInterceptor().apply {
+            // Level.BODY: 요청/응답의 헤더와 본문을 모두 보여줍니다. 가장 자세합니다.
+            // Level.HEADERS: 헤더 정보만 보여줍니다.
+            // Level.BASIC: 요청 라인과 응답 코드만 보여줍니다.
+            // Level.NONE: 로그를 남기지 않습니다. (기본값)
+            level = HttpLoggingInterceptor.Level.HEADERS
+        }
+
         return OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS) // 연결 타임아웃
-            .readTimeout(30, TimeUnit.SECONDS)    // 읽기 타임아웃
-            .writeTimeout(30, TimeUnit.SECONDS)   // 쓰기 타임아웃
+            .connectTimeout(90, TimeUnit.SECONDS) // 연결 타임아웃
+            .readTimeout(90, TimeUnit.SECONDS)    // 읽기 타임아웃
+            .writeTimeout(90, TimeUnit.SECONDS)   // 쓰기 타임아웃
             .addInterceptor(AuthInterceptor())
-            // .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }) // 로깅 인터셉터 추가 (디버그용)
+            // 2. 생성한 로거를 OkHttpClient에 추가
+            // AuthInterceptor 다음에 추가하면, 인증 헤더가 포함된 후의 최종 요청을 볼 수 있어 더 좋습니다.
+            .addInterceptor(logger)
             .build()
     }
 
@@ -42,7 +54,6 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create()) // JSON 파싱을 위한 컨버터
             .build()
     }
-
     // AudioUploadService 인터페이스 구현체 제공
     @Provides
     @Singleton

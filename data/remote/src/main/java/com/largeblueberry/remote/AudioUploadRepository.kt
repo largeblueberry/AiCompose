@@ -1,4 +1,4 @@
-package com.largeblueberry.library.dataLayer.repository
+package com.largeblueberry.remote
 
 import com.largeblueberry.remote.model.UploadResponse
 

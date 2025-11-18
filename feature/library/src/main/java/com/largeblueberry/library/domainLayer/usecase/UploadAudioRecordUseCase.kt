@@ -1,6 +1,6 @@
 package com.largeblueberry.library.domainLayer.usecase
 
-import com.largeblueberry.library.dataLayer.repository.AudioUploadRepository
+import com.largeblueberry.remote.AudioUploadRepository
 import com.largeblueberry.remote.model.UploadResponse
 import kotlin.Result
 

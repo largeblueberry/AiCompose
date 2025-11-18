@@ -1,6 +1,6 @@
 package com.largeblueberry.library.dataLayer.repository.impl
 
-import com.largeblueberry.library.dataLayer.repository.AudioUploadRepository
+import com.largeblueberry.remote.AudioUploadRepository
 import com.largeblueberry.remote.NetworkService
 import com.largeblueberry.remote.model.UploadResponse // UploadResponse를 import 합니다.
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
