@@ -2,7 +2,7 @@ package com.largeblueberry.library.ui
 
 
 import com.largeblueberry.library.domainLayer.model.LibraryModel
-import com.largeblueberry.remote.model.UploadState
+import com.largeblueberry.network.model.request.UploadState
 
 data class LibraryUiState(
     val audioRecords: List<LibraryModel> = emptyList(),

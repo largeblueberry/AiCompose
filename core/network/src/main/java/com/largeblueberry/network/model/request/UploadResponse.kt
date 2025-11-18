@@ -1,4 +1,4 @@
-package com.largeblueberry.remote.model
+package com.largeblueberry.network.model.request
 
 data class UploadResponse(
     // val success: Boolean,

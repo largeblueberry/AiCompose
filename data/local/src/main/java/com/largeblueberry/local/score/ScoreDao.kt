@@ -25,4 +25,8 @@ interface ScoreDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM sheet_music WHERE id = :id)")
     suspend fun isScoreExists(id: String): Boolean
+
+    // 추가: URL로 악보 조회 (중복 방지용)
+    @Query("SELECT * FROM sheet_music WHERE scoreUrl = :scoreUrl")
+    suspend fun getScoreByUrl(scoreUrl: String): ScoreEntity?
 }

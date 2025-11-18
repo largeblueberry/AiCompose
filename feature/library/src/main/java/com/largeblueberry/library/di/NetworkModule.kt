@@ -1,7 +1,7 @@
 package com.largeblueberry.library.di
 
 import com.largeblueberry.data.AuthInterceptor
-import com.largeblueberry.remote.AudioUploadRepository
+import com.largeblueberry.network.repository.AudioUploadRepository
 import com.largeblueberry.library.dataLayer.repository.impl.AudioUploadRepositoryImpl
 import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
 import com.largeblueberry.remote.BuildConfig
@@ -14,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import com.largeblueberry.remote.NetworkService
+import com.largeblueberry.network.service.NetworkService
 import okhttp3.logging.HttpLoggingInterceptor
 
 @Module

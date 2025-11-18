@@ -15,8 +15,8 @@ import com.largeblueberry.library.domainLayer.usecase.RenameAudioRecordUseCase
 import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
 import com.largeblueberry.library.ui.LibraryUiState
 import com.largeblueberry.library.util.AudioPlayer
-import com.largeblueberry.remote.model.UploadState
-import com.largeblueberry.remote.model.UploadStatus
+import com.largeblueberry.network.model.request.UploadState
+import com.largeblueberry.network.model.request.UploadStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
