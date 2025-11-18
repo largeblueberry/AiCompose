@@ -3,6 +3,8 @@
 
     <string name="app_subtitle">듣고, 꿈꾸는 AI 작곡 서비스</string>
 
+    <string name="home_title">나만의 멜로디를\n바로 만들어 보세요</string>
+
     <string name="app_name">이어름</string>
     <string name="recordMainText">음성 녹음하기</string>
     <string name="recordSubText">순간의 영감을 빨리 기록해요.</string>
@@ -115,6 +117,75 @@
     <string name="sheet_music_detail_title">악보 상세</string>
     <string name="sheet_music_detail_screen_message">악보 상세 화면</string>
 
+    <string name="about_us_title">About 이어름</string>
+    <string name="navigate_back_description">뒤로가기</string>
+    <string name="app_slogan">듣고, 꿈꾸는 AI 작곡 서비스</string>
+    <string name="app_description">허밍이나 콧노래처럼, 순간의 영감을 놓치지 않고 누구나 쉽게 자신만의 멜로디를 만들 수 있도록 돕기 위해 태어났습니다.</string>
 
+    <string name="section_title_team">만든 사람들</string>
+    <string name="team_role_ai">AI 개발</string>
+    <string name="team_description_ai">음악의 장벽을 허무는 AI 모델을 연구했습니다.</string>
+    <string name="team_role_server">서버 개발</string>
+    <string name="team_description_server">여러분의 소중한 영감이 안전하게 저장되도록 만들었습니다.</string>
+    <string name="team_role_android">Android 개발</string>
+    <string name="team_description_android">쉽고 즐거운 작곡 경험을 제공하기 위해 고민했습니다.</string>
+
+    <string name="section_title_license">라이선스 및 문의</string>
+    <string name="license_description">본 앱은 다양한 오픈소스 라이브러리를 기반으로 제작되었습니다. 라이선스 정보 확인하기</string>
+    <string name="contact_description">앱에 대한 의견이나 문의사항은 아래 이메일로 보내주세요.\ncontact: onlym6659@gmail.com</string>
+    <string name="version_info">버전 %1$s</string>
+
+
+    <string name="bugreport">버그 신고</string>
+
+    <string name="permission_dialog_title">권한 허용</string>
+    <string name="permission_dialog_message">앱이 정상적으로 작동하려면 다음 권한이 필요합니다:\n\n• 마이크 권한\n• 접근성 서비스</string>
+    <string name="permission_dialog_confirm_button">설정으로 이동</string>
+    <string name="permission_dialog_dismiss_button">취소</string>
+
+    <string name="onboarding_default_button_text">다음 ></string>
+
+    <!-- Problem Solution Page -->
+    <string name="onboarding_problem_solution_title">순간 떠오르는 악상 기록하기 힘들었나요?</string>
+    <string name="onboarding_problem_solution_description">순간의 영감을 빨리 기록하세요!</string>
+    <string name="onboarding_problem_solution_button_text">다음</string>
+
+    <!-- Permission Request Page -->
+    <string name="onboarding_permission_request_title">접근성 권한이 필요해요</string>
+    <string name="onboarding_permission_request_description">녹음을 위해서는 마이크 권한이 필요해요</string>
+    <string name="onboarding_permission_request_button_text">권한 설정하기</string>
+
+    <!-- Permission Success Page -->
+    <string name="onboarding_permission_success_title">준비 완료!</string>
+    <string name="onboarding_permission_success_description">이제 순간의 악상을 빠르게 녹음하고 노래와 악보로 확인해보세요!</string>
+    <string name="onboarding_permission_success_button_text">시작하기</string>
+
+    <string name="error_term_not_found">오류: 약관을 찾을 수 없습니다.</string>
+
+    <string name="welcome_message">환영합니다, %s님!</string>
+    <string name="login_success_message">성공적으로 로그인되었습니다.</string>
+
+
+    <string name="reauth_required_title">재인증 필요</string>
+    <string name="reauth_required_message">계정 삭제를 위해 본인 확인이 필요합니다.\n\nGoogle 계정으로 다시 로그인해주세요.</string>
+    <string name="reauth_required_confirm">재인증하기</string>
+    <string name="reauth_cancel">취소</string>
+
+    <!-- 재인증 진행 중 다이얼로그 -->
+    <string name="reauth_loading_title">재인증 중</string>
+    <string name="reauth_loading_message">Google 계정 재인증을 진행하고 있습니다...</string>
+
+    <!-- 재인증 에러 다이얼로그 -->
+    <string name="reauth_error_title">재인증 실패</string>
+    <string name="reauth_error_message_prefix">재인증에 실패했습니다.\n\n</string>
+    <string name="reauth_error_retry">다시 시도</string>
+
+    <!-- 회원 탈퇴 다이얼로그 -->
+    <string name="delete_account_title">회원 탈퇴</string>
+    <string name="delete_account_message">정말로 회원 탈퇴하시겠습니까?\n\n• 모든 데이터가 삭제됩니다\n• 이 작업은 되돌릴 수 없습니다</string>
+    <string name="delete_account_confirm">탈퇴</string>
+
+    <!-- 로딩 컨텐츠 -->
+    <string name="loading_login">로그인 중...</string>
 
 </resources>

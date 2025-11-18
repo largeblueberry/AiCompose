@@ -1,5 +1,6 @@
 package com.largeblueberry.setting
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -101,7 +103,8 @@ fun SettingsScreen(
                 AccountSection(
                     authState = authState,
                     onLoginClick = navigationActions.onNavigateToLogin,
-                    onLogoutClick = { viewModel.signOut() }
+                    onLogoutClick = { viewModel.signOut() },
+                    onAccountManageClick = navigationActions.onNavigateToAccountManage
                 )
             }
 
@@ -112,7 +115,7 @@ fun SettingsScreen(
 
             //  앱 정보 섹션
             item {
-                AboutSection()
+                AboutSection(navigationActions = navigationActions)
             }
         }
     }
@@ -185,15 +188,27 @@ private fun AppInfoCard() {
 private fun AccountSection(
     authState: AuthUiState,
     onLoginClick: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onAccountManageClick: () -> Unit // 새로 추가
 ) {
     SettingSection(title = stringResource(ResourceR.string.account)) {
         when (authState) {
             is AuthUiState.Authenticated -> {
-                // 로그인된 상태
+                // 로그인된 상태 - 사용자 정보 표시
                 UserProfileItem(
                     user = authState.user,
-                    onLogoutClick = onLogoutClick
+                    onLogoutClick = onLogoutClick,
+                    title = stringResource(ResourceR.string.welcome_message, authState.user.name),
+                    subtitle = stringResource(ResourceR.string.login_success_message)
+                )
+
+                // 계정 관리 메뉴 추가
+                SettingItem(
+                    icon = Icons.Default.ManageAccounts, // 또는 적절한 아이콘
+                    title = "계정 관리",
+                    subtitle = "회원 정보 수정, 탈퇴 등",
+                    onClick = onAccountManageClick,
+                    showArrow = true
                 )
             }
             else -> {
@@ -210,10 +225,14 @@ private fun AccountSection(
     }
 }
 
+
+
 @Composable
 private fun UserProfileItem(
     user: UserCore,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    title: String,
+    subtitle: String
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -224,6 +243,27 @@ private fun UserProfileItem(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            // 환영 메시지 섹션 (title이 있을 때만 표시)
+            if (title.isNotEmpty()) {
+                Text(
+                    text = title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AppPrimaryBlue
+                )
+
+                if (subtitle.isNotEmpty()) {
+                    Text(
+                        text = subtitle,
+                        fontSize = 14.sp,
+                        color = AppBlack.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -313,13 +353,6 @@ private fun AboutSection(
             title = stringResource(ResourceR.string.aboutEareamMainText),
             subtitle = stringResource(ResourceR.string.aboutEareamSubText),
             onClick = navigationActions.onNavigateToAbout
-        )
-
-        SettingItem(
-            icon = Icons.Default.BugReport,
-            title = stringResource(ResourceR.string.appBugMainText),
-            subtitle = stringResource(ResourceR.string.appBugSubText),
-            onClick = navigationActions.onNavigateToBugReport
         )
     }
 }

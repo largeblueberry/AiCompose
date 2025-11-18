@@ -30,8 +30,8 @@ fun MainScreen(navController: NavController){
     ) {
         TopAppBar(
             title = {
-                Text(text = stringResource(id = ResourceR.string.app_name),
-                    fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(id = ResourceR.string.home_title),
+                    fontSize = 20.sp, fontWeight = FontWeight.Bold)
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background

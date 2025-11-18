@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.setting.language.ui.Language
 import com.largeblueberry.resources.R as ResourceR
 
@@ -24,7 +25,7 @@ import com.largeblueberry.resources.R as ResourceR
 @Composable
 fun LanguageSettingScreen(
     viewModel: LanguageViewModel = hiltViewModel(),
-    onNavigateUp: () -> Unit = {}
+    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -34,7 +35,7 @@ fun LanguageSettingScreen(
             TopAppBar(
                 title = { Text(stringResource(id = ResourceR.string.language_setting_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateUp) {
+                    IconButton(onClick = navigationActions.onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Navigate up"
