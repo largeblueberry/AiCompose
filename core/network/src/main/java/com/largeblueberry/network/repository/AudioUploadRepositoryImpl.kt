@@ -1,6 +1,6 @@
 package com.largeblueberry.network.repository
 
-import com.largeblueberry.network.model.request.UploadResponse
+import com.largeblueberry.network.model.response.UploadResponse
 import com.largeblueberry.network.service.NetworkService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
