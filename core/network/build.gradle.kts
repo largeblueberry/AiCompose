@@ -25,16 +25,20 @@ android {
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
                 localProperties.load(FileInputStream(localPropertiesFile))
-            }else {
-                println("❌ local.properties 파일이 없습니다!")
+            } else {
+                throw GradleException("❌ local.properties 파일이 없습니다! 프로젝트 루트에 local.properties 파일을 생성해주세요.")
             }
 
-            buildConfigField("String", "GOOGLE_CLIENT_ID",
-                "\"${localProperties.getProperty("GOOGLE_CLIENT_ID")}\"")
+            val googleClientId = localProperties.getProperty("GOOGLE_CLIENT_ID")
+                ?: throw GradleException("❌ GOOGLE_CLIENT_ID를 local.properties에 설정해주세요!")
 
-            buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL",
-                "https://teamproject.p-e.kr")}\"")
+            val baseUrl = localProperties.getProperty("BASE_URL")
+                ?: throw GradleException("❌ BASE_URL을 local.properties에 설정해주세요!")
+
+            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$googleClientId\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
+
 
         release {
             isMinifyEnabled = false
