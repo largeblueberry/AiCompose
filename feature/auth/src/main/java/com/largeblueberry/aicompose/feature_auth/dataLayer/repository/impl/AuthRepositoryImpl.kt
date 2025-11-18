@@ -47,6 +47,13 @@ class AuthRepositoryImpl @Inject constructor(
             val dataUser = authResult.user?.let { UserMapper.toUser(it) }
                 ?: throw IllegalStateException("Firebase user is null after successful sign-in.")
 
+            authResult.user?.getIdToken(false)?.addOnSuccessListener { result ->
+                val firebaseIdToken = result.token
+                // "MyFirebaseToken" 태그로 Logcat에 Firebase ID 토큰을 출력합니다.
+                Log.d("MyFirebaseToken", "Firebase ID Token: $firebaseIdToken")
+
+            }
+
             val dataAuthResultData = AuthResultData.Success(dataUser)
 
             // 로그인 성공 시 상태 업데이트 (AuthStateListener에서도 호출되지만 명시적으로)

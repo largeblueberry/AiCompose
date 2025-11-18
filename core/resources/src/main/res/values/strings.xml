@@ -167,4 +167,26 @@
     <string name="login_success_message">Login was successful.</string>
 
 
+    <string name="reauth_required_title">Reauthentication Required</string>
+    <string name="reauth_required_message">Verification is required to delete the account.\n\nPlease log in again with your Google account.</string>
+    <string name="reauth_required_confirm">Reauthenticate</string>
+    <string name="reauth_cancel">Cancel</string>
+
+    <!-- Reauthentication Loading Dialog -->
+    <string name="reauth_loading_title">Reauthenticating</string>
+    <string name="reauth_loading_message">We are proceeding with Google account reauthentication...</string>
+
+    <!-- Reauthentication Error Dialog -->
+    <string name="reauth_error_title">Reauthentication Failed</string>
+    <string name="reauth_error_message_prefix">Reauthentication failed.\n\n</string>
+    <string name="reauth_error_retry">Retry</string>
+
+
+    <string name="delete_account_title">Delete Account</string>
+    <string name="delete_account_message">Are you sure you want to delete your account?\n\n• All data will be deleted\n• This action cannot be undone</string>
+    <string name="delete_account_confirm">Delete</string>
+
+    <!-- Loading Content -->
+    <string name="loading_login">Logging in...</string>
+
 </resources>

@@ -165,4 +165,27 @@
     <string name="welcome_message">환영합니다, %s님!</string>
     <string name="login_success_message">성공적으로 로그인되었습니다.</string>
 
+
+    <string name="reauth_required_title">재인증 필요</string>
+    <string name="reauth_required_message">계정 삭제를 위해 본인 확인이 필요합니다.\n\nGoogle 계정으로 다시 로그인해주세요.</string>
+    <string name="reauth_required_confirm">재인증하기</string>
+    <string name="reauth_cancel">취소</string>
+
+    <!-- 재인증 진행 중 다이얼로그 -->
+    <string name="reauth_loading_title">재인증 중</string>
+    <string name="reauth_loading_message">Google 계정 재인증을 진행하고 있습니다...</string>
+
+    <!-- 재인증 에러 다이얼로그 -->
+    <string name="reauth_error_title">재인증 실패</string>
+    <string name="reauth_error_message_prefix">재인증에 실패했습니다.\n\n</string>
+    <string name="reauth_error_retry">다시 시도</string>
+
+    <!-- 회원 탈퇴 다이얼로그 -->
+    <string name="delete_account_title">회원 탈퇴</string>
+    <string name="delete_account_message">정말로 회원 탈퇴하시겠습니까?\n\n• 모든 데이터가 삭제됩니다\n• 이 작업은 되돌릴 수 없습니다</string>
+    <string name="delete_account_confirm">탈퇴</string>
+
+    <!-- 로딩 컨텐츠 -->
+    <string name="loading_login">로그인 중...</string>
+
 </resources>
