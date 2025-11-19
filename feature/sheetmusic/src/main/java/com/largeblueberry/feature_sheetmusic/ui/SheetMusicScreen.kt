@@ -1,8 +1,11 @@
 package com.largeblueberry.feature_sheetmusic.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,12 +24,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.Image
+import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
 import com.largeblueberry.feature_sheetmusic.ui.state.SheetMusicUiState
+import kotlinx.coroutines.tasks.await
+import androidx.core.net.toUri
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -296,7 +305,7 @@ private fun ScoreDisplaySection(
                 }
 
                 else -> {
-                    // 이미지 파일인 경우 (PNG, JPG 등)
+                    // 웹뷰 파일인 경우
                     ImageScoreViewer(
                         imageUrl = scoreUrl,
                         modifier = Modifier.fillMaxSize()
@@ -308,58 +317,116 @@ private fun ScoreDisplaySection(
 }
 
 
-// 🖼️ 이미지 악보 뷰어 (User-Agent 추가 버전)
 @Composable
-private fun ImageScoreViewer(
-    imageUrl: String,
-    modifier: Modifier = Modifier
+fun MusicScoreWebView(
+    modifier: Modifier = Modifier,
+    url: String,
+    headers: Map<String, String>
 ) {
-    Log.d("ImageScoreViewer", "Loading image from URL: $imageUrl")
-
-    // 🔥 수정된 부분: ImageRequest에 headers를 추가합니다.
-    val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(imageUrl)
-        .crossfade(true)
-        // User-Agent 헤더를 일반적인 브라우저처럼 설정
-        .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-        .build()
-
-    SubcomposeAsyncImage(
-        model = imageRequest, // 수정된 요청 모델 사용
-        contentDescription = "악보 이미지",
-        modifier = modifier
-            .fillMaxSize()
-            .clip(RoundedCornerShape(8.dp)),
-        contentScale = ContentScale.Fit,
-        loading = {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+                webViewClient = WebViewClient()
             }
         },
-        error = {
-            Log.e("ImageScoreViewer", "Image loading failed", it.result.throwable)
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "⚠️",
-                    fontSize = 48.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Text(
-                    text = "악보를 불러올 수 없습니다",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
+        update = { webView ->
+            webView.loadUrl(url, headers)
         }
     )
+}
+
+// 오류 발생 시 재시도 UI를 표시하는 Composable
+@Composable
+fun ErrorContent(
+    modifier: Modifier = Modifier,
+    message: String,
+    onRetry: () -> Unit
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = message)
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = onRetry) {
+                Text("재시도")
+            }
+        }
+    }
+}
+
+/**
+ * Firebase 인증 후 WebView로 악보를 표시하는 Composable.
+ * (기존 ImageScoreViewer를 이 함수로 교체하세요)
+ *
+ * @param imageUrl 악보를 로드할 URL
+ */
+@Composable
+fun ImageScoreViewer(
+    modifier: Modifier = Modifier,
+    imageUrl: String
+) {
+    // Logcat에서 필터링하기 위한 태그
+    val logTag = "ImageScoreViewer"
+
+    var firebaseToken by remember { mutableStateOf<String?>(null) }
+    var hasTokenError by remember { mutableStateOf(false) }
+    var retryTrigger by remember { mutableStateOf(0) }
+
+    // Composable이 처음 나타나거나 '재시도' 시 Firebase ID 토큰을 가져옵니다.
+    LaunchedEffect(key1 = imageUrl, key2 = retryTrigger) {
+        hasTokenError = false
+        firebaseToken = null // 재시도 시 토큰 초기화
+        try {
+            val tokenResult = Firebase.auth.currentUser?.getIdToken(false)?.await()
+            if (tokenResult?.token == null) {
+                Log.w(logTag, "User is not logged in or token is null.")
+                hasTokenError = true
+            } else {
+                firebaseToken = tokenResult.token
+                Log.d(logTag, "Firebase Token loaded successfully.")
+            }
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to get Firebase token", e)
+            hasTokenError = true
+        }
+    }
+
+    // 토큰 상태에 따라 다른 UI를 표시합니다.
+    when {
+        // 토큰 로딩 실패
+        hasTokenError -> {
+            ErrorContent(
+                modifier = modifier,
+                message = "사용자 인증 정보를 가져올 수 없습니다.",
+                onRetry = { retryTrigger++ }
+            )
+        }
+
+        // 토큰 로딩 성공 -> WebView 표시
+        firebaseToken != null -> {
+            val headers = mapOf(
+                "Authorization" to "Bearer $firebaseToken",
+                "User-Agent" to "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+            )
+
+            MusicScoreWebView(
+                modifier = modifier,
+                url = imageUrl,
+                headers = headers
+            )
+        }
+
+        // 토큰 로딩 중
+        else -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+    }
 }
 
 // 또는 방법 2: AsyncImagePainter 직접 사용
@@ -448,7 +515,7 @@ private fun PdfScoreViewer(
         // 임시: 외부 앱으로 열기 버튼
         Button(
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl))
+                val intent = Intent(Intent.ACTION_VIEW, pdfUrl.toUri())
                 context.startActivity(intent)
             }
         ) {
