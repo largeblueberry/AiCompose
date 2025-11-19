@@ -29,6 +29,8 @@ import com.largeblueberry.setting.about.AboutUsScreen
 import com.largeblueberry.setting.serviceterm.ServiceTermScreen
 import com.largeblueberry.setting.serviceterm.TermDetailScreen
 import com.largeblueberry.setting.serviceterm.findTermTypeById
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AppNavigation() {
@@ -44,10 +46,22 @@ fun AppNavigation() {
             RecordScreenState(navController = navController)
         }
 
+        // 🔥 수정: LibraryScreen의 콜백 처리
         composable(AppRoutes.LibraryScreen.route) {
             LibraryScreen(
-                onUploadSuccess = { scoreUrl ->
-                    navController.navigate("sheet_music_route/${Uri.encode(scoreUrl)}")
+                // ✅ scoreUrl과 midiUrl을 모두 받는 콜백으로 변경
+                onUploadSuccess = { scoreUrl, midiUrl ->
+                    // ✅ URL은 네비게이션 전달 전에 항상 인코딩해야 합니다.
+                    val encodedScoreUrl = URLEncoder.encode(scoreUrl, StandardCharsets.UTF_8.toString())
+                    val encodedMidiUrl = URLEncoder.encode(midiUrl, StandardCharsets.UTF_8.toString())
+
+                    // ✅ 2. 인코딩된 URL을 포함하여 "상세 주소" 경로를 만듭니다.
+                    val routeWithArgs = "${AppRoutes.SheetMusicScreen.route}/$encodedScoreUrl/$encodedMidiUrl"
+
+                    Log.d("AppNavigation", "Navigating to SheetMusicScreen with args: $routeWithArgs")
+
+                    // ✅ 3. 완성된 경로로 내비게이션을 요청합니다.
+                    navController.navigate(routeWithArgs)
                 },
                 navController = navController,
                 onBackClick = { navController.popBackStack() }
@@ -141,21 +155,18 @@ fun AppNavigation() {
             )
         }
 
-        // 🔥 수정: URL 파라미터를 받는 SheetMusic 화면
+        // 🔥 수정: URL 파라미터를 받는 SheetMusic 화면 정의
         composable(
-            route = AppRoutes.SheetMusicScreen.routeWithArgs,
+            route = AppRoutes.SheetMusicScreen.route + "/{scoreUrl}/{midiUrl}",
             arguments = listOf(
-                navArgument("scoreUrl") {
-                    type = NavType.StringType
-                    nullable = false
-                }
+                navArgument("scoreUrl") { type = NavType.StringType },
+                navArgument("midiUrl") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val encodedUrl = backStackEntry.arguments?.getString("scoreUrl")
-            val scoreUrl = encodedUrl?.let { Uri.decode(it) }
-
+            Log.d("AppNavigation", "인자 포함된 SheetMusicScreen 호출됨")
             SheetMusicScreen(
-                scoreUrl = scoreUrl,
+                scoreUrl = backStackEntry.arguments?.getString("scoreUrl"),
+                midiUrl = backStackEntry.arguments?.getString("midiUrl"),
                 onNavigateToRecord = {
                     navController.navigate(AppRoutes.RecordScreen.route)
                 },
@@ -167,10 +178,10 @@ fun AppNavigation() {
 
         // 🔥 기존 파라미터 없는 SheetMusic 화면 (빈 화면용)
         composable(AppRoutes.SheetMusicScreen.route) {
-
             Log.d("AppNavigation", "기본 SheetMusicScreen 호출됨")
             SheetMusicScreen(
                 scoreUrl = null,
+                midiUrl = null, // midiUrl도 null로 전달
                 onNavigateToRecord = {
                     navController.navigate(AppRoutes.RecordScreen.route)
                 },

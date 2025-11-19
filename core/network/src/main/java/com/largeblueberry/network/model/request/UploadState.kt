@@ -4,8 +4,8 @@ data class UploadState(
     val status: UploadStatus = UploadStatus.IDLE,
     val progress: Float = 0f,
     val message: String? = null,
-    val url: String? = null,
     val scoreUrl: String? = null,
+    val midiUrl: String? = null,
     val recordId: Int? = null
 )
 

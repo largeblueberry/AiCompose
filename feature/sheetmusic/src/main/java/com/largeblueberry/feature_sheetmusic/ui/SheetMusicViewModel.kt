@@ -24,20 +24,20 @@ class SheetMusicViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SheetMusicUiState>(SheetMusicUiState.Idle)
     val uiState: StateFlow<SheetMusicUiState> = _uiState.asStateFlow()
 
-    // 기존 악보 생성 메서드
+    // 기존 악보 생성 메서드 (API 직접 호출)
     fun generateSheetMusic(requestBody: Any) {
         viewModelScope.launch {
             _uiState.value = SheetMusicUiState.Loading
-
-            Log.d("SheetMusicVM", "요청 시작: $requestBody")
+            Log.d("SheetMusicVM", "API 요청 시작: $requestBody")
 
             generateSheetMusicUseCase(requestBody)
                 .onSuccess { sheetMusic ->
-                    Log.d("SheetMusicVM", "성공: $sheetMusic")
+                    // UseCase가 반환한 SheetMusic 객체는 이미 midiUrl과 scoreUrl을 모두 가짐
+                    Log.d("SheetMusicVM", "✅ API 요청 성공: $sheetMusic")
                     _uiState.value = SheetMusicUiState.Success(sheetMusic)
                 }
                 .onFailure { exception ->
-                    Log.e("SheetMusicVM", "실패: ${exception.message}", exception)
+                    Log.e("SheetMusicVM", "🔴 API 요청 실패: ${exception.message}", exception)
                     _uiState.value = SheetMusicUiState.Error(
                         exception.message ?: "알 수 없는 오류가 발생했습니다."
                     )
@@ -45,80 +45,25 @@ class SheetMusicViewModel @Inject constructor(
         }
     }
 
-    // 🔥 새로 추가: 업로드된 파일 처리 (두 개 URL)
+    // ✅ 업로드된 파일 처리 (두 URL을 받는 유일한 메서드)
     fun loadUploadedFiles(midiUrl: String, scoreUrl: String) {
         viewModelScope.launch {
             _uiState.value = SheetMusicUiState.Loading
 
-            // 🔍 URL 디버깅
             Log.d("SheetMusicVM", "🔍 받은 MIDI URL: $midiUrl")
             Log.d("SheetMusicVM", "🔍 받은 Score URL: $scoreUrl")
 
-            // URL 유효성 검사
-            if (midiUrl.startsWith("http")) {
-                Log.d("SheetMusicVM", "✅ MIDI URL은 절대 경로")
-            } else {
-                Log.w("SheetMusicVM", "⚠️ MIDI URL은 상대 경로: $midiUrl")
-            }
-
-            if (scoreUrl.startsWith("http")) {
-                Log.d("SheetMusicVM", "✅ Score URL은 절대 경로")
-            } else {
-                Log.w("SheetMusicVM", "⚠️ Score URL은 상대 경로: $scoreUrl")
-            }
-
             try {
-                // 🕐 파일 생성 완료 대기 (서버에서 변환 시간 필요)
-                Log.d("SheetMusicVM", "⏳ 파일 생성 완료 대기 중...")
-                delay(3000) // 3초 대기
+                // 서버에서 파일 변환 및 저장에 시간이 걸릴 수 있으므로 잠시 대기
+                Log.d("SheetMusicVM", "⏳ 파일 생성 대기 중...")
+                delay(2000) // 2초 대기 (네트워크 상태에 따라 조절 가능)
 
-                // ✅ 실제 SheetMusic 객체 생성
+                // 두 URL을 모두 사용하여 SheetMusic 객체 생성
                 val sheetMusic = createSheetMusicFromUrls(midiUrl, scoreUrl)
 
-                Log.d("SheetMusicVM", "✅ 파일 로드 성공!")
-                _uiState.value = SheetMusicUiState.Success(sheetMusic)
-
-            } catch (e: Exception) {
-                Log.e("SheetMusicVM", "🔴 파일 로드 실패: ${e.message}", e)
-                _uiState.value = SheetMusicUiState.Error(
-                    "파일을 불러올 수 없습니다: ${e.message}"
-                )
-            }
-        }
-    }
-
-    // 🔥 단일 URL로 파일 로드
-    fun loadUploadedFile(url: String) {
-        viewModelScope.launch {
-            _uiState.value = SheetMusicUiState.Loading
-
-            Log.d("SheetMusicVM", "🔍 받은 URL: $url")
-
-            try {
-                // ⏳ 파일 생성 완료 대기
-                Log.d("SheetMusicVM", "⏳ 파일 생성 완료 대기 중...")
-                delay(3000) // 3초 대기
-
-                // ✅ 실제 SheetMusic 객체 생성
-                val sheetMusic = createSheetMusicFromUrl(url)
-
-                Log.d("SheetMusicVM", "✅ 파일 로드 성공!")
-
-                // 🔍 받은 데이터 상세 로그
-                Log.d("SheetMusicVM", "📋 SheetMusic 데이터 상세:")
-                Log.d("SheetMusicVM", "  - id: ${sheetMusic.id}")
-                Log.d("SheetMusicVM", "  - title: ${sheetMusic.title}")
-                Log.d("SheetMusicVM", "  - composer: ${sheetMusic.composer}")
-                Log.d("SheetMusicVM", "  - scoreUrl: '${sheetMusic.scoreUrl}' (길이: ${sheetMusic.scoreUrl?.length ?: 0})")
-                Log.d("SheetMusicVM", "  - midiUrl: '${sheetMusic.midiUrl}' (길이: ${sheetMusic.midiUrl?.length ?: 0})")
-                Log.d("SheetMusicVM", "  - createdAt: ${sheetMusic.createdAt}")
-
-                // 🔍 scoreUrl이 비어있는지 확인
-                if (sheetMusic.scoreUrl.isNullOrEmpty()) {
-                    Log.w("SheetMusicVM", "⚠️ scoreUrl이 비어있습니다!")
-                } else {
-                    Log.d("SheetMusicVM", "✅ scoreUrl이 존재합니다: ${sheetMusic.scoreUrl}")
-                }
+                Log.d("SheetMusicVM", "✅ 파일 로드 성공! SheetMusic 객체 생성 완료.")
+                Log.d("SheetMusicVM", "  - scoreUrl: ${sheetMusic.scoreUrl}")
+                Log.d("SheetMusicVM", "  - midiUrl: ${sheetMusic.midiUrl}")
 
                 _uiState.value = SheetMusicUiState.Success(sheetMusic)
 
@@ -131,7 +76,7 @@ class SheetMusicViewModel @Inject constructor(
         }
     }
 
-    // 🔥 두 개 URL에서 SheetMusic 객체 생성
+    // ✅ 두 URL로부터 SheetMusic 객체를 생성하는 헬퍼 함수
     private fun createSheetMusicFromUrls(midiUrl: String, scoreUrl: String): SheetMusic {
         val currentTime = getCurrentTimeString()
 
@@ -139,8 +84,8 @@ class SheetMusicViewModel @Inject constructor(
             id = "uploaded_${System.currentTimeMillis()}",
             title = "업로드된 악보",
             composer = "Unknown",
-            scoreUrl = scoreUrl,
-            midiUrl = midiUrl,
+            scoreUrl = scoreUrl, // 전달받은 scoreUrl 사용
+            midiUrl = midiUrl,   // 전달받은 midiUrl 사용
             createdAt = currentTime,
             duration = null,
             key = null,
@@ -148,28 +93,7 @@ class SheetMusicViewModel @Inject constructor(
         )
     }
 
-    // 🔥 단일 URL에서 SheetMusic 객체 생성
-    private fun createSheetMusicFromUrl(url: String): SheetMusic {
-        val isMidi = url.contains("midi", ignoreCase = true) ||
-                url.endsWith(".mid", ignoreCase = true) ||
-                url.endsWith(".midi", ignoreCase = true)
-
-        val currentTime = getCurrentTimeString()
-
-        return SheetMusic(
-            id = "uploaded_${System.currentTimeMillis()}",
-            title = "업로드된 ${if (isMidi) "MIDI 파일" else "악보"}",
-            composer = "Unknown",
-            scoreUrl = if (!isMidi) url else null,
-            midiUrl = if (isMidi) url else null,
-            createdAt = currentTime,
-            duration = null,
-            key = null,
-            tempo = null
-        )
-    }
-
-    // 🔥 현재 시간을 String으로 변환하는 헬퍼 메서드
+    // 현재 시간을 문자열로 변환하는 헬퍼 메서드
     private fun getCurrentTimeString(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return dateFormat.format(Date())

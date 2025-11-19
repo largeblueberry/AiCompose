@@ -32,6 +32,7 @@ import com.largeblueberry.feature_sheetmusic.ui.state.SheetMusicUiState
 @Composable
 fun SheetMusicScreen(
     scoreUrl: String? = null,
+    midiUrl: String? = null,
     onNavigateToRecord: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     viewModel: SheetMusicViewModel = hiltViewModel()
@@ -39,10 +40,13 @@ fun SheetMusicScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // 🔥 scoreUrl이 변경될 때만 실행되도록 개선
-    LaunchedEffect(scoreUrl) {
-        if (!scoreUrl.isNullOrEmpty()) {
-            Log.d("SheetMusicScreen", "🚀 업로드된 파일 로드 시작: $scoreUrl")
-            viewModel.loadUploadedFile(scoreUrl)
+    LaunchedEffect(scoreUrl, midiUrl) {
+        if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
+            Log.d("SheetMusicScreen", "🚀 업로드된 파일 로드 시작")
+            Log.d("SheetMusicScreen", "  - Score URL: $scoreUrl")
+            Log.d("SheetMusicScreen", "  - MIDI URL: $midiUrl")
+            // 🔥 수정: 두 개의 URL을 모두 전달하는 올바른 함수를 호출합니다.
+            viewModel.loadUploadedFiles(midiUrl = midiUrl, scoreUrl = scoreUrl)
         }
     }
 
@@ -223,34 +227,30 @@ private fun SuccessContent(
                 }
 
                 // URL 정보 표시
-                if (!sheetMusic.scoreUrl.isNullOrEmpty()) {
-                    Text(
-                        text = "악보 URL: 사용 가능",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                }
-
-                if (!sheetMusic.midiUrl.isNullOrEmpty()) {
-                    Text(
-                        text = "MIDI URL: 사용 가능",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                Text(
+                    text = "악보 URL: ${if (sheetMusic.scoreUrl.isNullOrEmpty()) "없음" else "사용 가능"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (sheetMusic.scoreUrl.isNullOrEmpty()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "MIDI URL: ${if (sheetMusic.midiUrl.isNullOrEmpty()) "없음" else "사용 가능"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (sheetMusic.midiUrl.isNullOrEmpty()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+                )
             }
         }
+    }
 
-        // 🔄 다시 생성하기 버튼
-        Button(
-            onClick = onReset,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-        ) {
-            Text("다시 생성하기")
-        }
+    // 🔄 다시 생성하기 버튼
+    Button(
+        onClick = onReset,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+    ) {
+        Text("다시 생성하기")
+
     }
 }
 
@@ -307,18 +307,25 @@ private fun ScoreDisplaySection(
     }
 }
 
-// 🖼️ 이미지 악보 뷰어 (수정된 버전)
+
+// 🖼️ 이미지 악보 뷰어 (User-Agent 추가 버전)
 @Composable
 private fun ImageScoreViewer(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    // 방법 1: SubcomposeAsyncImage 사용 (권장)
+    Log.d("ImageScoreViewer", "Loading image from URL: $imageUrl")
+
+    // 🔥 수정된 부분: ImageRequest에 headers를 추가합니다.
+    val imageRequest = ImageRequest.Builder(LocalContext.current)
+        .data(imageUrl)
+        .crossfade(true)
+        // User-Agent 헤더를 일반적인 브라우저처럼 설정
+        .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+        .build()
+
     SubcomposeAsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUrl)
-            .crossfade(true)
-            .build(),
+        model = imageRequest, // 수정된 요청 모델 사용
         contentDescription = "악보 이미지",
         modifier = modifier
             .fillMaxSize()
@@ -333,6 +340,8 @@ private fun ImageScoreViewer(
             }
         },
         error = {
+            Log.e("ImageScoreViewer", "Image loading failed", it.result.throwable)
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,

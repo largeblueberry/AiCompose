@@ -102,6 +102,8 @@ class LibraryViewModel @Inject constructor(
 
     //서버 전송 함수, 비즈니스로직은 UploadAudioRecordUseCase에 위임
     //여기서는 오직 업로드 상태 관리와 UI 업데이트만 담당
+    // in LibraryViewModel.kt
+
     fun uploadAudioToServer(filePath: String, recordId: Int) {
         viewModelScope.launch {
 
@@ -110,42 +112,45 @@ class LibraryViewModel @Inject constructor(
                 return@launch
             }
 
-            //업로드 가능 여부 체크
             val availabilityResult = checkUploadAvailabilityUseCase.invoke()
 
             when(availabilityResult){
                 is UploadAvailabilityResult.Available ->{
                     _uiState.update {
                         it.copy(
+                            // 🔥 수정: UploadState 생성 시 url 필드는 이제 없습니다.
                             uploadState = UploadState(
                                 status = UploadStatus.UPLOADING,
                                 recordId = recordId
                             ),
                             uploadingRecordId = recordId,
-                            isUploadingInProgress = true // 업로드 시작 시 플래그 설정
+                            isUploadingInProgress = true
                         )
                     }
                     try {
-                        // --- 여기부터 수정 ---
-                        // 1. result 변수의 타입을 명시하지 않고, 타입 추론에 맡깁니다.
-                        //    (result는 이제 Result<UploadResponse> 타입이 됩니다)
+                        // uploadAudioRecordUseCase는 Result<UploadResponse>를 반환한다고 가정합니다.
+                        // UploadResponse는 scoreUrl과 midiUrl을 모두 포함해야 합니다.
                         val result = uploadAudioRecordUseCase(filePath)
 
                         result.fold(
-                            // 2. onSuccess는 이제 String이 아닌 UploadResponse 객체를 받습니다.
                             onSuccess = { uploadResponse ->
-                                // 3. UploadResponse 객체 안의 midiUrl을 사용합니다. (null일 수 있으므로 안전하게 체크)
-                                val urlToUse = uploadResponse.midiUrl
+                                // ✅ scoreUrl과 midiUrl을 모두 가져옵니다.
+                                val scoreUrl = uploadResponse.scoreUrl
+                                val midiUrl = uploadResponse.midiUrl
 
-                                if (!urlToUse.isNullOrEmpty()) {
-                                    Log.i(TAG, "Upload successful for record: $recordId. URL: $urlToUse")
+                                // ✅ 두 URL이 모두 유효한지 확인합니다.
+                                if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
+                                    Log.i(TAG, "Upload successful for record: $recordId. Score URL: $scoreUrl, MIDI URL: $midiUrl")
                                     analyticsHelper.logEvent("upload_record_success", mapOf("record_id" to recordId.toString()))
+
                                     _uiState.update {
                                         it.copy(
+                                            // 🔥 수정: 새로운 UploadState 구조에 맞게 두 URL을 모두 저장합니다.
                                             uploadState = UploadState(
                                                 status = UploadStatus.SUCCESS,
-                                                url = urlToUse, // UI State에 URL 전달
-                                                recordId = recordId,
+                                                scoreUrl = scoreUrl, // ✅ scoreUrl 저장
+                                                midiUrl = midiUrl,   // ✅ midiUrl 저장
+                                                recordId = recordId
                                             ),
                                             currentUploads = availabilityResult.currentUploads,
                                             maxUploads = availabilityResult.maxUploads
@@ -153,7 +158,7 @@ class LibraryViewModel @Inject constructor(
                                     }
                                     checkUploadAvailabilityUseCase.uploadCounter()
                                 } else {
-                                    Log.w(TAG, "Upload for record $recordId succeeded but returned an empty URL.")
+                                    Log.w(TAG, "Upload for record $recordId succeeded but returned an empty or invalid URL.")
                                     analyticsHelper.logEvent("upload_record_empty_url", mapOf("record_id" to recordId.toString()))
                                     _uiState.update {
                                         it.copy(
@@ -166,7 +171,6 @@ class LibraryViewModel @Inject constructor(
                                     }
                                 }
                             },
-                            // onFailure 부분은 동일합니다.
                             onFailure = { exception ->
                                 Log.e(TAG, "Upload failed for record: $recordId", exception)
                                 analyticsHelper.logEvent(
@@ -184,8 +188,6 @@ class LibraryViewModel @Inject constructor(
                                 }
                             }
                         )
-                        // --- 여기까지 수정 ---
-
                     } catch (e: Exception) {
                         Log.e(TAG, "An unexpected error occurred during upload for record: $recordId", e)
                         analyticsHelper.logEvent(
@@ -212,6 +214,7 @@ class LibraryViewModel @Inject constructor(
                         }
                     }
                 }
+                // ... (LimitReached, Error 케이스는 동일)
                 is UploadAvailabilityResult.LimitReached -> {
                     Log.w(TAG, "Upload limit reached for user. Max: ${availabilityResult.maxUploads}")
                     analyticsHelper.logEvent("upload_limit_reached", mapOf("max_uploads" to availabilityResult.maxUploads.toString()))
@@ -243,6 +246,7 @@ class LibraryViewModel @Inject constructor(
             }
         }
     }
+
 
 
     private fun loadInitialData() {
