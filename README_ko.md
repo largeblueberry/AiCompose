@@ -57,11 +57,11 @@
 │   ├── domain            # 도메인 공통 로직
 │   ├── navigation        # 네비게이션 관리
 │   ├── resources         # 공통 리소스
+│   ├── remote            # 공통 네트워크 로직 retrofit
 │   └── ui                # 디자인 시스템, 공통 컴포넌트
 │
 ├── 📂 data (데이터 레이어)
-│   ├── local             # Room 엔티티, DAO
-│   └── remote            # Retrofit 관련 로직
+│   └── local            # Room 엔티티, DAO
 │
 ├── 📂 feature (기능별 모듈)
 │   ├── auth              # 로그인 및 사용자 관리
