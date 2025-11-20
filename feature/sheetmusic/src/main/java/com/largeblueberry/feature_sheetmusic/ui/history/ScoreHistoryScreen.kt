@@ -49,29 +49,16 @@ fun SheetMusicHistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(scores) { score ->
-                    ScoreHistoryItem(score = score, onClick = {
-                        onScoreClick(score.scoreUrl, score.midiUrl)
-                    })
+                    ScoreHistoryItem(
+                        score = score,
+                        onClick = {
+                            onScoreClick(score.scoreUrl, score.midiUrl)
+                        },
+                        // ✅ onDelete 람다에 ViewModel의 deleteScore 함수 연결
+                        onDelete = { viewModel.deleteScore(score) }
+                    )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ScoreHistoryItem(
-    score: SheetMusic,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(text = score.title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "저장일: ${score.createdAt}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }

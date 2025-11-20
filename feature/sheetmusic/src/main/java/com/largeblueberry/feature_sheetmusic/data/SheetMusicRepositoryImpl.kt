@@ -53,6 +53,18 @@ class SheetMusicRepositoryImpl @Inject constructor(
                 }
             }
     }
+
+    override suspend fun deleteScore(score: SheetMusic): Result<Unit> {
+        return try {
+            // 도메인 모델을 Entity로 변환하여 DAO에 삭제 요청
+            scoreDao.deleteScore(score.toEntity())
+            Log.d("RepoImpl", "✅ 악보 DB 삭제 성공: ${score.id}")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("RepoImpl", "🔴 악보 DB 삭제 실패", e)
+            Result.failure(e)
+        }
+    }
 }
 
 // ⚠️ 수정됨: 도메인 모델의 모든 정보를 Entity로 변환

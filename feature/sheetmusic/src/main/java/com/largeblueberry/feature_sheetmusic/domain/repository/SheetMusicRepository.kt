@@ -9,6 +9,8 @@ interface SheetMusicRepository {
     suspend fun saveSheetMusic(sheetMusic: SheetMusic): Result<Unit>
 
     fun getAllScores(): Flow<List<SheetMusic>>
+
+    suspend fun deleteScore(score: SheetMusic): Result<Unit>
 }
 
 /**
