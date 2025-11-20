@@ -1,43 +1,61 @@
 package com.largeblueberry.feature_sheetmusic.ui.screen
 
-// MusicScoreWebView 함수 전체를 이 코드로 교체하세요.
-
 import android.annotation.SuppressLint
+import android.util.Log
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import android.util.Log
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun MusicScoreWebView(
     modifier: Modifier = Modifier,
-    // 파라미터 이름을 명확하게 변경합니다. 서버에서 받은 HTML 전체를 받습니다.
     htmlContentFromServer: String
 ) {
     val logTag = "MusicScoreWebView"
 
-    // 안드로이드의 WebView를 컴포즈에서 사용하기 위한 래퍼
+    // 웹뷰의 콘텐츠 높이를 저장할 상태 변수 (단위: px)
+    var webViewHeight by remember { mutableStateOf(0) }
+    val density = LocalDensity.current
+
+    // px 단위를 Dp 단위로 변환합니다.
+    val webViewHeightDp = with(density) { webViewHeight.toDp() }
+
+    // JavaScript에서 호출할 수 있는 인터페이스 클래스
+    class WebAppInterface(private val onHeightReady: (Int) -> Unit) {
+        @JavascriptInterface
+        fun reportContentHeight(height: Int) {
+            Log.d("WebAppInterface", "New height reported from JS: $height px")
+            // 전달받은 높이로 상태를 업데이트합니다.
+            onHeightReady(height)
+        }
+    }
+
     AndroidView(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxWidth()
+            // 콘텐츠 높이가 측정되면 해당 높이를 적용하고, 아니면 기본 높이(0.dp)를 유지합니다.
+            // 부모 컴포저블이 높이를 결정하도록 합니다.
+            .then(if (webViewHeightDp > 0.dp) Modifier.height(webViewHeightDp) else Modifier),
         factory = { context ->
             WebView(context).apply {
-                // *** 가장 중요한 설정: JavaScript를 반드시 활성화해야 합니다. ***
                 settings.javaScriptEnabled = true
-
-                // 외부 리소스(JS, MusicXML)를 로드하기 위해 네트워크 접근을 허용해야 합니다.
                 settings.domStorageEnabled = true
                 settings.allowContentAccess = true
                 settings.allowFileAccess = true
                 settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 settings.loadsImagesAutomatically = true
-                settings.blockNetworkImage = false // 네트워크를 통해 이미지/리소스를 로드하는 것을 허용
+                settings.blockNetworkImage = false
 
-                // 확대/축소 기능
+                // 확대/축소 기능 (필요시 사용)
                 settings.setSupportZoom(true)
                 settings.builtInZoomControls = true
                 settings.displayZoomControls = false
@@ -46,26 +64,56 @@ fun MusicScoreWebView(
                 settings.loadWithOverviewMode = true
                 settings.useWideViewPort = true
 
-                // 웹뷰 클라이언트 설정 (페이지 로딩 상태 등을 로그로 확인하기 위함)
+                // 레이아웃이 불안정하게 변경되는 것을 방지하기 위해 스크롤바를 숨깁니다.
+                isVerticalScrollBarEnabled = false
+
+                // JavaScript 인터페이스 추가
+                addJavascriptInterface(
+                    WebAppInterface { newHeight ->
+                        // UI 스레드에서 상태를 안전하게 업데이트합니다.
+                        if (webViewHeight != newHeight) {
+                            webViewHeight = newHeight
+                        }
+                    },
+                    "AndroidBridge" // JS에서 호출할 이름
+                )
+
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)
                         Log.d(logTag, "✅ WebView 페이지 로딩 완료: $url")
+                        // 페이지 로딩이 끝나면, 콘텐츠 높이를 측정하고 안드로이드로 전달하는 JS를 주입합니다.
+                        val jsCode = """
+                            javascript:(function() {
+                                function reportHeight() {
+                                    const height = document.body.scrollHeight;
+                                    if (window.AndroidBridge) {
+                                        window.AndroidBridge.reportContentHeight(height);
+                                    }
+                                }
+                                // ResizeObserver를 사용해 콘텐츠 크기 변경을 감지하고 높이를 다시 보고합니다.
+                                const observer = new ResizeObserver(function() { reportHeight(); });
+                                observer.observe(document.body);
+                                // 초기 높이 보고
+                                reportHeight();
+                            })();
+                        """.trimIndent()
+                        view?.loadUrl(jsCode)
+                        Log.d(logTag, "✅ Height reporting JS injected.")
                     }
                 }
             }
         },
         update = { webView ->
             Log.d(logTag, "🚀 WebView 업데이트 및 HTML 데이터 로딩 시작")
-
-            // 서버에서 받은 HTML 데이터를 그대로 로드합니다.
-            // BaseURL을 설정해 주면 상대 경로 리소스 로드에 도움이 될 수 있습니다.
+            // 새로운 콘텐츠가 로드될 때 높이를 초기화합니다.
+            webViewHeight = 0
             webView.loadDataWithBaseURL(
-                "https://teamproject.p-e.kr/", // HTML 내의 상대 경로 리소스를 위한 기준 URL
-                htmlContentFromServer,        // 서버에서 받은 HTML 문자열
-                "text/html",                  // 데이터 타입
-                "UTF-8",                      // 인코딩
-                null                          // History URL
+                "https://teamproject.p-e.kr/",
+                htmlContentFromServer,
+                "text/html",
+                "UTF-8",
+                null
             )
             Log.d(logTag, "✅ loadDataWithBaseURL 호출 완료")
         }
