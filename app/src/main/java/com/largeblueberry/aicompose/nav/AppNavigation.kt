@@ -18,6 +18,7 @@ import com.largeblueberry.aicompose.ui.main.MainScreen
 import com.largeblueberry.core_ui.stringResource
 import com.largeblueberry.feature_sheetmusic.ui.EmptySheetMusicScreen
 import com.largeblueberry.feature_sheetmusic.ui.SheetMusicScreen
+import com.largeblueberry.feature_sheetmusic.ui.history.SheetMusicHistoryScreen
 import com.largeblueberry.setting.SettingsScreen
 import com.largeblueberry.navigation.AppRoutes
 import com.largeblueberry.navigation.SettingsNavigationActions
@@ -191,14 +192,10 @@ fun AppNavigation() {
             )
         }
 
-        composable(AppRoutes.EmptySheetMusicScreen.route) {
-            EmptySheetMusicScreen(
-                onNavigateToRecord = {
-                    navController.navigate(AppRoutes.RecordScreen.route)
-                },
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+        composable(AppRoutes.SheetMusicHistoryScreen.route) {
+            // ✅ 이 컨테이너가 분기 처리를 담당합니다.
+            SheetMusicHistoryScreen(
+                onScoreClick = { navController.popBackStack() }
             )
         }
     }

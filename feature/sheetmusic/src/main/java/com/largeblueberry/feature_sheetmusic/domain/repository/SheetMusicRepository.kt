@@ -1,9 +1,14 @@
 package com.largeblueberry.feature_sheetmusic.domain.repository
 
 import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
+import kotlinx.coroutines.flow.Flow
 
 interface SheetMusicRepository {
     suspend fun generateSheetMusic(requestBody: Any): Result<SheetMusic>
+
+    suspend fun saveSheetMusic(sheetMusic: SheetMusic): Result<Unit>
+
+    fun getAllScores(): Flow<List<SheetMusic>>
 }
 
 /**

@@ -61,7 +61,7 @@ fun MainScreen(navController: NavController){
             mainText = stringResource(id = ResourceR.string.libraryMainText),
             subText = stringResource(id = ResourceR.string.librarySubText),
             applyTint = false,
-            onClick = { navController.navigate(AppRoutes.SheetMusicScreen.route) }
+            onClick = { navController.navigate(AppRoutes.SheetMusicHistoryScreen.route) }
         )
 
         CardViewScreen(

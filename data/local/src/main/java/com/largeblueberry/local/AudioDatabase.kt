@@ -12,7 +12,7 @@ import com.largeblueberry.local.score.ScoreEntity
         AudioRecordEntity::class,
         ScoreEntity::class  // 새로 추가!
     ],
-    version = 2, // 버전 업! (ScoreEntity 추가로 인한 스키마 변경)
+    version = 3, // 버전 업! (ScoreEntity 추가로 인한 스키마 변경)
     exportSchema = false
 )
 abstract class AudioDatabase : RoomDatabase() {

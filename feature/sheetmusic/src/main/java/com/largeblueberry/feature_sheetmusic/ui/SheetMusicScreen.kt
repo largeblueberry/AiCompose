@@ -64,8 +64,7 @@ fun SheetMusicScreen(
             is SheetMusicUiState.Idle -> IdleContent { viewModel.generateSheetMusic("sample") }
             is SheetMusicUiState.Loading -> LoadingContent()
             is SheetMusicUiState.Success -> SuccessContent(
-                sheetMusic = currentState.sheetMusic,
-                onReset = { viewModel.resetState() }
+                sheetMusic = currentState.sheetMusic
             )
             is SheetMusicUiState.Error -> ErrorContent(
                 message = currentState.message,
@@ -106,8 +105,7 @@ private fun LoadingContent() {
 // 🎵 SuccessContent 레이아웃 구조 개선
 @Composable
 private fun SuccessContent(
-    sheetMusic: SheetMusic,
-    onReset: () -> Unit
+    sheetMusic: SheetMusic
 ) {
     // 🔥 Column 전체를 스크롤 가능하도록 변경
     Column(
@@ -162,15 +160,6 @@ private fun SuccessContent(
             }
         }
 
-        // 🔄 다시 생성하기 버튼 (Column 내부로 이동)
-        Button(
-            onClick = onReset,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-        ) {
-            Text("다시 생성하기")
-        }
     }
 }
 

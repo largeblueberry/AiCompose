@@ -1,6 +1,8 @@
 package com.largeblueberry.navigation
 
 import android.net.Uri
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 sealed class AppRoutes(val route: String) {
     object MainScreen : AppRoutes("main_route")
@@ -15,13 +17,22 @@ sealed class AppRoutes(val route: String) {
     object AboutUsScreen : AppRoutes("about_route")
     object TermDetailScreen : AppRoutes("term_detail_route/{termId}")
     object AccountManageScreen : AppRoutes("account_manage_route")
+    object SheetMusicHistoryScreen : AppRoutes("sheet_music_history_route")
 
-    // 🔥 수정: SheetMusicScreen에 URL 파라미터 지원 추가
+    // 🔥 수정: SheetMusicScreen 라우트 정의를 명확하게 변경
     object SheetMusicScreen : AppRoutes("sheet_music_route") {
-        const val routeWithArgs = "sheet_music_route/{scoreUrl}"
+        // 1. 경로 템플릿: NavHost에서 이 경로를 인식합니다.
+        const val routeWithArgs = "sheet_music_route/{scoreUrl}/{midiUrl}"
 
-        fun createRoute(scoreUrl: String): String {
-            return "sheet_music_route/${Uri.encode(scoreUrl)}"
+        // 2. 아규먼트 이름 상수화
+        const val SCORE_URL_ARG = "scoreUrl"
+        const val MIDI_URL_ARG = "midiUrl"
+
+        // 3. 실제 내비게이션 시 호출할 함수: URL 인코딩을 포함하여 전체 경로를 생성합니다.
+        fun createRoute(scoreUrl: String, midiUrl: String): String {
+            val encodedScoreUrl = URLEncoder.encode(scoreUrl, StandardCharsets.UTF_8.toString())
+            val encodedMidiUrl = URLEncoder.encode(midiUrl, StandardCharsets.UTF_8.toString())
+            return "sheet_music_route/$encodedScoreUrl/$encodedMidiUrl"
         }
     }
 
