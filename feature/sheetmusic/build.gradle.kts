@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core:analytics-api"))
     implementation(project(":data:local"))
     implementation(project(":core:network"))
+    implementation(project(":core:ui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

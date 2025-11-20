@@ -6,9 +6,13 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "sheet_music")
 data class ScoreEntity(
     @PrimaryKey
-    val id: String,               // UUID 또는 고유 ID
-    val title: String?,           // 사용자가 직접 입력하거나 URL에서 추출
-    val scoreUrl: String,         // 서버에서 받은 악보 URL
-    val midiUrl: String?,
-    val createdAt: Long
+    val id: String,
+    val title: String,
+    val scoreUrl: String,
+    val midiUrl: String,
+    val createdAt: Long, // 생성 시간을 Long 타입(타임스탬프)으로 저장
+    val composer: String?,
+    val duration: Int?,
+    val key: String?,
+    val tempo: Int?
 )

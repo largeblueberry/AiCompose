@@ -1,8 +1,6 @@
 package com.largeblueberry.aicompose.nav
 
 import androidx.compose.ui.platform.LocalContext
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +14,6 @@ import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
 import com.largeblueberry.core_ui.stringResource
-import com.largeblueberry.feature_sheetmusic.ui.EmptySheetMusicScreen
 import com.largeblueberry.feature_sheetmusic.ui.SheetMusicScreen
 import com.largeblueberry.feature_sheetmusic.ui.history.SheetMusicHistoryScreen
 import com.largeblueberry.setting.SettingsScreen
@@ -193,9 +190,21 @@ fun AppNavigation() {
         }
 
         composable(AppRoutes.SheetMusicHistoryScreen.route) {
-            // ✅ 이 컨테이너가 분기 처리를 담당합니다.
             SheetMusicHistoryScreen(
-                onScoreClick = { navController.popBackStack() }
+                // 🔥 수정: 이제 onScoreClick은 두 개의 URL 문자열을 받습니다.
+                onScoreClick = { scoreUrl, midiUrl ->
+                    // LibraryScreen에서 했던 로직과 완전히 동일합니다.
+                    val encodedScoreUrl = URLEncoder.encode(scoreUrl, StandardCharsets.UTF_8.toString())
+                    val encodedMidiUrl = URLEncoder.encode(midiUrl, StandardCharsets.UTF_8.toString())
+
+                    val routeWithArgs = "${AppRoutes.SheetMusicScreen.route}/$encodedScoreUrl/$encodedMidiUrl"
+
+                    Log.d("AppNavigation", "Navigating from History to SheetMusicScreen with args: $routeWithArgs")
+
+                    navController.navigate(routeWithArgs)
+                },
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToRecord = { navController.navigate(AppRoutes.RecordScreen.route) }
             )
         }
     }

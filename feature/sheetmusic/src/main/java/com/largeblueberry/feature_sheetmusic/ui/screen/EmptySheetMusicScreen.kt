@@ -1,4 +1,4 @@
-package com.largeblueberry.feature_sheetmusic.ui
+package com.largeblueberry.feature_sheetmusic.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -13,40 +13,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.resources.R as ResourcesR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmptySheetMusicScreen(
-    onNavigateToRecord: () -> Unit = {},
-    onNavigateBack: () -> Unit = {} // 파라미터 추가
+    modifier: Modifier = Modifier,
+    onNavigateToRecord: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // TopAppBar 추가
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = ResourcesR.string.sheet_music_list_title),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "뒤로 가기"
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-            )
-        )
 
         // 기존 내용
         Column(

@@ -247,8 +247,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-
-
     private fun loadInitialData() {
         viewModelScope.launch {
             val userId = authGateway.getCurrentUserId()

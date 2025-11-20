@@ -32,6 +32,23 @@ fun SheetMusicScreen(
     onNavigateBack: () -> Unit = {},
     viewModel: SheetMusicViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = midiUrl) {
+        // midiUrl이 유효한 값일 때만 공유 로직을 실행합니다.
+        if (!midiUrl.isNullOrBlank()) {
+            // 안드로이드 공유 인텐트를 만듭니다.
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, midiUrl)
+                type = "text/plain"
+            }
+            // 사용자에게 어떤 앱으로 공유할지 선택창을 띄워줍니다.
+            val shareIntent = Intent.createChooser(sendIntent, "MIDI 공유하기")
+            context.startActivity(shareIntent)
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(scoreUrl, midiUrl) {
