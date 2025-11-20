@@ -52,7 +52,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":data:local"))
-    implementation(project(":data:remote"))
+    implementation(project(":core:network"))
     implementation(project(":core:analytics-api"))
 
     // ===== HILT =====

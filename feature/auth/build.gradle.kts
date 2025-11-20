@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:analytics-api"))
 
+
     // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
     implementation(composeBom)

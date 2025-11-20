@@ -18,13 +18,11 @@
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/domain" />
             <option value="$PROJECT_DIR$/core/navigation" />
+            <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/resources" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/local" />
-            <option value="$PROJECT_DIR$/data/remote" />
-            <option value="$PROJECT_DIR$/domain" />
-            <option value="$PROJECT_DIR$/domain/usertracker" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/library" />

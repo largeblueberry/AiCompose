@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,6 +42,10 @@ android {
 dependencies {
     implementation(project(":core:resources"))
     implementation(project(":core:analytics-api"))
+    implementation(project(":data:local"))
+    implementation(project(":core:network"))
+    implementation(project(":core:ui"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -59,5 +64,15 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation(libs.hilt.android)
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
 }
