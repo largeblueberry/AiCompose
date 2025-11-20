@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,14 +21,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.library.ui.viemodel.LibraryViewModel
-import com.largeblueberry.remote.model.UploadStatus
+import com.largeblueberry.network.model.request.UploadStatus
 import com.largeblueberry.resources.R as ResourcesR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     viewModel: LibraryViewModel = hiltViewModel(),
-    onUploadSuccess: (String) -> Unit,
+    onUploadSuccess: (scoreUrl: String, midiUrl: String) -> Unit,
     navController: NavController,
     onBackClick: () -> Unit // 여기에 추가: 뒤로가기 콜백
 ) {
@@ -68,12 +67,23 @@ fun LibraryScreen(
     LaunchedEffect(uiState.uploadState.status) {
         when (uiState.uploadState.status) {
             UploadStatus.SUCCESS -> {
-                uiState.uploadState.url?.let { url ->
-                    onUploadSuccess(url) // URL 공유 콜백 호출
+                // ✅ scoreUrl과 midiUrl이 모두 유효한지 확인
+                val scoreUrl = uiState.uploadState.scoreUrl
+                val midiUrl = uiState.uploadState.midiUrl
+
+                if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
+                    // ✅ 두 URL을 모두 콜백으로 전달
+                    onUploadSuccess(scoreUrl, midiUrl)
                     viewModel.clearUploadState()
                     Toast.makeText(context,
                         context.getString(ResourcesR.string.serverUploadSuccess),
                         Toast.LENGTH_SHORT).show()
+                } else {
+                    // 만약의 경우, URL 하나라도 없으면 에러 처리
+                    Toast.makeText(context,
+                        "URL 생성에 실패했습니다.", // 더 구체적인 에러 메시지
+                        Toast.LENGTH_SHORT).show()
+                    viewModel.clearUploadState()
                 }
             }
             UploadStatus.ERROR -> {

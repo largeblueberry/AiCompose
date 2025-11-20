@@ -4,16 +4,20 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.largeblueberry.local.audio.AudioRecordDao
 import com.largeblueberry.local.audio.AudioRecordEntity
+import com.largeblueberry.local.score.ScoreDao
+import com.largeblueberry.local.score.ScoreEntity
 
 @Database(
-    entities = [AudioRecordEntity::class],
-    version = 1, // 새 데이터베이스니까 버전 1
+    entities = [
+        AudioRecordEntity::class,
+        ScoreEntity::class  // 새로 추가!
+    ],
+    version = 6, // 버전 업! (ScoreEntity 추가로 인한 스키마 변경)
     exportSchema = false
 )
-// ✅ @TypeConverters 줄 완전히 삭제!
 abstract class AudioDatabase : RoomDatabase() {
     abstract fun audioRecordDao(): AudioRecordDao
-
+    abstract fun scoreDao(): ScoreDao  // 새로 추가!
 }
 /**
  * 데이터베이스 이름 변경! -> 중간에 스키마가 변경됨. room이 스키마를 혼동해서 이름을 새로 만듦.

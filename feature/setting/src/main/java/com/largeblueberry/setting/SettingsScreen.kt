@@ -1,6 +1,5 @@
 package com.largeblueberry.setting
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.ManageAccounts
@@ -37,6 +35,7 @@ import com.largeblueberry.core_ui.AppRed
 import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.LightCustomColors
 import com.largeblueberry.core_ui.SettingBasicUser
+import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.ui.R
@@ -59,30 +58,9 @@ fun SettingsScreen(
             .fillMaxSize()
             .background(MaterialTheme.customColors.settingBackground)
     ) {
-        // 상단 앱바
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(ResourceR.string.settingTitle),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = navigationActions.onNavigateBack) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(ResourceR.string.backButtonContentDescription)
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                // 2. 컨테이너 색상: 테마의 surface 색상을 사용
-                containerColor = MaterialTheme.colorScheme.surface,
-                // 제목 및 아이콘 색상도 자동으로 onSurface로 지정
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-            )
+        EareamTopAppBar(
+            title = stringResource(ResourceR.string.settingTitle),
+            onNavigateBack = navigationActions.onNavigateBack
         )
 
         LazyColumn(
