@@ -58,6 +58,7 @@ dependencies {
     // ===== HILT =====
     implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    testImplementation(libs.junit.junit)
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
     // ===== ROOM =====
