@@ -49,20 +49,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-// ===== COMPOSE =====
-    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
 
-    // 핵심 Compose UI (BOM 사용 시 버전 명시 불필요)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.foundation:foundation")
-
-    // Material Design 3 (권장)
-    implementation("androidx.compose.material3:material3")
-
-    // 디버깅 도구
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui.ui)
+    implementation(libs.androidx.compose.ui.ui.tooling.preview)
+    implementation(libs.androidx.compose.foundation.foundation)
+    implementation(libs.androidx.compose.material3.material3)
+    debugImplementation(libs.androidx.compose.ui.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
 
     implementation(libs.hilt.android)
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")

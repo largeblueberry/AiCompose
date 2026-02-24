@@ -53,11 +53,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.kotlinx.coroutines.core)
 
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // ===== COMPOSE =====
     implementation(platform(libs.androidx.compose.bom))

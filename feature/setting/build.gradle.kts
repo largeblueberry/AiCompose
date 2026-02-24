@@ -71,6 +71,12 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:resources"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:auth"))
+    implementation(project(":core:navigation"))
+    implementation(project(":core:analytics-api"))
+    implementation(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -79,35 +85,21 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.coroutines.core)
 
-    implementation(project(":core:resources"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:auth"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:analytics-api"))
-    implementation(project(":core:domain"))
-
-    // Compose BOM
-    val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
-    implementation(composeBom)
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-extended")
-
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.4")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material3.material3)
+    implementation(libs.androidx.compose.ui.ui.tooling.preview)
+    implementation(libs.androidx.compose.material.material.icons.extended)
+    debugImplementation(libs.androidx.compose.ui.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
 
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     // DataStore (설정 저장용)
     implementation("androidx.datastore:datastore-preferences:1.1.1")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
@@ -120,15 +112,8 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
-
     //test
-    // Kotlin Coroutines Test (코루틴 테스트를 위한 디스패처 및 유틸리티)
-    // runTest, StandardTestDispatcher, setMain, resetMain, advanceUntilIdle 등을 사용하기 위함
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
-    // MockK (모의 객체 생성 및 행위 정의를 위한 라이브러리)
-    // mockk, every, coEvery, just, runs, any, coVerify 등을 사용하기 위함
     testImplementation("io.mockk:mockk:1.13.8")
-    // JUnit (테스트 프레임워크) - 보통 기본으로 추가되어 있지만, 혹시 없다면 추가
     testImplementation("junit:junit:4.13.2")
 }

@@ -108,7 +108,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
 
-    //COMPOSE BOM
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
