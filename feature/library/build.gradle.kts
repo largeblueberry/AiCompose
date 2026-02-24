@@ -11,7 +11,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 35
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -40,13 +40,10 @@ android {
 }
 
 dependencies {
-
-    // ===== 기본 Android =====
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    // ===== 모듈 =====
     implementation(project(":core:resources"))
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
@@ -58,38 +55,36 @@ dependencies {
     // ===== HILT =====
     implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    testImplementation(libs.junit.junit)
+
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 
     // ===== ROOM =====
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     // ===== COMPOSE =====
-    implementation(platform("androidx.compose:compose-bom:2025.05.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-
-    // Compose 통합
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.runtime.livedata)
+    implementation(libs.androidx.activity.compose)
 
     // ===== LIFECYCLE & VIEWMODEL =====
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
 
     // ===== COROUTINES =====
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // ===== NAVIGATION =====
-    implementation("androidx.navigation:navigation-compose:2.8.4")
+    implementation(libs.androidx.navigation.compose)
 
     // ===== NETWORK =====
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -102,12 +97,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // ===== TESTS =====
-    // Unit Tests
+    testImplementation(libs.junit.junit)
     testImplementation(libs.junit)
     testImplementation("com.google.dagger:hilt-android-testing:2.56.2")
     kspTest("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    // Instrumented Tests
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

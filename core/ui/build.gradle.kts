@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)  // ✅ Compose 컴파일러 플러그인 추가 (필수!)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 35
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -34,7 +34,7 @@ android {
     }
 
     buildFeatures {
-        compose = true  // ✅ Compose 활성화 (필수!)
+        compose = true
         buildConfig = true
     }
 }
@@ -53,7 +53,7 @@ dependencies {
     api(project(":core:resources"))
 
     // ===== COMPOSE BOM - 버전 통합 관리 =====
-    implementation(platform(libs.androidx.compose.bom))  // ✅ libs.versions.toml 사용
+    implementation(platform(libs.androidx.compose.bom))
 
     // ===== 핵심 Compose 라이브러리 =====
     // 핵심 UI (Color, Modifier 등 기본 요소)
