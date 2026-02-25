@@ -17,7 +17,7 @@ android {
 
     androidResources {
         generateLocaleConfig = false
-        localeFilters += setOf("ko", "en")  // 이렇게 변경
+        localeFilters += setOf("ko", "en")
     }
 
     defaultConfig {
@@ -35,7 +35,6 @@ android {
 
     buildTypes {
         debug {
-            // local.properties에서 BASE_URL 읽기
             val localProperties = Properties()
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
@@ -90,7 +89,6 @@ android {
 }
 
 dependencies {
-    // ===== 프로젝트 모듈 =====
     implementation(project(":feature:sheetmusic"))
     implementation(project(":feature:setting"))
     implementation(project(":core:ui"))
@@ -102,45 +100,26 @@ dependencies {
     implementation(project(":feature:library"))
     implementation(project(":feature:record"))
     implementation(project(":core:analytics-impl"))
-
-    // ===== 기본 Android 라이브러리 (libs.versions.toml 활용) =====
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-
-    // ===== COMPOSE BOM - 모든 Compose 라이브러리 버전 통합 관리 =====
     implementation(platform(libs.androidx.compose.bom))
-
-    // Compose 핵심 라이브러리들 (BOM에 의해 버전 자동 관리)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.runtime:runtime") // 명시적으로 추가하여 충돌 방지
-
-    // Material Design
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-
-    // Activity Compose 통합
-    implementation("androidx.activity:activity-compose")
-
-    // 디버깅 및 미리보기 도구
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // ===== Navigation =====
-    implementation("androidx.navigation:navigation-compose:2.8.4")
-
-    // ===== Hilt (중복 제거 및 정리) =====
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.activity.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.android)
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    // ===== 테스트 =====
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }
