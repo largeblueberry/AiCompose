@@ -36,16 +36,12 @@ android {
 
 dependencies {
     implementation(project(":core:analytics-api"))
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
-
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
 }

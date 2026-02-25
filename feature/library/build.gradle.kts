@@ -40,11 +40,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.kotlinx.coroutines.core)
-
     implementation(project(":core:resources"))
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
@@ -52,19 +47,16 @@ dependencies {
     implementation(project(":data:local"))
     implementation(project(":core:network"))
     implementation(project(":core:analytics-api"))
-
-    // ===== HILT =====
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    // ===== ROOM =====
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
-
-    // ===== COMPOSE =====
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
@@ -73,37 +65,22 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.material.icons.extended)
     implementation(libs.compose.runtime.livedata)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
     implementation(libs.androidx.activity.compose)
-
-    // ===== LIFECYCLE & VIEWMODEL =====
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-
-    // ===== NAVIGATION =====
     implementation(libs.androidx.navigation.compose)
-
-    // ===== NETWORK =====
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
-    // ===== DEBUG =====
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // ===== TESTS =====
-    testImplementation(libs.junit.junit)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.bundles.lifecycle)
     testImplementation(libs.junit)
-    testImplementation("com.google.dagger:hilt-android-testing:2.56.2")
-    kspTest("com.google.dagger:hilt-android-compiler:2.56.2")
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.8.4")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
-    androidTestImplementation("io.mockk:mockk-android:1.13.8")
-    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.56.2")
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.mockk.android)
+    kspAndroidTest(libs.hilt.compiler)
 }

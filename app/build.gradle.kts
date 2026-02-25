@@ -17,7 +17,7 @@ android {
 
     androidResources {
         generateLocaleConfig = false
-        localeFilters += setOf("ko", "en")  // 이렇게 변경
+        localeFilters += setOf("ko", "en")
     }
 
     defaultConfig {
@@ -35,7 +35,6 @@ android {
 
     buildTypes {
         debug {
-            // local.properties에서 BASE_URL 읽기
             val localProperties = Properties()
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
@@ -90,7 +89,6 @@ android {
 }
 
 dependencies {
-    // ===== 프로젝트 모듈 =====
     implementation(project(":feature:sheetmusic"))
     implementation(project(":feature:setting"))
     implementation(project(":core:ui"))
@@ -102,12 +100,10 @@ dependencies {
     implementation(project(":feature:library"))
     implementation(project(":feature:record"))
     implementation(project(":core:analytics-impl"))
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -119,18 +115,11 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    // ===== Navigation =====
     implementation(libs.androidx.navigation.compose)
-
-    // ===== Hilt (중복 제거 및 정리) =====
     implementation(libs.hilt.android)
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    // ===== 테스트 =====
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }

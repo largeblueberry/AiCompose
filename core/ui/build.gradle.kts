@@ -41,13 +41,11 @@ android {
 
 dependencies {
     api(project(":core:resources"))
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.ui)
     implementation(libs.androidx.ui.graphics)

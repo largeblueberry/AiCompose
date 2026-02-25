@@ -37,16 +37,13 @@ android {
         compose = true
         buildConfig = true
     }
-
 }
 
 dependencies {
-    //모듈
     implementation(project(":data:local"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:analytics-api"))
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -54,10 +51,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
-
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    // ===== COMPOSE =====
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
@@ -67,12 +60,8 @@ dependencies {
     implementation(libs.androidx.activity.activity.compose)
     implementation(libs.androidx.compose.runtime.livedata)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.lifecycle)
 }
