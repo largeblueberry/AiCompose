@@ -8,7 +8,6 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -20,18 +19,14 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 35
-
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        // This line is now corrected
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
             "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
         )
-
     }
 
     buildFeatures {
@@ -57,7 +52,12 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":core:resources"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:auth"))
+    implementation(project(":core:data"))
+    implementation(project(":core:analytics-api"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -65,47 +65,23 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(project(":core:resources"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:auth"))
-    implementation(project(":core:data"))
-    implementation(project(":core:analytics-api"))
-
-
-    // Compose BOM
-    val composeBom = platform("androidx.compose:compose-bom:2025.05.00")
-    implementation(composeBom)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-extended")
-
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.4")
-
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-
-    // DataStore (설정 저장용)
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.navigation.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui.ui)
+    implementation(libs.androidx.compose.material3.material3)
+    implementation(libs.androidx.compose.ui.ui.tooling.preview)
+    implementation(libs.androidx.compose.material.material.icons.extended)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.bundles.lifecycle)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
 
 }

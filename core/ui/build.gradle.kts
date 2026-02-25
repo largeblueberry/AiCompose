@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)  // ✅ Compose 컴파일러 플러그인 추가 (필수!)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 35
+        minSdk = 26
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -34,47 +34,27 @@ android {
     }
 
     buildFeatures {
-        compose = true  // ✅ Compose 활성화 (필수!)
+        compose = true
         buildConfig = true
     }
 }
 
 dependencies {
-    // ===== 기본 Android 라이브러리 =====
+    api(project(":core:resources"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
-
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    // ===== 프로젝트 모듈 =====
-    api(project(":core:resources"))
-
-    // ===== COMPOSE BOM - 버전 통합 관리 =====
-    implementation(platform(libs.androidx.compose.bom))  // ✅ libs.versions.toml 사용
-
-    // ===== 핵심 Compose 라이브러리 =====
-    // 핵심 UI (Color, Modifier 등 기본 요소)
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-
-    // Foundation (Box, Column, Row 등 레이아웃)
-    implementation("androidx.compose.foundation:foundation")
-
-    // Runtime (remember, State 등)
-    implementation("androidx.compose.runtime:runtime")
-
-    // Material Design 3
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-
-    // ===== 개발 도구 (디버그 빌드에서만) =====
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // ===== Compose 테스트 =====
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.foundation)
+    implementation(libs.androidx.runtime)
+    implementation(libs.material3)
+    implementation(libs.material.icons.extended)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 }
