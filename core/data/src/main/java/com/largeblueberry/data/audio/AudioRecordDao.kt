@@ -1,4 +1,4 @@
-package com.largeblueberry.local.audio
+package com.largeblueberry.data.audio
 
 import androidx.room.Dao
 import androidx.room.Delete

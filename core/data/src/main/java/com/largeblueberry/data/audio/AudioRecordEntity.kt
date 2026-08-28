@@ -1,4 +1,4 @@
-package com.largeblueberry.local.audio
+package com.largeblueberry.data.audio
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
