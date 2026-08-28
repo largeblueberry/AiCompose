@@ -45,7 +45,6 @@ fun OnboardingPagerScreen(
             OnboardingPage(pageData = OnboardingPageData.getPageData(page))
         }
 
-        // Bottom Buttons
         when {
             // 권한 요청 페이지
             OnboardingPageData.isPermissionRequestPage(pagerState.currentPage) -> {
@@ -78,7 +77,6 @@ fun OnboardingPagerScreen(
                 }
             }
 
-            // 나머지 페이지
             else -> {
                 Button(
                     onClick = {
@@ -99,7 +97,6 @@ fun OnboardingPagerScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        // 수정: buttonTextResId를 사용하여 stringResource로 변환
                         text = stringResource(currentPageData.buttonTextResId),
                         color = Color.White,
                         fontSize = 16.sp,

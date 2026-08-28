@@ -1,10 +1,10 @@
-package com.largeblueberry.local.di
+package com.largeblueberry.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.largeblueberry.local.AudioDatabase
-import com.largeblueberry.local.audio.AudioRecordDao
-import com.largeblueberry.local.score.ScoreDao
+import com.largeblueberry.data.AudioDatabase
+import com.largeblueberry.data.audio.AudioRecordDao
+import com.largeblueberry.data.score.ScoreDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

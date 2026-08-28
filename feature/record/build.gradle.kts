@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":data:local"))
+    implementation(project(":core:data"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
     implementation(project(":core:analytics-api"))

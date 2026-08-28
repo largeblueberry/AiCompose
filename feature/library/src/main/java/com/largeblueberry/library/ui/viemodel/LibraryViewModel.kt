@@ -1,6 +1,8 @@
 package com.largeblueberry.library.ui.viemodel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.analyticshelper.AnalyticsHelper
@@ -38,7 +40,6 @@ class LibraryViewModel @Inject constructor(
     private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
-    // Logcat 필터링을 위한 TAG 추가
     private companion object {
         private const val TAG = "LibraryViewModel"
     }
@@ -48,10 +49,7 @@ class LibraryViewModel @Inject constructor(
 
     init {
         loadInitialData()
-        // 오디오 레코드 리스트와 isEmpty 상태를 함께 업데이트
         observeAudioRecords()
-
-        // AudioPlayer 재생 완료 리스너 설정
         audioPlayer.setOnCompletionListener {
             _uiState.update { it.copy(currentPlayingRecordId = null, isPlaying = false) }
         }
@@ -66,7 +64,6 @@ class LibraryViewModel @Inject constructor(
                 analyticsHelper.logEvent("delete_record_success", mapOf("record_id" to record.id.toString()))
 
                 _uiState.update { it.copy(deleteResult = Result.success(Unit)) }
-                // 만약 삭제된 레코드가 현재 재생 중이었다면 정지
                 if (uiState.value.currentPlayingRecordId == record.id) {
                     stopPlaying()
                 }
@@ -82,7 +79,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    // 이름 변경 가능 함수
     fun renameRecord(record: LibraryModel, newName: String) {
         Log.d(TAG, "Attempting to rename record: ${record.id} to $newName")
         viewModelScope.launch {
@@ -100,10 +96,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    //서버 전송 함수, 비즈니스로직은 UploadAudioRecordUseCase에 위임
-    //여기서는 오직 업로드 상태 관리와 UI 업데이트만 담당
-    // in LibraryViewModel.kt
-
     fun uploadAudioToServer(filePath: String, recordId: Int) {
         viewModelScope.launch {
 
@@ -112,13 +104,10 @@ class LibraryViewModel @Inject constructor(
                 return@launch
             }
 
-            val availabilityResult = checkUploadAvailabilityUseCase.invoke()
-
-            when(availabilityResult){
+            when(val availabilityResult = checkUploadAvailabilityUseCase.invoke()){
                 is UploadAvailabilityResult.Available ->{
                     _uiState.update {
                         it.copy(
-                            // 🔥 수정: UploadState 생성 시 url 필드는 이제 없습니다.
                             uploadState = UploadState(
                                 status = UploadStatus.UPLOADING,
                                 recordId = recordId
@@ -128,28 +117,23 @@ class LibraryViewModel @Inject constructor(
                         )
                     }
                     try {
-                        // uploadAudioRecordUseCase는 Result<UploadResponse>를 반환한다고 가정합니다.
-                        // UploadResponse는 scoreUrl과 midiUrl을 모두 포함해야 합니다.
                         val result = uploadAudioRecordUseCase(filePath)
 
                         result.fold(
                             onSuccess = { uploadResponse ->
-                                // ✅ scoreUrl과 midiUrl을 모두 가져옵니다.
                                 val scoreUrl = uploadResponse.scoreUrl
                                 val midiUrl = uploadResponse.midiUrl
 
-                                // ✅ 두 URL이 모두 유효한지 확인합니다.
                                 if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
                                     Log.i(TAG, "Upload successful for record: $recordId. Score URL: $scoreUrl, MIDI URL: $midiUrl")
                                     analyticsHelper.logEvent("upload_record_success", mapOf("record_id" to recordId.toString()))
 
                                     _uiState.update {
                                         it.copy(
-                                            // 🔥 수정: 새로운 UploadState 구조에 맞게 두 URL을 모두 저장합니다.
                                             uploadState = UploadState(
                                                 status = UploadStatus.SUCCESS,
-                                                scoreUrl = scoreUrl, // ✅ scoreUrl 저장
-                                                midiUrl = midiUrl,   // ✅ midiUrl 저장
+                                                scoreUrl = scoreUrl,
+                                                midiUrl = midiUrl,
                                                 recordId = recordId
                                             ),
                                             currentUploads = availabilityResult.currentUploads,
@@ -214,7 +198,7 @@ class LibraryViewModel @Inject constructor(
                         }
                     }
                 }
-                // ... (LimitReached, Error 케이스는 동일)
+
                 is UploadAvailabilityResult.LimitReached -> {
                     Log.w(TAG, "Upload limit reached for user. Max: ${availabilityResult.maxUploads}")
                     analyticsHelper.logEvent("upload_limit_reached", mapOf("max_uploads" to availabilityResult.maxUploads.toString()))
@@ -275,12 +259,10 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-
-    // 오디오 재생 관련 함수들
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun playAudio(record: LibraryModel) {
         Log.d(TAG, "Playing audio for record: ${record.id}")
         analyticsHelper.logEvent("play_audio", mapOf("record_id" to record.id.toString()))
-        // 이미 재생 중인 레코드가 있다면 정지
         if (audioPlayer.isPlaying()) {
             audioPlayer.stop()
         }
@@ -314,7 +296,6 @@ class LibraryViewModel @Inject constructor(
         _uiState.update { it.copy(currentPlayingRecordId = null, isPlaying = false) }
     }
 
-    // UI 상태 초기화 함수들
     fun clearDeleteResult() {
         _uiState.update { it.copy(deleteResult = null) }
     }
@@ -331,13 +312,12 @@ class LibraryViewModel @Inject constructor(
         _uiState.update { it.copy(showRenameDialogForRecord = null) }
     }
 
-
     fun clearUploadInProgressMessage() {
         _uiState.update { it.copy(showUploadInProgressMessage = false) }
     }
 
     override fun onCleared() {
         super.onCleared()
-        audioPlayer.stop() // ViewModel이 파괴될 때 MediaPlayer도 해제
+        audioPlayer.stop()
     }
 }

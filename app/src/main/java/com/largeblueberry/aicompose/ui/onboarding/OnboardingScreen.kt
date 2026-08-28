@@ -44,14 +44,12 @@ fun OnboardingScreen(
             exit = fadeOut(animationSpec = tween(300))
         ) {
             OnboardingPagerScreen(
-                // Pager에서 권한 요청이 필요할 때 Activity의 requestPermissions()를 직접 호출합니다.
                 onPermissionRequest = onPermissionRequest,
                 onComplete = onComplete
             )
         }
     }
 
-    // Permission Dialog (상태를 MainActivity로부터 전달받아 표시)
     if (showSettingsDialog) {
         PermissionDialog(
             onDismiss = onDismissSettingsDialog,

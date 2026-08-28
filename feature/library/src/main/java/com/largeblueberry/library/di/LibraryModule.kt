@@ -6,7 +6,7 @@ import com.largeblueberry.library.domainLayer.usecase.DeleteAudioRecordUseCase
 import com.largeblueberry.library.domainLayer.usecase.GetAudioRecordsUseCase
 import com.largeblueberry.library.domainLayer.usecase.RenameAudioRecordUseCase
 import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
-import com.largeblueberry.local.audio.AudioRecordDao
+import com.largeblueberry.data.audio.AudioRecordDao
 import com.largeblueberry.network.repository.AudioUploadRepository
 import dagger.Module
 import dagger.Provides

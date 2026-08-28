@@ -4,7 +4,7 @@ import com.largeblueberry.library.domainLayer.repository.LibraryRepository
 
 import com.largeblueberry.library.dataLayer.mapper.LibraryMapper
 import com.largeblueberry.library.domainLayer.model.LibraryModel
-import com.largeblueberry.local.audio.AudioRecordDao
+import com.largeblueberry.data.audio.AudioRecordDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

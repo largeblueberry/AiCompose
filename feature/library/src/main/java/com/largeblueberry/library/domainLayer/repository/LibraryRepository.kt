@@ -9,5 +9,4 @@ interface LibraryRepository {
     suspend fun deleteRecord(record: LibraryModel)
 
     suspend fun renameRecord(record: LibraryModel)
-    // 파일 이름 변경 처리
 }

@@ -1,4 +1,4 @@
-package com.largeblueberry.local.score
+package com.largeblueberry.data.score
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

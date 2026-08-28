@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +20,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -63,7 +60,6 @@ fun RecordScreenUi(
     val screenHeight = configuration.screenHeightDp.dp
     val isSmallScreen = screenHeight < 600.dp
 
-    // 화면 크기에 따른 동적 크기 조정
     val micButtonSize = if (isSmallScreen) 120.dp else 160.dp
     val micIconSize = if (isSmallScreen) 48.dp else 64.dp
     val titleFontSize = if (isSmallScreen) 24.sp else 28.sp
@@ -79,7 +75,6 @@ fun RecordScreenUi(
         RecordingState.FAILED_STOP -> stringResource(ResourcesR.string.recordFailedStop)
     }
 
-    // 녹음 중일 때의 애니메이션
     val recordingTransition = rememberInfiniteTransition(label = "recording_animation")
     val recordingPulseScale by recordingTransition.animateFloat(
         initialValue = 1f,
@@ -100,20 +95,19 @@ fun RecordScreenUi(
         label = "pulse_alpha"
     )
 
-    // 대기 중일 때의 애니메이션 (메인 버튼 + 배경 리플)
     val waitingTransition = rememberInfiniteTransition(label = "waiting_animation")
     val waitingPulseScale by waitingTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.08f, // 더 눈에 띄게 변경
+        targetValue = 1.08f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1200), // 약간 더 빠르게
+            animation = tween(1200),
             repeatMode = RepeatMode.Reverse
         ),
         label = "waiting_pulse_scale"
     )
     val waitingRippleScale by waitingTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.3f, // 배경원은 더 크게 퍼짐
+        targetValue = 1.3f,
         animationSpec = infiniteRepeatable(
             animation = tween(1200),
             repeatMode = RepeatMode.Restart
@@ -122,7 +116,7 @@ fun RecordScreenUi(
     )
     val waitingRippleAlpha by waitingTransition.animateFloat(
         initialValue = 0.4f,
-        targetValue = 0f, // 배경원은 사라짐
+        targetValue = 0f,
         animationSpec = infiniteRepeatable(
             animation = tween(1200),
             repeatMode = RepeatMode.Restart
@@ -130,7 +124,6 @@ fun RecordScreenUi(
         label = "waiting_ripple_alpha"
     )
 
-    // 상태에 따라 적용할 스케일과 알파 값 결정
     val buttonScale = if (isRecording) {
         recordingPulseScale
     } else if (recordingStateText == RecordingState.WAITING) {
@@ -147,7 +140,6 @@ fun RecordScreenUi(
             .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 상단 제목 영역
         Spacer(modifier = Modifier.height(topPadding))
         Text(
             text = stateText,
@@ -158,17 +150,14 @@ fun RecordScreenUi(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // 중앙 마이크 버튼을 위한 Spacer (가변적)
         Spacer(modifier = Modifier.weight(1f))
 
-        // 마이크 버튼 영역
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                // 배경 리플 효과 (대기 상태에서만 보임)
                 if (recordingStateText == RecordingState.WAITING) {
                     Box(
                         modifier = Modifier
@@ -182,7 +171,6 @@ fun RecordScreenUi(
                     )
                 }
 
-                // 메인 마이크 버튼
                 Box(
                     modifier = Modifier
                         .size(micButtonSize)
@@ -210,7 +198,6 @@ fun RecordScreenUi(
 
             Spacer(modifier = Modifier.height(if (isSmallScreen) 24.dp else 32.dp))
 
-            // 프로그레스 바 또는 공간
             if (isRecording) {
                 LinearProgressIndicator(
                     modifier = Modifier
@@ -224,10 +211,8 @@ fun RecordScreenUi(
             }
         }
 
-        // 하단 버튼을 위한 Spacer (가변적)
         Spacer(modifier = Modifier.weight(1f))
 
-        // 하단 버튼 영역
         OutlinedButton(
             onClick = onViewRecordingsClick,
             modifier = Modifier
@@ -245,7 +230,6 @@ fun RecordScreenUi(
             )
         }
 
-        // 하단 버튼이 너무 아래에 붙지 않도록 가중치를 주어 공간을 확보합니다.
         Spacer(modifier = Modifier.weight(0.3f))
     }
 }

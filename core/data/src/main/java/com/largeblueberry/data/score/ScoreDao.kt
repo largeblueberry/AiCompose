@@ -1,4 +1,4 @@
-package com.largeblueberry.local.score
+package com.largeblueberry.data.score
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
