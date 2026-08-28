@@ -53,15 +53,12 @@
 │   ├── analytics-api      # 분석 API 인터페이스
 │   ├── analytics-impl     # 분석 구현체
 │   ├── auth              # 인증 관련 공통 로직
-│   ├── data              # 데이터 처리 공통 로직
+│   ├── data              # 데이터 처리 공통 로직, Room 엔티티, DAO
 │   ├── domain            # 도메인 공통 로직
 │   ├── navigation        # 네비게이션 관리
 │   ├── resources         # 공통 리소스
 │   ├── remote            # 공통 네트워크 로직 retrofit
-│   └── ui                # 디자인 시스템, 공통 컴포넌트
-│
-├── 📂 data (데이터 레이어)
-│   └── local            # Room 엔티티, DAO
+│   └── ui                # 디자인 시스템, 공통 컴포넌트  
 │
 ├── 📂 feature (기능별 모듈)
 │   ├── auth              # 로그인 및 사용자 관리

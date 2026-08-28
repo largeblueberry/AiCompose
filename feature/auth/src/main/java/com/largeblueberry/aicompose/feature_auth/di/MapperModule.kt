@@ -12,12 +12,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object MapperModule {
     @Provides
-    @Singleton // AuthMapper가 싱글톤이므로, Hilt도 싱글톤으로 제공하도록 @Singleton 어노테이션을 붙입니다.
+    @Singleton // AuthMapper가 싱글톤
     fun provideAuthMapper(): AuthMapper {
-        return AuthMapper // Kotlin object는 그 자체로 인스턴스이므로, 객체 이름을 반환합니다.
+        return AuthMapper
     }
 
-    // 만약 UserMapper도 object이고, Hilt를 통해 주입되어야 한다면 유사하게 추가합니다.
     @Provides
     @Singleton
     fun provideUserMapper(): UserMapper {

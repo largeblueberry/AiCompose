@@ -44,21 +44,14 @@ fun AppNavigation() {
             RecordScreenState(navController = navController)
         }
 
-        // 🔥 수정: LibraryScreen의 콜백 처리
         composable(AppRoutes.LibraryScreen.route) {
             LibraryScreen(
-                // ✅ scoreUrl과 midiUrl을 모두 받는 콜백으로 변경
                 onUploadSuccess = { scoreUrl, midiUrl ->
-                    // ✅ URL은 네비게이션 전달 전에 항상 인코딩해야 합니다.
                     val encodedScoreUrl = URLEncoder.encode(scoreUrl, StandardCharsets.UTF_8.toString())
                     val encodedMidiUrl = URLEncoder.encode(midiUrl, StandardCharsets.UTF_8.toString())
-
-                    // ✅ 2. 인코딩된 URL을 포함하여 "상세 주소" 경로를 만듭니다.
                     val routeWithArgs = "${AppRoutes.SheetMusicScreen.route}/$encodedScoreUrl/$encodedMidiUrl"
 
                     Log.d("AppNavigation", "Navigating to SheetMusicScreen with args: $routeWithArgs")
-
-                    // ✅ 3. 완성된 경로로 내비게이션을 요청합니다.
                     navController.navigate(routeWithArgs)
                 },
                 navController = navController,
@@ -66,7 +59,6 @@ fun AppNavigation() {
             )
         }
 
-        // 기존 설정 관련 화면들...
         composable(AppRoutes.SettingsScreen.route) {
             SettingsScreen(
                 navigationActions = SettingsNavigationActions(
@@ -153,7 +145,6 @@ fun AppNavigation() {
             )
         }
 
-        // 🔥 수정: URL 파라미터를 받는 SheetMusic 화면 정의
         composable(
             route = AppRoutes.SheetMusicScreen.route + "/{scoreUrl}/{midiUrl}",
             arguments = listOf(
@@ -174,7 +165,6 @@ fun AppNavigation() {
             )
         }
 
-        // 🔥 기존 파라미터 없는 SheetMusic 화면 (빈 화면용)
         composable(AppRoutes.SheetMusicScreen.route) {
             Log.d("AppNavigation", "기본 SheetMusicScreen 호출됨")
             SheetMusicScreen(
@@ -191,9 +181,7 @@ fun AppNavigation() {
 
         composable(AppRoutes.SheetMusicHistoryScreen.route) {
             SheetMusicHistoryScreen(
-                // 🔥 수정: 이제 onScoreClick은 두 개의 URL 문자열을 받습니다.
                 onScoreClick = { scoreUrl, midiUrl ->
-                    // LibraryScreen에서 했던 로직과 완전히 동일합니다.
                     val encodedScoreUrl = URLEncoder.encode(scoreUrl, StandardCharsets.UTF_8.toString())
                     val encodedMidiUrl = URLEncoder.encode(midiUrl, StandardCharsets.UTF_8.toString())
 

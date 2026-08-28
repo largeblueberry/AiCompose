@@ -39,7 +39,6 @@ class LoginViewModel @Inject constructor(
         private const val TAG = "LoginViewModel"
     }
 
-    // [수정] 프로퍼티 선언을 init 블록 위로 이동
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 

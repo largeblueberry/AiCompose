@@ -1,8 +1,7 @@
 package com.largeblueberry.library.dataLayer.mapper
 
-import com.largeblueberry.local.audio.AudioRecordEntity
+import com.largeblueberry.data.audio.AudioRecordEntity
 import com.largeblueberry.library.domainLayer.model.LibraryModel
-
 
 object LibraryMapper {
 
