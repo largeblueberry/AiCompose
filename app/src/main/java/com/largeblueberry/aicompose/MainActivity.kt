@@ -59,7 +59,6 @@ class MainActivity : ComponentActivity() {
     // recreate로 인한 재생성인지 구분하기 위한 플래그
     private var isRecreatingForLanguage = false
 
-    // 이 부분을 아래 코드로 교체하세요.
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()

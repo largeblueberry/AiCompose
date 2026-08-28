@@ -40,7 +40,6 @@ fun SplashScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // 새로운 귀 + 음표 로고
             Image(
                 painter = painterResource(id = R.drawable.eareamlogo), // 업로드한 로고 파일명
                 contentDescription = null,
@@ -53,7 +52,6 @@ fun SplashScreen() {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 앱 제목
             Text(
                 text = stringResource(id = ResourceR.string.app_name),
                 fontSize = 54.sp,
@@ -64,7 +62,6 @@ fun SplashScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 부제목
             Text(
                 text = stringResource(id = ResourceR.string.app_subtitle),
                 fontSize = 18.sp,
