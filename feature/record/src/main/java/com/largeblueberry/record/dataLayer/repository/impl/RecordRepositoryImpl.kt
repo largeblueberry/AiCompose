@@ -3,7 +3,7 @@ package com.largeblueberry.record.dataLayer.repository.impl
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import com.largeblueberry.local.audio.AudioRecordDao
+import com.largeblueberry.data.audio.AudioRecordDao
 import com.largeblueberry.record.dataLayer.mapper.RecordMapper
 import com.largeblueberry.record.domain.model.RecordModel
 import com.largeblueberry.record.domain.repository.RecordRepository

@@ -3,8 +3,8 @@ package com.largeblueberry.feature_sheetmusic.data
 import android.util.Log
 import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
 import com.largeblueberry.feature_sheetmusic.domain.repository.SheetMusicRepository
-import com.largeblueberry.local.score.ScoreDao
-import com.largeblueberry.local.score.ScoreEntity
+import com.largeblueberry.data.score.ScoreDao
+import com.largeblueberry.data.score.ScoreEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat

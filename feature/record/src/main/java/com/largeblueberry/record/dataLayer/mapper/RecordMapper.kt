@@ -1,6 +1,6 @@
 package com.largeblueberry.record.dataLayer.mapper
 
-import com.largeblueberry.local.audio.AudioRecordEntity
+import com.largeblueberry.data.audio.AudioRecordEntity
 import com.largeblueberry.record.domain.model.RecordModel
 
 object RecordMapper {
