@@ -1,5 +1,6 @@
 ---
 name: "Troubleshooting"
+about: ""
 title: ""
 labels: ["troubleshooting"]
 ---
