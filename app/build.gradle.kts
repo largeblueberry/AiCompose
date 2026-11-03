@@ -28,9 +28,7 @@ android {
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"\"")
         buildConfigField("String", "BASE_URL", "\"\"")
-
     }
 
     buildTypes {
@@ -39,17 +37,9 @@ android {
             val localPropertiesFile = rootProject.file("local.properties")
             if (localPropertiesFile.exists()) {
                 localProperties.load(FileInputStream(localPropertiesFile))
-            } else {
-                throw GradleException("❌ local.properties 파일이 없습니다! 프로젝트 루트에 local.properties 파일을 생성해주세요.")
             }
 
-            val googleClientId = localProperties.getProperty("GOOGLE_CLIENT_ID")
-                ?: throw GradleException("❌ GOOGLE_CLIENT_ID를 local.properties에 설정해주세요!")
-
-            val baseUrl = localProperties.getProperty("BASE_URL")
-                ?: throw GradleException("❌ BASE_URL을 local.properties에 설정해주세요!")
-
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$googleClientId\"")
+            val baseUrl = localProperties.getProperty("BASE_URL") ?: ""
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
         release {
@@ -65,10 +55,7 @@ android {
                 localProperties.load(FileInputStream(localPropertiesFile))
             }
 
-            val googleClientId = localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""
             val baseUrl = localProperties.getProperty("BASE_URL") ?: ""
-
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$googleClientId\"")
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
     }
@@ -94,9 +81,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:resources"))
     implementation(project(":core:domain"))
-    implementation(project(":core:auth"))
     implementation(project(":core:navigation"))
-    implementation(project(":feature:auth"))
     implementation(project(":feature:library"))
     implementation(project(":feature:record"))
     implementation(project(":core:analytics-impl"))

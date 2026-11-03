@@ -9,8 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.largeblueberry.aicompose.feature_auth.ui.AccountManageScreen
-import com.largeblueberry.aicompose.feature_auth.ui.LoginScreen
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
 import com.largeblueberry.core_ui.stringResource
@@ -63,28 +61,12 @@ fun AppNavigation() {
             SettingsScreen(
                 navigationActions = SettingsNavigationActions(
                     onNavigateBack = { navController.popBackStack() },
-                    onNavigateToLogin = { navController.navigate(AppRoutes.LoginScreen.route) },
                     onNavigateToLanguage = { navController.navigate(AppRoutes.LanguageSettingScreen.route) },
                     onNavigateToTheme = { navController.navigate(AppRoutes.ThemeSettingScreen.route) },
                     onNavigateToBugReport = { navController.navigate(AppRoutes.BugReportScreen.route) },
                     onNavigateToServiceTerm = { navController.navigate(AppRoutes.ServiceTermScreen.route) },
-                    onNavigateToAbout = { navController.navigate(AppRoutes.AboutUsScreen.route) },
-                    onNavigateToAccountManage = { navController.navigate(AppRoutes.AccountManageScreen.route) }
+                    onNavigateToAbout = { navController.navigate(AppRoutes.AboutUsScreen.route) }
                 )
-            )
-        }
-
-        composable(AppRoutes.LoginScreen.route) {
-            LoginScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(AppRoutes.AccountManageScreen.route) {
-            AccountManageScreen(
-                onNavigateBack = { navController.popBackStack() }
             )
         }
 

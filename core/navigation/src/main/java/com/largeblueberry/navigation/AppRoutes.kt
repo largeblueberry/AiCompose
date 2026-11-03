@@ -9,14 +9,12 @@ sealed class AppRoutes(val route: String) {
     object RecordScreen : AppRoutes("record_route")
     object LibraryScreen : AppRoutes("library_route")
     object SettingsScreen : AppRoutes("settings_route")
-    object LoginScreen : AppRoutes("login_route")
     object ThemeSettingScreen : AppRoutes("theme_route")
     object LanguageSettingScreen : AppRoutes("language_route")
     object BugReportScreen : AppRoutes("bug_report_route")
     object ServiceTermScreen : AppRoutes("service_term_route")
     object AboutUsScreen : AppRoutes("about_route")
     object TermDetailScreen : AppRoutes("term_detail_route/{termId}")
-    object AccountManageScreen : AppRoutes("account_manage_route")
     object SheetMusicHistoryScreen : AppRoutes("sheet_music_history_route")
 
     // 🔥 수정: SheetMusicScreen 라우트 정의를 명확하게 변경

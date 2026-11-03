@@ -109,9 +109,6 @@ class MainActivity : ComponentActivity() {
         } else {
             // 온보딩이 완료되었거나 언어 변경으로 인한 재생성이면 즉시 스플래시 숨김
             showSplash.value = false
-            if (isOnboardingCompleted) {
-                viewModel.checkUserAuthentication()
-            }
             isRecreatingForLanguage = false // 플래그 리셋
         }
 
@@ -227,7 +224,6 @@ class MainActivity : ComponentActivity() {
             putBoolean(KEY_ONBOARDING_COMPLETED, true)
         }
         isOnboardingCompleted = true
-        viewModel.checkUserAuthentication()
         Log.d(TAG, "Onboarding completed and saved to SharedPreferences")
     }
 

@@ -30,12 +30,6 @@ android {
         buildConfigField("String", "VERSION_NAME", "\"1.0.0\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        buildConfigField(
-            "String",
-            "GOOGLE_CLIENT_ID",
-            "\"${localProperties.getProperty("GOOGLE_CLIENT_ID") ?: ""}\""
-        )
-
     }
 
     buildTypes {
@@ -63,7 +57,6 @@ android {
 dependencies {
     implementation(project(":core:resources"))
     implementation(project(":core:ui"))
-    implementation(project(":core:auth"))
     implementation(project(":core:navigation"))
     implementation(project(":core:analytics-api"))
     implementation(project(":core:domain"))
@@ -84,10 +77,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.bundles.lifecycle)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.google.play.services.auth)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
