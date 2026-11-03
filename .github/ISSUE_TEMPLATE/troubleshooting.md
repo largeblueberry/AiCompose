@@ -1,7 +1,7 @@
 ---
 name: "Troubleshooting"
-about: ""
-title: ""
+about: "문제 진단, 원인 분석 및 해결 방안(기술적 근거)을 기록합니다."
+title: "[Fix/Perf] "
 labels: ["troubleshooting"]
 ---
 
