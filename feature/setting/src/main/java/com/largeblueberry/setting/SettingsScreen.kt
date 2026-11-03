@@ -4,21 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,33 +21,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.auth.model.AuthUiState
-import com.largeblueberry.auth.model.UserCore
-import com.largeblueberry.core_ui.AppBlack
-import com.largeblueberry.core_ui.AppPrimaryBlue
-import com.largeblueberry.core_ui.AppRed
-import com.largeblueberry.core_ui.AppWhite
 import com.largeblueberry.core_ui.LightCustomColors
-import com.largeblueberry.core_ui.SettingBasicUser
 import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.ui.R
 import com.largeblueberry.setting.util.SettingItem
 import com.largeblueberry.setting.util.SettingSection
-import com.largeblueberry.setting.viewmodel.SettingViewModel
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    navigationActions : SettingsNavigationActions = SettingsNavigationActions(),
-    viewModel: SettingViewModel = hiltViewModel()
+    navigationActions: SettingsNavigationActions = SettingsNavigationActions()
 ) {
-    val authState by viewModel.authUiState.collectAsState()
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -70,28 +53,17 @@ fun SettingsScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            //  앱 정보 카드
+            // 앱 정보 카드
             item {
                 AppInfoCard()
             }
 
-            //  계정 섹션
-            item {
-                AccountSection(
-                    authState = authState,
-                    onLoginClick = navigationActions.onNavigateToLogin,
-                    onLogoutClick = { viewModel.signOut() },
-                    onAccountManageClick = navigationActions.onNavigateToAccountManage
-                )
-            }
-
-            // ️ 앱 설정 섹션
+            // 앱 설정 섹션
             item {
                 AppSettingsSection(navigationActions = navigationActions)
             }
 
-            //  앱 정보 섹션
+            // 앱 정보 섹션
             item {
                 AboutSection(navigationActions = navigationActions)
             }
@@ -133,7 +105,7 @@ private fun AppInfoCard() {
                 text = stringResource(id = ResourceR.string.app_name),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
-                color = LightCustomColors.titleBlueDark, // 파란색
+                color = LightCustomColors.titleBlueDark,
                 textAlign = TextAlign.Center
             )
 
@@ -144,9 +116,9 @@ private fun AppInfoCard() {
                 text = stringResource(id = ResourceR.string.app_subtitle),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
-                color = LightCustomColors.subtitleBlue, // 연보라색
+                color = LightCustomColors.subtitleBlue,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp) // 긴 텍스트를 위한 패딩
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -161,143 +133,11 @@ private fun AppInfoCard() {
     }
 }
 
-
-@Composable
-private fun AccountSection(
-    authState: AuthUiState,
-    onLoginClick: () -> Unit,
-    onLogoutClick: () -> Unit,
-    onAccountManageClick: () -> Unit // 새로 추가
-) {
-    SettingSection(title = stringResource(ResourceR.string.account)) {
-        when (authState) {
-            is AuthUiState.Authenticated -> {
-                // 로그인된 상태 - 사용자 정보 표시
-                UserProfileItem(
-                    user = authState.user,
-                    onLogoutClick = onLogoutClick,
-                    title = stringResource(ResourceR.string.welcome_message, authState.user.name),
-                    subtitle = stringResource(ResourceR.string.login_success_message)
-                )
-
-                // 계정 관리 메뉴 추가
-                SettingItem(
-                    icon = Icons.Default.ManageAccounts, // 또는 적절한 아이콘
-                    title = "계정 관리",
-                    subtitle = "회원 정보 수정, 탈퇴 등",
-                    onClick = onAccountManageClick,
-                    showArrow = true
-                )
-            }
-            else -> {
-                // 로그인되지 않은 상태
-                SettingItem(
-                    icon = Icons.Default.AccountCircle,
-                    title = stringResource(ResourceR.string.login),
-                    subtitle = stringResource(ResourceR.string.loginSubText),
-                    onClick = onLoginClick,
-                    showArrow = true
-                )
-            }
-        }
-    }
-}
-
-
-
-@Composable
-private fun UserProfileItem(
-    user: UserCore,
-    onLogoutClick: () -> Unit,
-    title: String,
-    subtitle: String
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = AppWhite
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // 환영 메시지 섹션 (title이 있을 때만 표시)
-            if (title.isNotEmpty()) {
-                Text(
-                    text = title,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AppPrimaryBlue
-                )
-
-                if (subtitle.isNotEmpty()) {
-                    Text(
-                        text = subtitle,
-                        fontSize = 14.sp,
-                        color = AppBlack.copy(alpha = 0.7f),
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 프로필 이미지 또는 기본 아이콘
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(SettingBasicUser, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = user.name.firstOrNull()?.toString() ?: "U",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = user.name,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = AppPrimaryBlue
-                    )
-                    Text(
-                        text = user.email,
-                        fontSize = 14.sp,
-                        color = AppBlack
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            TextButton(
-                onClick = onLogoutClick,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(ResourceR.string.logout),
-                    color = AppRed
-                )
-            }
-        }
-    }
-}
-
 @Composable
 fun AppSettingsSection(
-    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
+    navigationActions: SettingsNavigationActions = SettingsNavigationActions()
 ) {
     SettingSection(title = stringResource(ResourceR.string.appSetting)) {
-
         SettingItem(
             icon = Icons.Default.Language,
             title = stringResource(ResourceR.string.languageMainText),
@@ -316,7 +156,7 @@ fun AppSettingsSection(
 
 @Composable
 private fun AboutSection(
-    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
+    navigationActions: SettingsNavigationActions = SettingsNavigationActions()
 ) {
     SettingSection(title = "정보") {
         SettingItem(
