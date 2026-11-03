@@ -2,11 +2,8 @@ package com.largeblueberry.library.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.largeblueberry.data.AuthGatewayImpl
-import com.largeblueberry.domain.AuthGateway
 import com.largeblueberry.domain.repository.UserUsageRepository
 import com.largeblueberry.library.dataLayer.repository.impl.UserUsageRepositoryImpl
-
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -24,7 +21,6 @@ abstract class UserTrackerBindsModule {
     abstract fun bindUserUsageRepository(
         userUsageRepositoryImpl: UserUsageRepositoryImpl
     ): UserUsageRepository
-
 
     companion object {
         @Provides
