@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":core:analytics-api"))
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -60,6 +62,5 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.auth)
     implementation(libs.coil.compose)
 }
