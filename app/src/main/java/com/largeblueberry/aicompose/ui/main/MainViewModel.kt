@@ -2,9 +2,9 @@ package com.largeblueberry.aicompose.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.core_ui.ThemeOption
-import com.largeblueberry.setting.language.domain.GetLanguageCodeUseCase
-import com.largeblueberry.setting.theme.domain.ThemeRepository
+import com.largeblueberry.domain.model.ThemeOption
+import com.largeblueberry.domain.repository.ThemeRepository
+import com.largeblueberry.domain.usecase.setting.GetLanguageCodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

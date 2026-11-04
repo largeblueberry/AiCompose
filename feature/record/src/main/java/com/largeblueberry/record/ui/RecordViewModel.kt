@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.record.domain.usecase.StartRecordingUseCase
-import com.largeblueberry.record.domain.usecase.StopRecordingUseCase
+import com.largeblueberry.domain.usecase.record.StartRecordingUseCase
+import com.largeblueberry.domain.usecase.record.StopRecordingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
