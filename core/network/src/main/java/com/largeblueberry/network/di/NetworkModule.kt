@@ -46,8 +46,9 @@ object NetworkModule {
         okHttpClient: OkHttpClient,
         @Named("base_url") baseUrl: String  // 의존성 주입으로 BASE_URL 받기
     ): Retrofit {
+        val validBaseUrl = if (baseUrl.isNotBlank()) baseUrl else "https://localhost/"
         return Retrofit.Builder()
-            .baseUrl(baseUrl)  // 주입받은 baseUrl 사용
+            .baseUrl(validBaseUrl)  // 주입받은 baseUrl 사용 (비어있을 경우 localhost 안전 처리)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

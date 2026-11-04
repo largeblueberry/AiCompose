@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.analyticshelper.AnalyticsHelper
 import com.largeblueberry.library.domainLayer.model.LibraryModel
 import com.largeblueberry.library.domainLayer.usecase.DeleteAudioRecordUseCase
 import com.largeblueberry.library.domainLayer.usecase.GetAudioRecordsUseCase
@@ -29,8 +28,7 @@ class LibraryViewModel @Inject constructor(
     private val deleteAudioRecordUseCase: DeleteAudioRecordUseCase,
     private val renameAudioRecordUseCase: RenameAudioRecordUseCase,
     private val uploadAudioRecordUseCase: UploadAudioRecordUseCase,
-    private val audioPlayer: AudioPlayer,
-    private val analyticsHelper: AnalyticsHelper
+    private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
     private companion object {
@@ -51,9 +49,7 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 deleteAudioRecordUseCase(record)
-
                 Log.i(TAG, "Record deleted successfully: ${record.id}")
-                analyticsHelper.logEvent("delete_record_success", mapOf("record_id" to record.id.toString()))
 
                 _uiState.update { it.copy(deleteResult = Result.success(Unit)) }
                 if (uiState.value.currentPlayingRecordId == record.id) {
@@ -61,11 +57,6 @@ class LibraryViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to delete record: ${record.id}", e)
-                analyticsHelper.logEvent(
-                    "delete_record_failure",
-                    mapOf("record_id" to record.id.toString(), "error" to (e.message ?: "Unknown error"))
-                )
-
                 _uiState.update { it.copy(deleteResult = Result.failure(e)) }
             }
         }
@@ -77,13 +68,8 @@ class LibraryViewModel @Inject constructor(
             try {
                 renameAudioRecordUseCase(record, newName)
                 Log.i(TAG, "Record renamed successfully: ${record.id} to $newName")
-                analyticsHelper.logEvent("rename_record_success", mapOf("record_id" to record.id.toString()))
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to rename record: ${record.id}", e)
-                analyticsHelper.logEvent(
-                    "rename_record_failure",
-                    mapOf("record_id" to record.id.toString(), "error" to (e.message ?: "Unknown error"))
-                )
             }
         }
     }
@@ -115,7 +101,6 @@ class LibraryViewModel @Inject constructor(
 
                         if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
                             Log.i(TAG, "Upload successful for record: $recordId. Score URL: $scoreUrl, MIDI URL: $midiUrl")
-                            analyticsHelper.logEvent("upload_record_success", mapOf("record_id" to recordId.toString()))
 
                             _uiState.update {
                                 it.copy(
@@ -129,7 +114,6 @@ class LibraryViewModel @Inject constructor(
                             }
                         } else {
                             Log.w(TAG, "Upload for record $recordId succeeded but returned an empty or invalid URL.")
-                            analyticsHelper.logEvent("upload_record_empty_url", mapOf("record_id" to recordId.toString()))
                             _uiState.update {
                                 it.copy(
                                     uploadState = UploadState(
@@ -143,10 +127,6 @@ class LibraryViewModel @Inject constructor(
                     },
                     onFailure = { exception ->
                         Log.e(TAG, "Upload failed for record: $recordId", exception)
-                        analyticsHelper.logEvent(
-                            "upload_record_failure",
-                            mapOf("record_id" to recordId.toString(), "error" to (exception.message ?: "Unknown error"))
-                        )
                         _uiState.update {
                             it.copy(
                                 uploadState = UploadState(
@@ -160,10 +140,6 @@ class LibraryViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "An unexpected error occurred during upload for record: $recordId", e)
-                analyticsHelper.logEvent(
-                    "upload_record_exception",
-                    mapOf("record_id" to recordId.toString(), "error" to (e.message ?: "Unknown error"))
-                )
                 _uiState.update {
                     it.copy(
                         uploadState = UploadState(
@@ -202,7 +178,6 @@ class LibraryViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun playAudio(record: LibraryModel) {
         Log.d(TAG, "Playing audio for record: ${record.id}")
-        analyticsHelper.logEvent("play_audio", mapOf("record_id" to record.id.toString()))
         if (audioPlayer.isPlaying()) {
             audioPlayer.stop()
         }
@@ -217,21 +192,18 @@ class LibraryViewModel @Inject constructor(
 
     fun pauseAudio() {
         Log.d(TAG, "Pausing audio")
-        analyticsHelper.logEvent("pause_audio", emptyMap())
         audioPlayer.pause()
         _uiState.update { it.copy(isPlaying = false) }
     }
 
     fun resumeAudio() {
         Log.d(TAG, "Resuming audio")
-        analyticsHelper.logEvent("resume_audio", emptyMap())
         audioPlayer.resume()
         _uiState.update { it.copy(isPlaying = true) }
     }
 
     fun stopPlaying() {
         Log.d(TAG, "Stopping audio")
-        analyticsHelper.logEvent("stop_audio", emptyMap())
         audioPlayer.stop()
         _uiState.update { it.copy(currentPlayingRecordId = null, isPlaying = false) }
     }

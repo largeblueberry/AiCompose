@@ -11,10 +11,8 @@ interface LanguageRepository {
     val language: Flow<String>
 
     /**
-     * 새로운 언어 코드를 저장
-     * @param languageCode 저장할 언어 코드 (예: "en", "ko")
+     * 새로운 언어 코드를 설정 (빈 문자열은 시스템 기본값)
+     * @param languageCode 설정할 언어 코드 (예: "en", "ko", "")
      */
     suspend fun setLanguage(languageCode: String)
-
-
 }
