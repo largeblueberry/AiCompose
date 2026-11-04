@@ -28,10 +28,10 @@ object DataStoreModule {
 
     @Provides
     @Singleton
-    @Named("language")
-    fun provideLanguageDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+    @Named("user_preferences")
+    fun provideUserPreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile("language_pref") }
+            produceFile = { context.preferencesDataStoreFile("user_preferences") }
         )
     }
 }

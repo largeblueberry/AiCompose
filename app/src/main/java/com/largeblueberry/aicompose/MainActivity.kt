@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import com.largeblueberry.aicompose.nav.AppNavigation
 import com.largeblueberry.aicompose.ui.main.MainViewModel
@@ -30,17 +29,13 @@ import com.largeblueberry.core_ui.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private val sharedPreferences by lazy {
-        getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    }
-
-    private var isOnboardingCompleted by mutableStateOf(false)
     private var showSettingsDialog by mutableStateOf(false)
 
     // 스플래시 화면 표시 상태
@@ -65,7 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     private companion object {
         private const val TAG = "MainActivity"
-        private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -77,19 +71,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate called")
 
-        isOnboardingCompleted = sharedPreferences.getBoolean(KEY_ONBOARDING_COMPLETED, false)
-
-        if (!isOnboardingCompleted) {
-            lifecycleScope.launch {
-                delay(2000)
-                showSplash.value = false
-            }
-        } else {
+        lifecycleScope.launch {
+            delay(2000.milliseconds)
             showSplash.value = false
         }
 
         setContent {
             val themeOption by viewModel.themeOption.collectAsState()
+            val isOnboardingCompleted by viewModel.isOnboardingCompleted.collectAsState()
 
             AppTheme(themeOption = themeOption) {
                 Surface(
@@ -133,11 +122,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun completeOnboarding() {
-        sharedPreferences.edit {
-            putBoolean(KEY_ONBOARDING_COMPLETED, true)
-        }
-        isOnboardingCompleted = true
-        Log.d(TAG, "Onboarding completed and saved to SharedPreferences")
+        viewModel.completeOnboarding()
+        Log.d(TAG, "Onboarding completed and saved via DataStore")
     }
 
     private fun openAppSettings() {

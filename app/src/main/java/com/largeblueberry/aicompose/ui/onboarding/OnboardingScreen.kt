@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.largeblueberry.aicompose.ui.splash.SplashScreen
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun OnboardingScreen(
@@ -23,7 +24,7 @@ fun OnboardingScreen(
     var showSplash by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        delay(2000) // 2초 후 스플래시 화면 숨김
+        delay(2000.milliseconds) // 2초 후 스플래시 화면 숨김
         showSplash = false
     }
 
