@@ -98,7 +98,8 @@ class MainActivity : AppCompatActivity() {
                                 requestPermissions()
                             },
                             onComplete = {
-                                completeOnboarding()
+                                viewModel.completeOnboarding()
+                                Log.d(TAG, "Onboarding completed and saved via DataStore")
                             }
                         )
                     } else {
@@ -119,11 +120,6 @@ class MainActivity : AppCompatActivity() {
         if (permissionsToRequest.isNotEmpty()) {
             requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
         }
-    }
-
-    private fun completeOnboarding() {
-        viewModel.completeOnboarding()
-        Log.d(TAG, "Onboarding completed and saved via DataStore")
     }
 
     private fun openAppSettings() {
