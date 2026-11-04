@@ -24,9 +24,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -54,7 +58,8 @@ fun RecordScreenUi(
     isRecording: Boolean,
     recordingStateText: RecordingState,
     onRecordToggleClick: () -> Unit,
-    onViewRecordingsClick: () -> Unit
+    onViewRecordingsClick: () -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -133,104 +138,109 @@ fun RecordScreenUi(
     }
     val buttonAlpha = if (isRecording) recordingPulseAlpha else 1f
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(topPadding))
-        Text(
-            text = stateText,
-            fontSize = titleFontSize,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                contentAlignment = Alignment.Center
+            Spacer(modifier = Modifier.height(topPadding))
+            Text(
+                text = stateText,
+                fontSize = titleFontSize,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (recordingStateText == RecordingState.WAITING) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (recordingStateText == RecordingState.WAITING) {
+                        Box(
+                            modifier = Modifier
+                                .size(micButtonSize)
+                                .scale(waitingRippleScale)
+                                .graphicsLayer(alpha = waitingRippleAlpha)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    shape = CircleShape
+                                )
+                        )
+                    }
+
                     Box(
                         modifier = Modifier
                             .size(micButtonSize)
-                            .scale(waitingRippleScale)
-                            .graphicsLayer(alpha = waitingRippleAlpha)
+                            .clickable { onRecordToggleClick() }
                             .background(
-                                color = MaterialTheme.colorScheme.primary,
+                                color = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
                                 shape = CircleShape
                             )
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .size(micButtonSize)
-                        .clickable { onRecordToggleClick() }
-                        .background(
-                            color = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
+                            .scale(buttonScale)
+                            .graphicsLayer(alpha = buttonAlpha),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Mic,
+                            contentDescription = if (isRecording) {
+                                stringResource(ResourcesR.string.recordStop)
+                            } else {
+                                stringResource(ResourcesR.string.recordStart)
+                            },
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(micIconSize)
                         )
-                        .scale(buttonScale)
-                        .graphicsLayer(alpha = buttonAlpha),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Mic,
-                        contentDescription = if (isRecording) {
-                            stringResource(ResourcesR.string.recordStop)
-                        } else {
-                            stringResource(ResourcesR.string.recordStart)
-                        },
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(micIconSize)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(if (isSmallScreen) 24.dp else 32.dp))
+
+                if (isRecording) {
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = Theme.customColors.progressBarBackground
                     )
+                } else {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(if (isSmallScreen) 24.dp else 32.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
-            if (isRecording) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = Theme.customColors.progressBarBackground
+            OutlinedButton(
+                onClick = onViewRecordingsClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 400.dp)
+                    .height(buttonHeight),
+                shape = MaterialTheme.shapes.medium,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = stringResource(ResourcesR.string.gotoLibrary),
+                    fontSize = if (isSmallScreen) 14.sp else 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
                 )
-            } else {
-                Spacer(modifier = Modifier.height(8.dp))
             }
+
+            Spacer(modifier = Modifier.weight(0.3f))
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        OutlinedButton(
-            onClick = onViewRecordingsClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .widthIn(max = 400.dp)
-                .height(buttonHeight),
-            shape = MaterialTheme.shapes.medium,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-        ) {
-            Text(
-                text = stringResource(ResourcesR.string.gotoLibrary),
-                fontSize = if (isSmallScreen) 14.sp else 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(0.3f))
     }
 }
 
