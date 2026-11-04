@@ -1,0 +1,56 @@
+name: "Troubleshooting"
+description: "문제 진단, 원인 분석 및 해결 방안(기술적 근거)을 기록합니다."
+title: "[Fix/Perf] "
+labels: ["troubleshooting"]
+body:
+  - type: textarea
+    id: problem_context
+    attributes:
+      label: Problem Context
+      description: "어떤 환경/기능에서 무슨 문제가 발생하는지 핵심만 작성"
+    validations:
+      required: true
+
+  - type: textarea
+    id: symptoms_and_logs
+    attributes:
+      label: Symptoms & Logs
+      description: "재현 방법, 에러 로그, 비정상 동작 스크린샷 등"
+      placeholder: |
+        ```
+        로그 및 에러 메시지 작성
+        ```
+
+  - type: textarea
+    id: root_cause_analysis
+    attributes:
+      label: Root Cause Analysis
+      description: "단순 에러가 아닌 구조적/기술적 발생 원인 분석"
+    validations:
+      required: true
+
+  - type: textarea
+    id: considered_approaches
+    attributes:
+      label: Considered Approaches
+      description: "고려했던 해결 방안들과 장단점 (Trade-off)"
+      value: |
+        - **Approach A:**
+            - Pros: 
+            - Cons: 
+        - **Approach B:**
+            - Pros: 
+            - Cons: 
+
+        ### Selected Approach & Rationale
+        <!-- 최종 선택한 방식과 기술적 근거 -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: success_criteria
+    attributes:
+      label: Success Criteria
+      value: |
+        - [ ] 
+        - [ ] 
