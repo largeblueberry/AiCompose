@@ -1,5 +1,6 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 # CodeRabbit AI Code Reviewer Configuration
-version: "2"
+version: 2
 language: "ko-KR" # AI 코드 리뷰 언어: 한국어
 
 reviews:
