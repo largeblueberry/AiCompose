@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.largeblueberry.library.ui.screen.LibraryScreen
 import com.largeblueberry.aicompose.ui.main.MainScreen
-import com.largeblueberry.core_ui.stringResource
+import androidx.compose.ui.res.stringResource
 import com.largeblueberry.feature_sheetmusic.ui.SheetMusicScreen
 import com.largeblueberry.feature_sheetmusic.ui.history.SheetMusicHistoryScreen
 import com.largeblueberry.setting.SettingsScreen

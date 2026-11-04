@@ -8,8 +8,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.largeblueberry.domain.repository.LanguageRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
@@ -33,11 +35,15 @@ class LanguageRepositoryImpl @Inject constructor(
         }
 
     override suspend fun setLanguage(languageCode: String) {
-        // 3. setLanguage 메서드가 호출될 때 로그 출력
         Log.d(TAG, "setLanguage called with code: $languageCode")
 
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.LANGUAGE_CODE] = languageCode
+        }
+
+        withContext(Dispatchers.Main) {
+            val appLocale = LocaleListCompat.forLanguageTags(languageCode)
+            AppCompatDelegate.setApplicationLocales(appLocale)
         }
     }
 }
