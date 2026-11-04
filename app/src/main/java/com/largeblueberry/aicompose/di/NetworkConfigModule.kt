@@ -16,6 +16,6 @@ object NetworkConfigModule {
     @Singleton
     @Named("base_url")
     fun provideBaseUrl(): String {
-        return BuildConfig.BASE_URL
+        return if (BuildConfig.BASE_URL.isNotBlank()) BuildConfig.BASE_URL else "https://localhost/"
     }
 }

@@ -6,8 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
     id("com.google.dagger.hilt.android")
 }
 
@@ -84,7 +82,6 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":feature:library"))
     implementation(project(":feature:record"))
-    implementation(project(":core:analytics-impl"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

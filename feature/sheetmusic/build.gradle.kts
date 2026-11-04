@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation(project(":core:resources"))
-    implementation(project(":core:analytics-api"))
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
@@ -60,7 +59,5 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
     implementation(libs.coil.compose)
 }
