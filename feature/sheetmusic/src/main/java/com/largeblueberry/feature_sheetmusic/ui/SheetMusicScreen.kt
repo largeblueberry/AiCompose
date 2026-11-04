@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
+import com.largeblueberry.domain.model.SheetMusic
 import com.largeblueberry.feature_sheetmusic.ui.screen.RemoteScoreViewer
 import com.largeblueberry.feature_sheetmusic.ui.state.SheetMusicUiState
 

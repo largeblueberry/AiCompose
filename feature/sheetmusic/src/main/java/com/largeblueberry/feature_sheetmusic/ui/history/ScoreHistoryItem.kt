@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.largeblueberry.core_ui.customColors
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
+import com.largeblueberry.domain.model.SheetMusic
 import com.largeblueberry.resources.R
 
 @Composable

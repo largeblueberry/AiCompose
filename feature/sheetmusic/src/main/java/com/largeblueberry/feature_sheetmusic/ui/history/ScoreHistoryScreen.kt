@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.largeblueberry.core_ui.component.EareamTopAppBar
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
+import com.largeblueberry.domain.model.SheetMusic
 import com.largeblueberry.feature_sheetmusic.ui.screen.EmptySheetMusicScreen
 import com.largeblueberry.resources.R
 

@@ -1,6 +1,6 @@
 package com.largeblueberry.feature_sheetmusic.ui.state
 
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
+import com.largeblueberry.domain.model.SheetMusic
 
 
 sealed class SheetMusicUiState {

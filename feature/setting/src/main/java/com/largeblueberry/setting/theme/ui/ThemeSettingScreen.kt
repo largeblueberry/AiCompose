@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.core_ui.ThemeOption
+import com.largeblueberry.domain.model.ThemeOption
 import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.resources.R as ResourceR
 

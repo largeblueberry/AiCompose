@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import com.largeblueberry.domain.model.ThemeOption
 
 // Material 3의 표준 색상 시스템에 맞게 매핑한 라이트 모드 색상표
 private val AppLightColorScheme = lightColorScheme(

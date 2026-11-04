@@ -1,7 +1,7 @@
 package com.largeblueberry.library.ui
 
 
-import com.largeblueberry.library.domainLayer.model.LibraryModel
+import com.largeblueberry.domain.model.LibraryModel
 import com.largeblueberry.library.ui.model.UploadState
 
 data class LibraryUiState(

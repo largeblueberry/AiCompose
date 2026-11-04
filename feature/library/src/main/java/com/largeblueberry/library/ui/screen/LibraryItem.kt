@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.largeblueberry.core_ui.CustomColors
 import com.largeblueberry.core_ui.LocalCustomColors
-import com.largeblueberry.library.domainLayer.model.LibraryModel
+import com.largeblueberry.domain.model.LibraryModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

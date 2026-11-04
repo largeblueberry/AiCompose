@@ -5,10 +5,10 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.library.domainLayer.model.LibraryModel
-import com.largeblueberry.library.domainLayer.usecase.DeleteAudioRecordUseCase
-import com.largeblueberry.library.domainLayer.usecase.GetAudioRecordsUseCase
-import com.largeblueberry.library.domainLayer.usecase.RenameAudioRecordUseCase
+import com.largeblueberry.domain.model.LibraryModel
+import com.largeblueberry.domain.usecase.library.DeleteAudioRecordUseCase
+import com.largeblueberry.domain.usecase.library.GetAudioRecordsUseCase
+import com.largeblueberry.domain.usecase.library.RenameAudioRecordUseCase
 import com.largeblueberry.library.ui.LibraryUiState
 import com.largeblueberry.library.ui.model.UploadState
 import com.largeblueberry.library.ui.model.UploadStatus

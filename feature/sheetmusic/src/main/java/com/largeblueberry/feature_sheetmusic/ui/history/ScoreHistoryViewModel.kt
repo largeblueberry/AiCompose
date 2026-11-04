@@ -2,8 +2,8 @@ package com.largeblueberry.feature_sheetmusic.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
-import com.largeblueberry.feature_sheetmusic.domain.repository.SheetMusicRepository
+import com.largeblueberry.domain.model.SheetMusic
+import com.largeblueberry.domain.repository.SheetMusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
