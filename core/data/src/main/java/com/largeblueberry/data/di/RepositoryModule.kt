@@ -5,11 +5,13 @@ import com.largeblueberry.data.repository.LibraryRepositoryImpl
 import com.largeblueberry.data.repository.RecordRepositoryImpl
 import com.largeblueberry.data.repository.SheetMusicRepositoryImpl
 import com.largeblueberry.data.repository.ThemeRepositoryImpl
+import com.largeblueberry.data.repository.UserPreferencesRepositoryImpl
 import com.largeblueberry.domain.repository.LanguageRepository
 import com.largeblueberry.domain.repository.LibraryRepository
 import com.largeblueberry.domain.repository.RecordRepository
 import com.largeblueberry.domain.repository.SheetMusicRepository
 import com.largeblueberry.domain.repository.ThemeRepository
+import com.largeblueberry.domain.repository.UserPreferencesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -49,4 +51,10 @@ abstract class RepositoryModule {
     abstract fun bindSheetMusicRepository(
         impl: SheetMusicRepositoryImpl
     ): SheetMusicRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserPreferencesRepository(
+        impl: UserPreferencesRepositoryImpl
+    ): UserPreferencesRepository
 }
