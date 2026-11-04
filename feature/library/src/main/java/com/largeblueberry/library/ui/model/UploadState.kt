@@ -1,4 +1,4 @@
-package com.largeblueberry.network.model.request
+package com.largeblueberry.library.ui.model
 
 data class UploadState(
     val status: UploadStatus = UploadStatus.IDLE,
@@ -12,6 +12,3 @@ data class UploadState(
 enum class UploadStatus {
     IDLE, UPLOADING, SUCCESS, ERROR
 }
-/**
- * IDLE: 대기 상태
- */

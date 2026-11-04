@@ -10,28 +10,30 @@ import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.largeblueberry.network.repository.NetworkSheetMusicRepository as NetworkSheetMusicRepository
 import javax.inject.Inject
 
 class SheetMusicRepositoryImpl @Inject constructor(
-    private val networkRepository: NetworkSheetMusicRepository,
     private val scoreDao: ScoreDao
 ) : SheetMusicRepository {
 
     override suspend fun generateSheetMusic(requestBody: Any): Result<SheetMusic> {
-        return networkRepository.generateSheetMusic(requestBody)
-            .mapCatching { sheetMusicDto ->
-                val domainModel = sheetMusicDto.toDomainModel()
-
-                try {
-                    scoreDao.insertScore(domainModel.toEntity())
-                    Log.d("RepoImpl", "✅ 생성된 악보 DB 저장 성공: ${domainModel.id}")
-                } catch (e: Exception) {
-                    Log.e("RepoImpl", "🔴 생성된 악보 DB 저장 실패", e)
-                }
-
-                domainModel
-            }
+        return try {
+            val dummySheet = SheetMusic(
+                id = System.currentTimeMillis().toString(),
+                title = "새 악보",
+                composer = null,
+                scoreUrl = "",
+                midiUrl = "",
+                createdAt = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date()),
+                duration = null,
+                key = null,
+                tempo = null
+            )
+            scoreDao.insertScore(dummySheet.toEntity())
+            Result.success(dummySheet)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun saveSheetMusic(sheetMusic: SheetMusic): Result<Unit> {
