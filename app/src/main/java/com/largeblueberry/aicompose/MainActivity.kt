@@ -77,6 +77,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate called")
 
+        isOnboardingCompleted = sharedPreferences.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+
         if (!isOnboardingCompleted) {
             lifecycleScope.launch {
                 delay(2000)

@@ -31,7 +31,21 @@ class LanguageRepositoryImpl @Inject constructor(
 
     override val language: Flow<String> = dataStore.data
         .map { preferences ->
-            preferences[PreferencesKeys.LANGUAGE_CODE] ?: Locale.getDefault().language
+            val appLocales = AppCompatDelegate.getApplicationLocales()
+            if (!appLocales.isEmpty) {
+                appLocales[0]?.language ?: Locale.getDefault().language
+            } else {
+                val savedCode = preferences[PreferencesKeys.LANGUAGE_CODE]
+                if (!savedCode.isNullOrEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        val appLocale = LocaleListCompat.forLanguageTags(savedCode)
+                        AppCompatDelegate.setApplicationLocales(appLocale)
+                    }
+                    savedCode
+                } else {
+                    Locale.getDefault().language
+                }
+            }
         }
 
     override suspend fun setLanguage(languageCode: String) {
