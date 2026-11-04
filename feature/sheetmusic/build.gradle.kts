@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation(project(":core:resources"))
-    implementation(project(":core:network"))
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
@@ -58,6 +57,5 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
-    implementation(platform(libs.firebase.bom))
     implementation(libs.coil.compose)
 }

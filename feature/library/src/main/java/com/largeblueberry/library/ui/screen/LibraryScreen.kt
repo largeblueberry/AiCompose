@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.library.ui.viemodel.LibraryViewModel
-import com.largeblueberry.network.model.request.UploadStatus
+import com.largeblueberry.library.ui.model.UploadStatus
 import com.largeblueberry.resources.R as ResourcesR
 
 @OptIn(ExperimentalMaterial3Api::class)
