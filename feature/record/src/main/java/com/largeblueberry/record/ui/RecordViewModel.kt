@@ -1,13 +1,14 @@
 package com.largeblueberry.record.ui
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.domain.usecase.record.StartRecordingUseCase
 import com.largeblueberry.domain.usecase.record.StopRecordingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -24,14 +25,14 @@ class RecordViewModel @Inject constructor(
 
     private var currentRecordingFile: File? = null
 
-    private val _isRecording = MutableLiveData(false)
-    val isRecording: LiveData<Boolean> = _isRecording
+    private val _isRecording = MutableStateFlow(false)
+    val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
-    private val _recordingStateText = MutableLiveData(RecordingState.WAITING)
-    val recordingStateText: LiveData<RecordingState> = _recordingStateText
+    private val _recordingStateText = MutableStateFlow(RecordingState.WAITING)
+    val recordingStateText: StateFlow<RecordingState> = _recordingStateText.asStateFlow()
 
-    private val _lastSavedFileName = MutableLiveData<String>()
-    val lastSavedFileName: LiveData<String> = _lastSavedFileName
+    private val _lastSavedFileName = MutableStateFlow<String?>(null)
+    val lastSavedFileName: StateFlow<String?> = _lastSavedFileName.asStateFlow()
 
     fun startRecording() {
         Log.d(TAG, "startRecording called")
@@ -65,7 +66,7 @@ class RecordViewModel @Inject constructor(
                     _isRecording.value = false
                     _recordingStateText.value = RecordingState.COMPLETED
                     stopRecordingUseCase.saveRecordToDatabase(audioRecord)
-                    _lastSavedFileName.postValue(audioRecord.filename)
+                    _lastSavedFileName.value = audioRecord.filename
                 }
                 .onFailure { e ->
                     Log.e(TAG, "Stop recording failed", e)

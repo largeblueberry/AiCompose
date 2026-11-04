@@ -58,7 +58,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.activity.activity.compose)
-    implementation(libs.androidx.compose.runtime.livedata)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
