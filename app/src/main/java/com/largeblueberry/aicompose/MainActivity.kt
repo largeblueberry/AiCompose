@@ -15,12 +15,12 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.largeblueberry.aicompose.nav.AppNavigation
 import com.largeblueberry.aicompose.ui.main.MainViewModel
@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContent {
-            val themeOption by viewModel.themeOption.collectAsState()
-            val isOnboardingCompleted by viewModel.isOnboardingCompleted.collectAsState()
+            val themeOption by viewModel.themeOption.collectAsStateWithLifecycle()
+            val isOnboardingCompleted by viewModel.isOnboardingCompleted.collectAsStateWithLifecycle()
 
             AppTheme(themeOption = themeOption) {
                 Surface(
