@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.largeblueberry.core_ui.LightCustomColors
 import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.core_ui.customColors
-import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.ui.R
 import com.largeblueberry.setting.util.SettingItem
 import com.largeblueberry.setting.util.SettingSection
@@ -34,7 +33,12 @@ import com.largeblueberry.resources.R as ResourceR
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    navigationActions: SettingsNavigationActions = SettingsNavigationActions()
+    onNavigateBack: () -> Unit = {},
+    onNavigateToLanguage: () -> Unit = {},
+    onNavigateToTheme: () -> Unit = {},
+    onNavigateToBugReport: () -> Unit = {},
+    onNavigateToServiceTerm: () -> Unit = {},
+    onNavigateToAbout: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -43,7 +47,7 @@ fun SettingsScreen(
     ) {
         EareamTopAppBar(
             title = stringResource(ResourceR.string.settingTitle),
-            onNavigateBack = navigationActions.onNavigateBack
+            onNavigateBack = onNavigateBack
         )
 
         LazyColumn(
@@ -60,12 +64,18 @@ fun SettingsScreen(
 
             // 앱 설정 섹션
             item {
-                AppSettingsSection(navigationActions = navigationActions)
+                AppSettingsSection(
+                    onNavigateToLanguage = onNavigateToLanguage,
+                    onNavigateToTheme = onNavigateToTheme
+                )
             }
 
             // 앱 정보 섹션
             item {
-                AboutSection(navigationActions = navigationActions)
+                AboutSection(
+                    onNavigateToServiceTerm = onNavigateToServiceTerm,
+                    onNavigateToAbout = onNavigateToAbout
+                )
             }
         }
     }
@@ -135,42 +145,44 @@ private fun AppInfoCard() {
 
 @Composable
 fun AppSettingsSection(
-    navigationActions: SettingsNavigationActions = SettingsNavigationActions()
+    onNavigateToLanguage: () -> Unit = {},
+    onNavigateToTheme: () -> Unit = {}
 ) {
     SettingSection(title = stringResource(ResourceR.string.appSetting)) {
         SettingItem(
             icon = Icons.Default.Language,
             title = stringResource(ResourceR.string.languageMainText),
             subtitle = stringResource(ResourceR.string.languageSubText),
-            onClick = navigationActions.onNavigateToLanguage
+            onClick = onNavigateToLanguage
         )
 
         SettingItem(
             icon = Icons.Default.Palette,
             title = stringResource(ResourceR.string.themeMainText),
             subtitle = stringResource(ResourceR.string.themeSubText),
-            onClick = navigationActions.onNavigateToTheme
+            onClick = onNavigateToTheme
         )
     }
 }
 
 @Composable
 private fun AboutSection(
-    navigationActions: SettingsNavigationActions = SettingsNavigationActions()
+    onNavigateToServiceTerm: () -> Unit = {},
+    onNavigateToAbout: () -> Unit = {}
 ) {
     SettingSection(title = "정보") {
         SettingItem(
             icon = Icons.Default.Description,
             title = stringResource(ResourceR.string.serviceTermMainText),
             subtitle = stringResource(ResourceR.string.serviceTermSubText),
-            onClick = navigationActions.onNavigateToServiceTerm
+            onClick = onNavigateToServiceTerm
         )
 
         SettingItem(
             icon = Icons.AutoMirrored.Filled.ContactSupport,
             title = stringResource(ResourceR.string.aboutEareamMainText),
             subtitle = stringResource(ResourceR.string.aboutEareamSubText),
-            onClick = navigationActions.onNavigateToAbout
+            onClick = onNavigateToAbout
         )
     }
 }

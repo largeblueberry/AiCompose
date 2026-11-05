@@ -19,13 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.largeblueberry.domain.model.ThemeOption
-import com.largeblueberry.navigation.SettingsNavigationActions
 import com.largeblueberry.resources.R as ResourceR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThemeSettingsScreen(
-    navigationActions : SettingsNavigationActions = SettingsNavigationActions(),
+    onNavigateBack: () -> Unit = {},
     viewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -35,7 +34,7 @@ fun ThemeSettingsScreen(
             TopAppBar(
                 title = { Text(stringResource(id = ResourceR.string.theme_settings_title)) },
                 navigationIcon = {
-                    IconButton(onClick = navigationActions.onNavigateBack) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = ResourceR.string.back_button_description)

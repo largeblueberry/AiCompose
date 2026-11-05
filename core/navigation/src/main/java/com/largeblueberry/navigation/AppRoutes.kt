@@ -1,6 +1,5 @@
 package com.largeblueberry.navigation
 
-import android.net.Uri
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -14,10 +13,14 @@ sealed class AppRoutes(val route: String) {
     object BugReportScreen : AppRoutes("bug_report_route")
     object ServiceTermScreen : AppRoutes("service_term_route")
     object AboutUsScreen : AppRoutes("about_route")
-    object TermDetailScreen : AppRoutes("term_detail_route/{termId}")
+    object TermDetailScreen : AppRoutes("term_detail_route/{termId}") {
+        const val TERM_ID_ARG = "termId"
+
+        fun createRoute(termId: String): String = "term_detail_route/$termId"
+    }
     object SheetMusicHistoryScreen : AppRoutes("sheet_music_history_route")
 
-    // 🔥 수정: SheetMusicScreen 라우트 정의를 명확하게 변경
+    // SheetMusicScreen 라우트 정의를 명확하게 변경
     object SheetMusicScreen : AppRoutes("sheet_music_route") {
         // 1. 경로 템플릿: NavHost에서 이 경로를 인식합니다.
         const val routeWithArgs = "sheet_music_route/{scoreUrl}/{midiUrl}"

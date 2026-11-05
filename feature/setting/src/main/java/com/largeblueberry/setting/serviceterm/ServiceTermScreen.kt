@@ -11,21 +11,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.largeblueberry.navigation.SettingsNavigationActions
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceTermScreen(
-    // 실제 환경에서는 onNavigateToDetail 함수가 TermType을 인자로 받아 상세 화면으로 이동시킵니다.
-    navigationActions : SettingsNavigationActions = SettingsNavigationActions(),
-    onNavigateToDetail: (TermType) -> Unit // 상세 화면으로 이동하는 콜백 함수
+    onNavigateBack: () -> Unit = {},
+    onNavigateToDetail: (TermType) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("법적 고지 및 약관") },
                 navigationIcon = {
-                    IconButton(onClick = navigationActions.onNavigateBack) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "뒤로 가기")
                     }
                 }
