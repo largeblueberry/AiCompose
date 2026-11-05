@@ -2,11 +2,9 @@ package com.largeblueberry.library.util
 
 import android.content.Context
 import android.media.MediaPlayer
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 
-class AudioPlayer(private val context: Context) {
+class AudioPlayer(context: Context) {
     private var mediaPlayer: MediaPlayer? = null
     private var onCompletionListener: (() -> Unit)? = null
 
@@ -14,13 +12,12 @@ class AudioPlayer(private val context: Context) {
         onCompletionListener = listener
     }
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun play(filePath: String) {
         try {
             mediaPlayer?.stop()
             mediaPlayer?.release()
             mediaPlayer = null
-            mediaPlayer = MediaPlayer(context).apply {
+            mediaPlayer = MediaPlayer().apply {
                 setDataSource(filePath)
                 setOnErrorListener { mp, what, extra ->
                     Log.e("AudioPlayer", "MediaPlayer error: what=$what, extra=$extra")

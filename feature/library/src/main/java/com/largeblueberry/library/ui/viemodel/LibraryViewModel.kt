@@ -1,8 +1,6 @@
 package com.largeblueberry.library.ui.viemodel
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.largeblueberry.domain.model.LibraryModel
@@ -139,7 +137,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun playAudio(record: LibraryModel) {
         Log.d(TAG, "Playing audio for record: ${record.id}")
         if (audioPlayer.isPlaying()) {
