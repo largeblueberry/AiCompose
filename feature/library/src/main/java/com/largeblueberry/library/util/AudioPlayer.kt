@@ -35,7 +35,6 @@ class AudioPlayer(context: Context) {
         } catch (e: Exception) {
             Log.e("AudioPlayer", "Error playing audio file: ${e.message}")
             onCompletionListener?.invoke()
-            onCompletionListener?.invoke()
             mediaPlayer?.release()
             mediaPlayer = null
         }
