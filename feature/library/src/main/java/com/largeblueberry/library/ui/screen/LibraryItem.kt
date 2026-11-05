@@ -134,8 +134,13 @@ fun AudioRecordItem(
     }
 }
 
+private val dateFormatThreadLocal = object : ThreadLocal<SimpleDateFormat>() {
+    override fun initialValue(): SimpleDateFormat {
+        return SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+    }
+}
+
 fun formatDate(millis: Long): String {
-    val date = Date(millis)
-    val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
-    return format.format(date)
+    val formatter = dateFormatThreadLocal.get() ?: SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+    return formatter.format(Date(millis))
 }

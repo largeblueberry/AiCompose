@@ -60,14 +60,13 @@ class SheetMusicViewModel @Inject constructor(
                 sheetMusicRepository.saveSheetMusic(sheetMusic)
                     .onSuccess {
                         Log.d("SheetMusicVM", "✅ 업로드된 파일 정보 DB 저장 완료.")
+                        _uiState.value = SheetMusicUiState.Success(sheetMusic)
+                        Log.d("SheetMusicVM", "✅ 파일 로드 및 처리 완료.")
                     }
-                    .onFailure {
-                        Log.e("SheetMusicVM", "🔴 업로드된 파일 정보 DB 저장 실패.", it)
+                    .onFailure { error ->
+                        Log.e("SheetMusicVM", "🔴 업로드된 파일 정보 DB 저장 실패.", error)
+                        _uiState.value = SheetMusicUiState.Error("악보 저장에 실패했습니다: ${error.message}")
                     }
-
-                // 3. UI 상태 업데이트
-                _uiState.value = SheetMusicUiState.Success(sheetMusic)
-                Log.d("SheetMusicVM", "✅ 파일 로드 및 처리 완료.")
 
             } catch (e: Exception) {
                 Log.e("SheetMusicVM", "🔴 파일 로드 실패: ${e.message}", e)

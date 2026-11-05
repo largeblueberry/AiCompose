@@ -5,13 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -50,12 +52,25 @@ class MainActivity : AppCompatActivity() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             val isRecordAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
-
-            if (isRecordAudioGranted) {
-                Log.d(TAG, "RECORD_AUDIO permission granted.")
+            val isAudioReadGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissions[Manifest.permission.READ_MEDIA_AUDIO] ?: true
             } else {
-                Log.d(TAG, "RECORD_AUDIO permission denied.")
-                if (!shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: true
+            }
+
+            if (isRecordAudioGranted && isAudioReadGranted) {
+                Log.d(TAG, "Required permissions granted.")
+            } else {
+                Log.d(TAG, "Permissions denied.")
+                val rationalePermission = if (!isRecordAudioGranted) {
+                    Manifest.permission.RECORD_AUDIO
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Manifest.permission.READ_MEDIA_AUDIO
+                } else {
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
+
+                if (!shouldShowRequestPermissionRationale(rationalePermission)) {
                     Log.d(TAG, "Permission might be permanently denied. Showing settings dialog.")
                     showSettingsDialog = true
                 }
@@ -73,6 +88,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate called")
 
@@ -131,6 +147,16 @@ class MainActivity : AppCompatActivity() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(Manifest.permission.READ_MEDIA_AUDIO)
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
         }
 
         if (permissionsToRequest.isNotEmpty()) {
