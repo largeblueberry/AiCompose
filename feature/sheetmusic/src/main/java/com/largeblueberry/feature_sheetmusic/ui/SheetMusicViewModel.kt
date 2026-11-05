@@ -3,9 +3,9 @@ package com.largeblueberry.feature_sheetmusic.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.feature_sheetmusic.domain.GenerateSheetMusicUseCase
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
-import com.largeblueberry.feature_sheetmusic.domain.repository.SheetMusicRepository // ✅ Repository 직접 주입
+import com.largeblueberry.domain.model.SheetMusic
+import com.largeblueberry.domain.repository.SheetMusicRepository
+import com.largeblueberry.domain.usecase.sheetmusic.GetSheetMusicDetailUseCase
 import com.largeblueberry.feature_sheetmusic.ui.state.SheetMusicUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SheetMusicViewModel @Inject constructor(
-    private val generateSheetMusicUseCase: GenerateSheetMusicUseCase,
-    private val sheetMusicRepository: SheetMusicRepository // ✅ Repository를 직접 주입받습니다.
+    private val generateSheetMusicUseCase: GetSheetMusicDetailUseCase,
+    private val sheetMusicRepository: SheetMusicRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SheetMusicUiState>(SheetMusicUiState.Idle)

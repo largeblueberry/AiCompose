@@ -1,6 +1,7 @@
 package com.largeblueberry.core_ui
 
 import androidx.compose.runtime.Composable
+import com.largeblueberry.domain.model.ThemeOption
 
 /**
  * ThemeOption을 화면에 표시할 이름으로 변환하는 기능에 대한 "명세서(인터페이스)".

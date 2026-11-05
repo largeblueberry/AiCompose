@@ -5,15 +5,14 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.library.domainLayer.model.LibraryModel
-import com.largeblueberry.library.domainLayer.usecase.DeleteAudioRecordUseCase
-import com.largeblueberry.library.domainLayer.usecase.GetAudioRecordsUseCase
-import com.largeblueberry.library.domainLayer.usecase.RenameAudioRecordUseCase
-import com.largeblueberry.library.domainLayer.usecase.UploadAudioRecordUseCase
+import com.largeblueberry.domain.model.LibraryModel
+import com.largeblueberry.domain.usecase.library.DeleteAudioRecordUseCase
+import com.largeblueberry.domain.usecase.library.GetAudioRecordsUseCase
+import com.largeblueberry.domain.usecase.library.RenameAudioRecordUseCase
 import com.largeblueberry.library.ui.LibraryUiState
+import com.largeblueberry.library.ui.model.UploadState
+import com.largeblueberry.library.ui.model.UploadStatus
 import com.largeblueberry.library.util.AudioPlayer
-import com.largeblueberry.network.model.request.UploadState
-import com.largeblueberry.network.model.request.UploadStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +26,6 @@ class LibraryViewModel @Inject constructor(
     private val getAudioRecordsUseCase: GetAudioRecordsUseCase,
     private val deleteAudioRecordUseCase: DeleteAudioRecordUseCase,
     private val renameAudioRecordUseCase: RenameAudioRecordUseCase,
-    private val uploadAudioRecordUseCase: UploadAudioRecordUseCase,
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
@@ -92,54 +90,20 @@ class LibraryViewModel @Inject constructor(
                 )
             }
             try {
-                val result = uploadAudioRecordUseCase(filePath)
-
-                result.fold(
-                    onSuccess = { uploadResponse ->
-                        val scoreUrl = uploadResponse.scoreUrl
-                        val midiUrl = uploadResponse.midiUrl
-
-                        if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
-                            Log.i(TAG, "Upload successful for record: $recordId. Score URL: $scoreUrl, MIDI URL: $midiUrl")
-
-                            _uiState.update {
-                                it.copy(
-                                    uploadState = UploadState(
-                                        status = UploadStatus.SUCCESS,
-                                        scoreUrl = scoreUrl,
-                                        midiUrl = midiUrl,
-                                        recordId = recordId
-                                    )
-                                )
-                            }
-                        } else {
-                            Log.w(TAG, "Upload for record $recordId succeeded but returned an empty or invalid URL.")
-                            _uiState.update {
-                                it.copy(
-                                    uploadState = UploadState(
-                                        status = UploadStatus.ERROR,
-                                        message = "업로드 성공했으나, 유효한 URL을 받지 못했습니다.",
-                                        recordId = recordId
-                                    )
-                                )
-                            }
-                        }
-                    },
-                    onFailure = { exception ->
-                        Log.e(TAG, "Upload failed for record: $recordId", exception)
-                        _uiState.update {
-                            it.copy(
-                                uploadState = UploadState(
-                                    status = UploadStatus.ERROR,
-                                    message = exception.message ?: "알 수 없는 에러 발생",
-                                    recordId = recordId
-                                )
-                            )
-                        }
-                    }
-                )
+                // 온디바이스 AI 채보 변환 준비 중 (스텁)
+                Log.i(TAG, "On-device AI transcription processing for record: $recordId, file: $filePath")
+                _uiState.update {
+                    it.copy(
+                        uploadState = UploadState(
+                            status = UploadStatus.SUCCESS,
+                            scoreUrl = "",
+                            midiUrl = "",
+                            recordId = recordId
+                        )
+                    )
+                }
             } catch (e: Exception) {
-                Log.e(TAG, "An unexpected error occurred during upload for record: $recordId", e)
+                Log.e(TAG, "An unexpected error occurred during processing for record: $recordId", e)
                 _uiState.update {
                     it.copy(
                         uploadState = UploadState(

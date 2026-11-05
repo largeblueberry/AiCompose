@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.largeblueberry.resources.R
 import com.largeblueberry.core_ui.ThemeDisplayNameProvider
-import com.largeblueberry.core_ui.ThemeOption
+import com.largeblueberry.domain.model.ThemeOption
 import javax.inject.Inject
 
 /**

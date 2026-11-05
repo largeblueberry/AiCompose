@@ -1,9 +1,11 @@
 package com.largeblueberry.setting.theme.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.core_ui.ThemeOption
-import com.largeblueberry.setting.theme.domain.ThemeRepository
+import com.largeblueberry.domain.model.ThemeOption
+import com.largeblueberry.domain.usecase.theme.GetThemeOptionUseCase
+import com.largeblueberry.domain.usecase.theme.SetThemeOptionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +15,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ThemeViewModel @Inject constructor(
-    private val themeRepository: ThemeRepository
+    private val getThemeOptionUseCase: GetThemeOptionUseCase,
+    private val setThemeOptionUseCase: SetThemeOptionUseCase
 ) : ViewModel() {
+
+    private companion object {
+        private const val TAG = "ThemeViewModel"
+    }
 
     data class UiState(
         val selectedTheme: ThemeOption = ThemeOption.SYSTEM
@@ -25,7 +32,7 @@ class ThemeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            themeRepository.getThemeOption().collect { theme ->
+            getThemeOptionUseCase().collect { theme ->
                 _uiState.value = _uiState.value.copy(selectedTheme = theme)
             }
         }
@@ -33,7 +40,11 @@ class ThemeViewModel @Inject constructor(
 
     fun onThemeSelected(option: ThemeOption) {
         viewModelScope.launch {
-            themeRepository.setThemeOption(option)
+            try {
+                setThemeOptionUseCase(option)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save theme option to DataStore", e)
+            }
         }
     }
 }

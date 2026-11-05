@@ -3,8 +3,8 @@ package com.largeblueberry.setting.language
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.largeblueberry.setting.language.domain.GetLanguageCodeUseCase
-import com.largeblueberry.setting.language.domain.SetLanguageCodeUseCase
+import com.largeblueberry.domain.usecase.setting.GetLanguageCodeUseCase
+import com.largeblueberry.domain.usecase.setting.SetLanguageCodeUseCase
 import com.largeblueberry.setting.language.ui.Language
 import com.largeblueberry.setting.language.ui.LanguageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

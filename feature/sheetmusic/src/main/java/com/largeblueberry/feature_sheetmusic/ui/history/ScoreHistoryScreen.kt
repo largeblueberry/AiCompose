@@ -6,14 +6,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.largeblueberry.core_ui.component.EareamTopAppBar
-import com.largeblueberry.feature_sheetmusic.domain.SheetMusic
+import com.largeblueberry.domain.model.SheetMusic
 import com.largeblueberry.feature_sheetmusic.ui.screen.EmptySheetMusicScreen
 import com.largeblueberry.resources.R
 
@@ -26,7 +26,7 @@ fun SheetMusicHistoryScreen(
     onNavigateToRecord: () -> Unit
 ) {
     // ✅ ViewModel로부터 악보 목록 상태를 구독
-    val scores by viewModel.scores.collectAsState()
+    val scores by viewModel.scores.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {

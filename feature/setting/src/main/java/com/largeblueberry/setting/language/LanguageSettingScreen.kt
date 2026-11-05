@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.largeblueberry.navigation.SettingsNavigationActions
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.largeblueberry.setting.language.ui.Language
 import com.largeblueberry.resources.R as ResourceR
 
@@ -25,17 +24,17 @@ import com.largeblueberry.resources.R as ResourceR
 @Composable
 fun LanguageSettingScreen(
     viewModel: LanguageViewModel = hiltViewModel(),
-    navigationActions : SettingsNavigationActions = SettingsNavigationActions()
+    onNavigateBack: () -> Unit = {}
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(id = ResourceR.string.language_setting_title)) },
                 navigationIcon = {
-                    IconButton(onClick = navigationActions.onNavigateBack) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Navigate up"
