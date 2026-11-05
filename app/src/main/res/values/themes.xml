@@ -7,7 +7,10 @@
 
     <style name="Theme.AiCompose" parent="Base.Theme.AiCompose" />
 
-    <style name="Theme.MyApp.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@drawable/eareamsplash</item>
+    <!-- Android 12+ Splash Screen Theme -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.AiCompose</item>
     </style>
 </resources>
