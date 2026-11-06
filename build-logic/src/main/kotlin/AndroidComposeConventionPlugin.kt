@@ -37,7 +37,7 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
                 add("implementation", catalog.findLibrary("androidx-compose-material3").get())
                 add("implementation", catalog.findLibrary("androidx-compose-material-icons-extended").get())
                 add("debugImplementation", catalog.findLibrary("androidx-compose-ui-tooling").get())
-                add("debugImplementation", catalog.findLibrary("androidx-compose-ui-tooling-preview").get())
+                add("implementation", catalog.findLibrary("androidx-compose-ui-tooling-preview").get())
             }
         }
     }
