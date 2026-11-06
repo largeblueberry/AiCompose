@@ -1,17 +1,11 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
+    id("aicompose.android.application")
+    id("aicompose.android.compose")
+    id("aicompose.hilt")
 }
 
 android {
     namespace = "com.largeblueberry.aicompose"
-    compileSdk = 35
 
     androidResources {
         generateLocaleConfig = false
@@ -20,25 +14,12 @@ android {
 
     defaultConfig {
         applicationId = "com.largeblueberry.aicompose"
-        minSdk = 26
-        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "BASE_URL", "\"\"")
     }
 
     buildTypes {
         debug {
-            val localProperties = Properties()
-            val localPropertiesFile = rootProject.file("local.properties")
-            if (localPropertiesFile.exists()) {
-                localProperties.load(FileInputStream(localPropertiesFile))
-            }
-
-            val baseUrl = localProperties.getProperty("BASE_URL") ?: ""
-            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
         release {
             isMinifyEnabled = false
@@ -46,63 +27,26 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            val localProperties = Properties()
-            val localPropertiesFile = rootProject.file("local.properties")
-            if (localPropertiesFile.exists()) {
-                localProperties.load(FileInputStream(localPropertiesFile))
-            }
-
-            val baseUrl = localProperties.getProperty("BASE_URL") ?: ""
-            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-
-    buildFeatures {
-        compose = true
-        buildConfig = true
     }
 }
 
 dependencies {
-    implementation(project(":feature:sheetmusic"))
-    implementation(project(":feature:setting"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:resources"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:navigation"))
-    implementation(project(":feature:library"))
-    implementation(project(":feature:record"))
-    implementation(libs.androidx.core.ktx)
+    // 1. Feature Modules
+    implementation(projects.feature.sheetmusic)
+    implementation(projects.feature.setting)
+    implementation(projects.feature.library)
+    implementation(projects.feature.record)
+
+    // 2. Core Modules
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
+    implementation(projects.core.navigation)
+    implementation(projects.core.ui)
+    implementation(projects.core.resources)
+
+    // 3. App-Specific Dependencies
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

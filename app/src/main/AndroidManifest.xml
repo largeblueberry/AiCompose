@@ -17,8 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AiCompose"
-        tools:replace="android:icon,android:roundIcon"
-        android:localeConfig="@xml/locales_config">
+        tools:replace="android:icon,android:roundIcon,android:allowBackup,android:supportsRtl,android:theme,android:dataExtractionRules,android:fullBackupContent">
 
         <activity
             android:name=".MainActivity"
