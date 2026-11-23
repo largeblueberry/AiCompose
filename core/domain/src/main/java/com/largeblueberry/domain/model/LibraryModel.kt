@@ -6,5 +6,8 @@ data class LibraryModel(
     val filePath: String,
     val fileSize: Long,
     val duration: String,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val bpm: Int,
+    val beatsPerBar: Int = 4,
+    val sampleRate: Int,
 )

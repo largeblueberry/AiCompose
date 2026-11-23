@@ -32,7 +32,7 @@
     <string name="recordPermission">Recording permission is required.</string>
     <string name="recordSavedMSG">Recording saved: %1$s</string>
 
-    <string name="recordWaiting">Recording ...</string>
+    <string name="recordWaiting">Choose a tempo and tap the mic</string>
     <string name="recording">Recording</string>
     <string name="recordComplete">Recording stopped</string>
     <string name="recordFailedFilePath">Recording path not found.</string>
@@ -172,5 +172,18 @@
 
     <!-- Loading Content -->
     <string name="loading_login">Logging in...</string>
+
+    <!-- 녹음: BPM·카운트인·메트로놈 -->
+    <string name="recordCountIn">Get ready… %1$d</string>
+    <string name="recordBpmLabel">Tempo</string>
+    <string name="recordBpmValue">%1$d BPM</string>
+    <string name="recordBpmSlower">Slower</string>
+    <string name="recordBpmFaster">Faster</string>
+    <string name="recordClickHintHeadphones">Headphones connected: you\'ll hear the click while recording.</string>
+    <string name="recordClickHintSpeaker">Follow the flashing beat. Connect headphones to hear the click while recording.</string>
+    <string name="recordTooShort">Nothing was recorded. Stop after the count-in ends.</string>
+    <string name="recordMaxLength">Recordings are limited to 2 minutes, so recording stopped.</string>
+    <string name="recordCancelled">Recording was discarded because you left the screen.</string>
+    <string name="recordInterrupted">Recording stopped because another app took over audio.</string>
 
 </resources>

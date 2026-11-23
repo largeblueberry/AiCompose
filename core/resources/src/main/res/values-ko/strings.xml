@@ -31,7 +31,7 @@
     <string name="recordPermission">녹음 권한이 필요합니다.</string>
     <string name="recordSavedMSG">녹음 파일이 저장되었습니다: %1$s</string>
 
-    <string name="recordWaiting">녹음 중 ...</string>
+    <string name="recordWaiting">템포를 고르고 마이크를 눌러 주세요</string>
     <string name="recording">녹음 중</string>
     <string name="recordComplete">녹음 중지</string>
     <string name="recordFailedFilePath">녹음 경로를 찾지 못 했습니다.</string>
@@ -172,5 +172,18 @@
 
     <!-- 로딩 컨텐츠 -->
     <string name="loading_login">로그인 중...</string>
+
+    <!-- 녹음: BPM·카운트인·메트로놈 -->
+    <string name="recordCountIn">준비… %1$d</string>
+    <string name="recordBpmLabel">템포</string>
+    <string name="recordBpmValue">%1$d BPM</string>
+    <string name="recordBpmSlower">느리게</string>
+    <string name="recordBpmFaster">빠르게</string>
+    <string name="recordClickHintHeadphones">이어폰이 연결됐어요. 녹음 중에도 박자 소리가 나요.</string>
+    <string name="recordClickHintSpeaker">화면의 박자 표시를 따라 불러 주세요. 이어폰을 연결하면 녹음 중에도 박자 소리가 들려요.</string>
+    <string name="recordTooShort">녹음된 소리가 없어요. 카운트인이 끝난 뒤에 멈춰 주세요.</string>
+    <string name="recordMaxLength">녹음은 최대 2분이라 여기서 멈췄어요.</string>
+    <string name="recordCancelled">화면을 벗어나서 녹음을 취소했어요.</string>
+    <string name="recordInterrupted">다른 앱이 소리를 사용해서 녹음을 멈췄어요.</string>
 
 </resources>
