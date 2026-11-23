@@ -195,6 +195,11 @@
     <string name="sheetMusicNotFound">This sheet music no longer exists.</string>
     <string name="sheetMusicLoadError">Couldn\'t open the sheet music.</string>
     <string name="sheetMusicRenderError">Couldn\'t draw the sheet music.</string>
+    <string name="sheetMusicPlay">Play</string>
+    <string name="sheetMusicStop">Stop</string>
+    <string name="sheetMusicShareMidi">Share MIDI</string>
+    <string name="sheetMusicShareXml">Share MusicXML</string>
+    <string name="sheetMusicPlayError">Couldn\'t play the MIDI file.</string>
     <string name="retry">Try again</string>
 
 </resources>

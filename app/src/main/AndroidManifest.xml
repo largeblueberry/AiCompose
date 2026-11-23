@@ -30,6 +30,17 @@
             </intent-filter>
         </activity>
 
+        <!-- 악보 공유(MIDI·MusicXML). authority는 feature:sheetmusic의 ScoreSharing과 같아야 한다. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
