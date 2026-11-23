@@ -12,7 +12,7 @@ import com.largeblueberry.data.score.ScoreEntity
         AudioRecordEntity::class,
         ScoreEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class AudioDatabase : RoomDatabase() {
@@ -24,4 +24,6 @@ abstract class AudioDatabase : RoomDatabase() {
  * 마이그레이션 하지 않은 이유는 이전 데이터가 필요 없기 때문.
  * v7: 녹음을 3GP에서 WAV로 전환. 녹음에 bpm·박자·샘플레이트 컬럼 추가.
  *     기존 3GP 녹음 행은 버린다(docs/map/notes.md "녹음").
+ * v8: 악보를 서버 URL 대신 기기 안 파일 경로로 저장. 녹음과 외래 키(삭제 시 SET_NULL).
+ *     기존 서버 악보 행은 버린다.
  */

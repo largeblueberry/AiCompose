@@ -189,4 +189,11 @@
     <!-- 라이브러리 -->
     <string name="libraryItemMeta">%1$s · %2$d BPM</string>
 
+    <!-- 악보 -->
+    <string name="sheetMusicInfo">%1$d BPM · %2$s · %3$d notes</string>
+    <string name="sheetMusicCreatedAt">Created %1$s</string>
+    <string name="sheetMusicNotFound">This sheet music no longer exists.</string>
+    <string name="sheetMusicLoadError">Couldn\'t open the sheet music.</string>
+    <string name="retry">Try again</string>
+
 </resources>

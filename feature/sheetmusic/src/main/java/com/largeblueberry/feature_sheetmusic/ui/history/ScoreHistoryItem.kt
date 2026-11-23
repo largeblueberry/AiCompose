@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.domain.model.SheetMusic
+import com.largeblueberry.feature_sheetmusic.ui.util.formatCreatedAt
 import com.largeblueberry.resources.R
 
 @Composable
@@ -56,7 +57,12 @@ fun ScoreHistoryItem(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "저장일: ${score.createdAt}",
+                    text = stringResource(R.string.sheetMusicInfo, score.bpm, score.keyName, score.noteCount),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.customColors.cardViewSubText
+                )
+                Text(
+                    text = stringResource(R.string.sheetMusicCreatedAt, formatCreatedAt(score.createdAt)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.customColors.cardViewSubText
                 )
@@ -72,22 +78,21 @@ fun ScoreHistoryItem(
     }
 }
 
-// SheetMusic 데이터 클래스 변경사항을 반영한 Preview 코드
 @Preview(showBackground = true)
 @Composable
 fun ScoreHistoryItemPreview() {
-    // YourAppTheme 같은 테마로 감싸주면 더 정확한 미리보기가 가능합니다.
     ScoreHistoryItem(
         score = SheetMusic(
-            id = "preview_id_1",
-            title = "미리보기 제목",
-            composer = "작곡가",
-            scoreUrl = "https://example.com/score.pdf",
-            midiUrl = "https://example.com/score.mid",
-            createdAt = "2025-11-20",
-            duration = 180,
-            key = "C Major",
-            tempo = 120
+            id = "score_1",
+            title = "20261123_120000",
+            recordId = 1,
+            createdAt = 1_763_870_400_000,
+            bpm = 100,
+            beatsPerBar = 4,
+            keyName = "C major",
+            noteCount = 19,
+            musicXmlPath = "",
+            midiPath = "",
         ),
         onClick = {},
         onDelete = {}

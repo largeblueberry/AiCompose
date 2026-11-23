@@ -189,4 +189,11 @@
     <!-- 라이브러리 -->
     <string name="libraryItemMeta">%1$s · %2$d BPM</string>
 
+    <!-- 악보 -->
+    <string name="sheetMusicInfo">%1$d BPM · %2$s · 음표 %3$d개</string>
+    <string name="sheetMusicCreatedAt">만든 날짜 %1$s</string>
+    <string name="sheetMusicNotFound">악보를 찾을 수 없어요.</string>
+    <string name="sheetMusicLoadError">악보를 열지 못했어요.</string>
+    <string name="retry">다시 시도</string>
+
 </resources>
