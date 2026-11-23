@@ -67,7 +67,7 @@ fun AudioRecordItem(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = record.duration,
+                    text = stringResource(ResourceR.string.libraryItemMeta, record.duration, record.bpm),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Theme.customColors.cardViewSubText
                 )

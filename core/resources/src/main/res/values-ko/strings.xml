@@ -186,4 +186,7 @@
     <string name="recordCancelled">화면을 벗어나서 녹음을 취소했어요.</string>
     <string name="recordInterrupted">다른 앱이 소리를 사용해서 녹음을 멈췄어요.</string>
 
+    <!-- 라이브러리 -->
+    <string name="libraryItemMeta">%1$s · %2$d BPM</string>
+
 </resources>
