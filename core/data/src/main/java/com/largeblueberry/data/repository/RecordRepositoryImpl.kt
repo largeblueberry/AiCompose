@@ -21,9 +21,15 @@ import com.largeblueberry.domain.repository.RecordingInterruptedException
 import com.largeblueberry.domain.repository.RecordingTooShortException
 import com.largeblueberry.music.audio.Wav
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.RandomAccessFile
 import java.text.SimpleDateFormat
@@ -42,6 +48,7 @@ import kotlin.math.roundToLong
  * - 저장 위치는 filesDir/recordings. 캐시 디렉터리는 OS가 지울 수 있어 쓰지 않는다.
  * - 녹음하는 동안 오디오 포커스를 잡아 다른 앱의 재생을 멈춘다(그 소리가 마이크로 들어가지 않게).
  *   포커스를 잃거나(전화 등) 캡처가 실패하면 바로 [RecorderState.Failed]로 알린다. 정리는 stop이 한다.
+ * - main-safe: 스레드 정리·헤더 쓰기처럼 막히는 작업은 IO 스레드에서 한다([RecordRepository]).
  */
 class RecordRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -54,6 +61,10 @@ class RecordRepositoryImpl @Inject constructor(
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val lock = Any()
     private var session: Session? = null
+
+    /** cancelRecording의 뒷정리. 정리가 끝나기 전에 새 녹음을 열면 마이크를 두 개 잡게 되므로 막는다. */
+    private val cleanupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    @Volatile private var pendingCleanup: Job? = null
 
     private class Session(
         val config: RecordingConfig,
@@ -73,6 +84,7 @@ class RecordRepositoryImpl @Inject constructor(
 
     override fun startRecording(config: RecordingConfig): Result<Unit> = synchronized(lock) {
         if (session != null) return Result.failure(IllegalStateException("already recording"))
+        if (pendingCleanup?.isActive == true) return Result.failure(IllegalStateException("previous recording is still closing"))
         var record: AudioRecord? = null
         var raf: RandomAccessFile? = null
         var file: File? = null
@@ -188,9 +200,14 @@ class RecordRepositoryImpl @Inject constructor(
         _state.value = RecorderState.Failed
     }
 
-    override fun stopRecording(): Result<RecordModel> {
+    override suspend fun stopRecording(): Result<RecordModel> {
+        // 세션은 바로 떼어 낸다(두 번 눌러도 한 번만 멈춘다). 막히는 정리는 IO 스레드에서.
         val s = synchronized(lock) { session.also { session = null } }
             ?: return Result.failure(IllegalStateException("not recording"))
+        return withContext(Dispatchers.IO) { finishAndDescribe(s) }
+    }
+
+    private fun finishAndDescribe(s: Session): Result<RecordModel> {
         finish(s)
         s.error?.let {
             s.file.delete()
@@ -217,8 +234,11 @@ class RecordRepositoryImpl @Inject constructor(
 
     override fun cancelRecording() {
         val s = synchronized(lock) { session.also { session = null } } ?: return
-        finish(s)
-        s.file.delete()
+        s.running = false // 캡처를 바로 멈추고, 스레드 종료·파일 삭제는 뒤에서
+        pendingCleanup = cleanupScope.launch {
+            finish(s)
+            s.file.delete()
+        }
     }
 
     /** 스레드를 멈추고 WAV 헤더의 크기를 채운다. */
