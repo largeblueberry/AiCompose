@@ -17,9 +17,7 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    implementation(libs.tensorflow.lite)
-    implementation(libs.tensorflow.lite.gpu)
-    implementation(libs.tensorflow.lite.support) {
-        exclude(group = "com.google.ai.edge.litert", module = "litert-support-api")
-    }
+    // 채보: 모델 실행(:core:ml) + 후처리·악보 생성(:core:music)
+    implementation(project(":core:ml"))
+    implementation(project(":core:music"))
 }
