@@ -19,8 +19,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.domain.model.SheetMusic
+import com.largeblueberry.feature_sheetmusic.ui.screen.ScoreWebView
 import com.largeblueberry.feature_sheetmusic.ui.state.SheetMusicUiState
 import com.largeblueberry.feature_sheetmusic.ui.util.formatCreatedAt
 import com.largeblueberry.resources.R
@@ -83,8 +89,38 @@ internal fun SheetMusicContent(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                ScoreCard(uiState.musicXml)
                 ScoreInfoCard(uiState.sheetMusic)
             }
+        }
+    }
+}
+
+/** 악보 그림. 테마와 상관없이 흰 바탕에 검은 악보(OSMD 기본)로 그린다. */
+@Composable
+private fun ScoreCard(musicXml: String) {
+    // 그리기 실패는 이 화면 안에서만 의미 있는 상태라 화면이 들고 있는다. 다른 악보면 다시 시도한다.
+    var renderFailed by remember(musicXml) { mutableStateOf(false) }
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        if (LocalInspectionMode.current) {
+            // IDE 미리보기에서는 WebView를 만들 수 없다
+            Box(Modifier.fillMaxWidth().height(160.dp))
+        } else if (renderFailed) {
+            Text(
+                text = stringResource(R.string.sheetMusicRenderError),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.DarkGray,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp)
+            )
+        } else {
+            ScoreWebView(musicXml = musicXml, onRenderError = { renderFailed = true })
         }
     }
 }

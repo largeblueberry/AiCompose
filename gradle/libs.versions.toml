@@ -16,6 +16,7 @@ hiltNavigationCompose = "1.4.0"
 androidxLifecycle = "2.11.0"
 coreSplashscreen = "1.2.0"
 coil = "2.7.0"
+androidxWebkit = "1.18.0"
 litert = "1.4.2"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -63,6 +64,9 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 
 # Image Utilities
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# WebView: 앱 assets를 가상 https 주소로 여는 WebViewAssetLoader
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidxWebkit" }
 
 # LiteRT (구 TensorFlow Lite). 1.x 마지막 버전: Interpreter API 유지, 모든 ABI 16KB 페이지 정렬.
 # org.tensorflow:tensorflow-lite 2.17.0은 litert 1.0.1로 relocate되는데, 그 x86/armv7/x86_64 so는 4KB 정렬이다.

@@ -16,4 +16,5 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:navigation"))
     implementation(libs.coil.compose)
+    implementation(libs.androidx.webkit)
 }

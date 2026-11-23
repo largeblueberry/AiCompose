@@ -194,6 +194,7 @@
     <string name="sheetMusicCreatedAt">만든 날짜 %1$s</string>
     <string name="sheetMusicNotFound">악보를 찾을 수 없어요.</string>
     <string name="sheetMusicLoadError">악보를 열지 못했어요.</string>
+    <string name="sheetMusicRenderError">악보를 그리지 못했어요.</string>
     <string name="retry">다시 시도</string>
 
 </resources>

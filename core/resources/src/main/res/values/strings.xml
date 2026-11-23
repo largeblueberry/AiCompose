@@ -194,6 +194,7 @@
     <string name="sheetMusicCreatedAt">Created %1$s</string>
     <string name="sheetMusicNotFound">This sheet music no longer exists.</string>
     <string name="sheetMusicLoadError">Couldn\'t open the sheet music.</string>
+    <string name="sheetMusicRenderError">Couldn\'t draw the sheet music.</string>
     <string name="retry">Try again</string>
 
 </resources>
