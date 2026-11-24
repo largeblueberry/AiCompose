@@ -43,7 +43,7 @@ fun ScoreWebView(
     // CSS px. viewport가 device-width라 1 CSS px = 1 dp
     var contentHeight by remember { mutableIntStateOf(0) }
     val currentOnError by rememberUpdatedState(onRenderError)
-    val render = remember { RenderState() }
+    val render = remember { ScoreRenderState() }
 
     Box(modifier = modifier.fillMaxWidth()) {
         AndroidView(
@@ -62,18 +62,13 @@ fun ScoreWebView(
                     settings.builtInZoomControls = false
                     isVerticalScrollBarEnabled = false
 
-                    addJavascriptInterface(object {
-                        @JavascriptInterface
-                        fun reportHeight(height: Int) {
-                            post { if (height > 0) contentHeight = height }
-                        }
-
-                        @JavascriptInterface
-                        fun reportError(message: String) {
-                            Log.e(TAG, "OSMD error: $message")
-                            post { currentOnError(message) }
-                        }
-                    }, "AndroidBridge")
+                    addJavascriptInterface(
+                        ScoreBridge(
+                            onHeight = { height -> post { if (height > 0) contentHeight = height } },
+                            onError = { message -> post { currentOnError(message) } },
+                        ),
+                        BRIDGE_NAME,
+                    )
 
                     webViewClient = object : WebViewClient() {
                         override fun shouldInterceptRequest(
@@ -82,8 +77,7 @@ fun ScoreWebView(
                         ): WebResourceResponse? = loader.shouldInterceptRequest(request.url)
 
                         override fun onPageFinished(view: WebView, url: String?) {
-                            render.pageLoaded = true
-                            render.pending?.let { render.draw(view, it) }
+                            render.onPageLoaded()?.let { view.evaluateJavascript(it, null) }
                         }
                     }
                     loadUrl(PAGE_URL)
@@ -91,7 +85,7 @@ fun ScoreWebView(
             },
             update = { view ->
                 // 처음에는 페이지가 로드되기를 기다렸다 그리고, 그 뒤에는 바뀔 때만 다시 그린다
-                if (render.pageLoaded) render.draw(view, musicXml) else render.pending = musicXml
+                render.request(musicXml)?.let { view.evaluateJavascript(it, null) }
             },
             onRelease = { view -> view.destroy() },
         )
@@ -101,20 +95,57 @@ fun ScoreWebView(
     }
 }
 
-/** WebView 하나에 붙은 렌더링 상태. 재구성 사이에 유지되지만 화면에 그리는 값은 아니다. */
-private class RenderState {
-    var pageLoaded = false
-    var pending: String? = null
+/**
+ * WebView 하나에 붙은 렌더링 상태. 언제 무엇을 JS로 보낼지만 정하고 WebView는 모른다.
+ * 재구성 사이에 유지되지만 화면에 그리는 값은 아니다.
+ */
+internal class ScoreRenderState {
+    private var pageLoaded = false
+    private var pending: String? = null
     private var drawn: String? = null
 
-    fun draw(view: WebView, xml: String) {
+    /** 화면이 XML을 넘길 때. 지금 실행할 스크립트, 없으면 null(페이지 로드 전이면 보관한다). */
+    fun request(xml: String): String? =
+        if (pageLoaded) {
+            script(xml)
+        } else {
+            pending = xml
+            null
+        }
+
+    /** 페이지 로드가 끝났을 때. 보관해 둔 XML이 있으면 그 스크립트. */
+    fun onPageLoaded(): String? {
+        pageLoaded = true
+        return pending?.let(::script)
+    }
+
+    private fun script(xml: String): String? {
         pending = null
-        if (xml == drawn) return
+        if (xml == drawn) return null
         drawn = xml
-        view.evaluateJavascript("window.renderScore(${JSONObject.quote(xml)})", null)
+        return renderScoreScript(xml)
     }
 }
 
+/** XML을 JS 문자열 리터럴로 감싸 넘긴다. 따옴표·개행·`</script>`가 있어도 안전하다. */
+internal fun renderScoreScript(xml: String): String = "window.renderScore(${JSONObject.quote(xml)})"
+
+/** OSMD 페이지(index.html)가 부르는 창구. JS 스레드에서 불리므로 화면 반영은 받는 쪽이 메인으로 넘긴다. */
+internal class ScoreBridge(
+    private val onHeight: (Int) -> Unit,
+    private val onError: (String) -> Unit,
+) {
+    @JavascriptInterface
+    fun reportHeight(height: Int) = onHeight(height)
+
+    @JavascriptInterface
+    fun reportError(message: String) {
+        Log.e(TAG, "OSMD error: $message")
+        onError(message)
+    }
+}
+
+internal const val BRIDGE_NAME = "AndroidBridge"
+internal const val PAGE_URL = "https://${WebViewAssetLoader.DEFAULT_DOMAIN}/assets/osmd/index.html"
+internal const val MIN_HEIGHT_DP = 200
 private const val TAG = "ScoreWebView"
-private const val MIN_HEIGHT_DP = 200
-private const val PAGE_URL = "https://${WebViewAssetLoader.DEFAULT_DOMAIN}/assets/osmd/index.html"
