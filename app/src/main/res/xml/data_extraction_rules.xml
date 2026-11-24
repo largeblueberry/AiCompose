@@ -1,19 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 12+ 백업 규칙. 매니페스트의 allowBackup="false"와 같은 뜻을 명시한다.
+    - 클라우드 백업(Google 드라이브): 아무것도 올리지 않는다. 녹음·악보·DB는 기기 밖으로 나가지 않는다.
+    - 기기 간 이전(사용자가 새 기기로 직접 옮길 때): 기본값대로 허용한다. 사용자 본인의 기기 사이에서만 일어난다.
+    개인정보 처리방침(TermData.kt)의 제1·3조와 맞춰야 한다.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <exclude domain="root" path="." />
+        <exclude domain="file" path="." />
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="external" path="." />
     </cloud-backup>
-    <!--
-    <device-transfer>
-        <include .../>
-        <exclude .../>
-    </device-transfer>
-    -->
 </data-extraction-rules>
