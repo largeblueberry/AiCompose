@@ -8,7 +8,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +21,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +50,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.largeblueberry.core_ui.CustomColors
 import com.largeblueberry.core_ui.LocalCustomColors
+import com.largeblueberry.domain.model.RecorderState
+import com.largeblueberry.record.ui.RecordUiState
 import com.largeblueberry.record.ui.RecordingState
 import com.largeblueberry.resources.R as ResourcesR
 
@@ -55,12 +63,26 @@ object Theme {
 
 @Composable
 fun RecordScreenUi(
-    isRecording: Boolean,
-    recordingStateText: RecordingState,
+    uiState: RecordUiState,
     onRecordToggleClick: () -> Unit,
+    onBpmChange: (delta: Int) -> Unit,
     onViewRecordingsClick: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
+    // 카운트인 중에도 버튼은 "멈춤"이다(녹음 세션이 열려 있다)
+    val isRecording = uiState.isActive
+    val recordingStateText = uiState.status
+    val recorder = uiState.recorder
+    val currentBeat = when (recorder) {
+        is RecorderState.CountIn -> recorder.beat
+        is RecorderState.Recording -> recorder.beat
+        RecorderState.Idle, RecorderState.Failed -> null
+    }
+    val clickAudible = when (recorder) {
+        is RecorderState.CountIn -> recorder.clickAudible
+        is RecorderState.Recording -> recorder.clickAudible
+        RecorderState.Idle, RecorderState.Failed -> null
+    }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val isSmallScreen = screenHeight < 600.dp
@@ -73,11 +95,17 @@ fun RecordScreenUi(
 
     val stateText = when (recordingStateText) {
         RecordingState.WAITING -> stringResource(ResourcesR.string.recordWaiting)
+        RecordingState.COUNT_IN -> stringResource(
+            ResourcesR.string.recordCountIn,
+            (recorder as? RecorderState.CountIn)?.beatsLeft ?: 0
+        )
         RecordingState.RECORDING -> stringResource(ResourcesR.string.recording)
         RecordingState.COMPLETED -> stringResource(ResourcesR.string.recordComplete)
-        RecordingState.FAILED_FILE_PATH_NOT_FOUND -> stringResource(ResourcesR.string.recordFailedFilePath)
         RecordingState.FAILED_START -> stringResource(ResourcesR.string.recordFailedStart)
         RecordingState.FAILED_STOP -> stringResource(ResourcesR.string.recordFailedStop)
+        RecordingState.TOO_SHORT -> stringResource(ResourcesR.string.recordTooShort)
+        RecordingState.CANCELLED -> stringResource(ResourcesR.string.recordCancelled)
+        RecordingState.INTERRUPTED -> stringResource(ResourcesR.string.recordInterrupted)
     }
 
     val recordingTransition = rememberInfiniteTransition(label = "recording_animation")
@@ -159,6 +187,24 @@ fun RecordScreenUi(
                 modifier = Modifier.fillMaxWidth()
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+            BpmSelector(bpm = uiState.bpm, enabled = !isRecording, onBpmChange = onBpmChange)
+            Spacer(modifier = Modifier.height(16.dp))
+            BeatIndicator(currentBeat = currentBeat, beatsPerBar = 4)
+            if (clickAudible != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(
+                        if (clickAudible) ResourcesR.string.recordClickHintHeadphones
+                        else ResourcesR.string.recordClickHintSpeaker
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             Spacer(modifier = Modifier.weight(1f))
 
             Column(
@@ -193,7 +239,7 @@ fun RecordScreenUi(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Mic,
+                            imageVector = if (isRecording) Icons.Default.Stop else Icons.Default.Mic,
                             contentDescription = if (isRecording) {
                                 stringResource(ResourcesR.string.recordStop)
                             } else {
@@ -244,13 +290,60 @@ fun RecordScreenUi(
     }
 }
 
+@Composable
+private fun BpmSelector(bpm: Int, enabled: Boolean, onBpmChange: (Int) -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = stringResource(ResourcesR.string.recordBpmLabel),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FilledTonalIconButton(onClick = { onBpmChange(-5) }, enabled = enabled) {
+                Icon(Icons.Default.Remove, contentDescription = stringResource(ResourcesR.string.recordBpmSlower))
+            }
+            Text(
+                text = stringResource(ResourcesR.string.recordBpmValue, bpm),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .widthIn(min = 120.dp)
+                    .padding(horizontal = 8.dp)
+            )
+            FilledTonalIconButton(onClick = { onBpmChange(5) }, enabled = enabled) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(ResourcesR.string.recordBpmFaster))
+            }
+        }
+    }
+}
+
+/** 마디 안 박 위치. 녹음 중 클릭 소리가 없을 때 박자를 따라가는 기준이다. 첫 박은 크게. */
+@Composable
+private fun BeatIndicator(currentBeat: Int?, beatsPerBar: Int) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        for (i in 0 until beatsPerBar) {
+            val active = currentBeat == i
+            Box(
+                modifier = Modifier
+                    .size(if (i == 0) 22.dp else 16.dp)
+                    .background(
+                        color = if (active) Theme.customColors.recordingRed else MaterialTheme.colorScheme.outlineVariant,
+                        shape = CircleShape
+                    )
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun RecordScreenPreview() {
     RecordScreenUi(
-        isRecording = false,
-        recordingStateText = RecordingState.WAITING,
+        uiState = RecordUiState(),
         onRecordToggleClick = {},
+        onBpmChange = {},
         onViewRecordingsClick = {}
     )
 }
@@ -260,9 +353,12 @@ fun RecordScreenPreview() {
 fun RecordScreenUiRecordingPreview() {
     MaterialTheme {
         RecordScreenUi(
-            isRecording = true,
-            recordingStateText = RecordingState.RECORDING,
+            uiState = RecordUiState(
+                recorder = RecorderState.Recording(beat = 2, elapsedMs = 3_000, clickAudible = false),
+                status = RecordingState.RECORDING
+            ),
             onRecordToggleClick = {},
+            onBpmChange = {},
             onViewRecordingsClick = {}
         )
     }
@@ -273,9 +369,12 @@ fun RecordScreenUiRecordingPreview() {
 fun RecordScreenUiSmallScreenPreview() {
     MaterialTheme {
         RecordScreenUi(
-            isRecording = false,
-            recordingStateText = RecordingState.WAITING,
+            uiState = RecordUiState(
+                recorder = RecorderState.CountIn(beatsLeft = 3, beat = 1, clickAudible = true),
+                status = RecordingState.COUNT_IN
+            ),
             onRecordToggleClick = {},
+            onBpmChange = {},
             onViewRecordingsClick = {}
         )
     }

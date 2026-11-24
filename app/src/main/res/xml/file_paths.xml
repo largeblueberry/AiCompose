@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FileProvider로 다른 앱에 공유할 수 있는 경로. 악보 파일(MusicXML·MIDI)만 연다.
+  경로는 TranscriptionRepositoryImpl.SCORES_DIR(filesDir/scores)과 같아야 한다.
+  녹음(filesDir/recordings)은 공유하지 않는다.
+-->
+<paths>
+    <files-path name="scores" path="scores/" />
+</paths>

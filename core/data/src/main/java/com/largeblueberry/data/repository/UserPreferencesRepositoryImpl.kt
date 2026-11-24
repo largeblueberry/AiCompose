@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
+import com.largeblueberry.domain.model.Tempo
 import com.largeblueberry.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -24,11 +26,13 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     private companion object {
         val KEY_ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        val KEY_LAST_BPM = intPreferencesKey("last_bpm")
         private const val MAX_RETRIES = 3L
         private val RETRY_DELAY = 1000.milliseconds
     }
 
-    override val isOnboardingCompleted: Flow<Boolean> = dataStore.data
+    /** IOException이면 몇 번 다시 읽고, 그래도 안 되면 빈 값으로 계속한다(스트림이 끊기지 않게). */
+    private val preferences: Flow<Preferences> = dataStore.data
         .retryWhen { cause, attempt ->
             if (cause is IOException && attempt < MAX_RETRIES) {
                 emit(emptyPreferences())
@@ -45,9 +49,16 @@ class UserPreferencesRepositoryImpl @Inject constructor(
                 throw exception
             }
         }
-        .map { preferences ->
-            preferences[KEY_ONBOARDING_COMPLETED] ?: false
-        }
+
+    override val isOnboardingCompleted: Flow<Boolean> = preferences.map { it[KEY_ONBOARDING_COMPLETED] ?: false }
+
+    override val lastBpm: Flow<Int> = preferences.map { prefs ->
+        Tempo.clamp(prefs[KEY_LAST_BPM] ?: Tempo.DEFAULT_BPM)
+    }
+
+    override suspend fun setLastBpm(bpm: Int) {
+        dataStore.edit { it[KEY_LAST_BPM] = Tempo.clamp(bpm) }
+    }
 
     override suspend fun setOnboardingCompleted(completed: Boolean) {
         dataStore.edit { preferences ->

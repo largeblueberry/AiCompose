@@ -21,16 +21,14 @@ import com.largeblueberry.resources.R
 @Composable
 fun SheetMusicHistoryScreen(
     viewModel: ScoreHistoryViewModel = hiltViewModel(),
-    onScoreClick: (scoreUrl: String, midiUrl: String) -> Unit,
+    onScoreClick: (scoreId: String) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToRecord: () -> Unit
 ) {
-    // ✅ ViewModel로부터 악보 목록 상태를 구독
     val scores by viewModel.scores.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
-            // 1. TopAppBar를 Scaffold의 topBar 파라미터로 이동
             EareamTopAppBar(
                 title = stringResource(id = R.string.sheet_music_list_title),
                 onNavigateBack = onNavigateBack
@@ -48,13 +46,10 @@ fun SheetMusicHistoryScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(scores) { score ->
+                items(scores, key = { it.id }) { score ->
                     ScoreHistoryItem(
                         score = score,
-                        onClick = {
-                            onScoreClick(score.scoreUrl, score.midiUrl)
-                        },
-                        // ✅ onDelete 람다에 ViewModel의 deleteScore 함수 연결
+                        onClick = { onScoreClick(score.id) },
                         onDelete = { viewModel.deleteScore(score) }
                     )
                 }

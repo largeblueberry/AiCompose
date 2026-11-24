@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,19 +19,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.library.ui.viemodel.LibraryViewModel
-import com.largeblueberry.library.ui.model.UploadStatus
 import com.largeblueberry.resources.R as ResourcesR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     viewModel: LibraryViewModel = hiltViewModel(),
-    onUploadSuccess: (scoreUrl: String, midiUrl: String) -> Unit,
+    /** 채보가 끝난 항목의 "악보 보기". 끝나도 자동으로 옮기지 않는다(사용자가 다른 화면에 있을 수 있다). */
+    onOpenScore: (scoreId: String) -> Unit,
     navController: NavController,
     onBackClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -44,48 +41,16 @@ fun LibraryScreen(
         )
     }
 
-    /**
-     * 삭제 결과 처리, 업로드 중 메시지 처리, 업로드 상태 처리
-     */
+    // 문자열은 컴포지션에서 읽는다. LocalContext로 읽으면 언어를 바꿔도 옛 값이 남는다(troubleshooting C-13).
+    val deleteSuccessMessage = stringResource(ResourcesR.string.fileDeleteSuccess)
+    val deleteErrorMessage = stringResource(ResourcesR.string.fileDeleteError)
+
+    // 채보 상태는 항목에 계속 보이므로 일회성 안내(스낵바)는 삭제 결과만 쓴다
     LaunchedEffect(uiState.deleteResult) {
         uiState.deleteResult?.let { result ->
-            val message = if (result.isSuccess) {
-                context.getString(ResourcesR.string.fileDeleteSuccess)
-            } else {
-                context.getString(ResourcesR.string.fileDeleteError)
-            }
+            val message = if (result.isSuccess) deleteSuccessMessage else deleteErrorMessage
             showSnackBar(message)
             viewModel.clearDeleteResult()
-        }
-    }
-
-    LaunchedEffect(uiState.showUploadInProgressMessage) {
-        if (uiState.showUploadInProgressMessage) {
-            showSnackBar(context.getString(ResourcesR.string.serverUploading))
-            viewModel.clearUploadInProgressMessage()
-        }
-    }
-
-    LaunchedEffect(uiState.uploadState.status) {
-        when (uiState.uploadState.status) {
-            UploadStatus.SUCCESS -> {
-                val scoreUrl = uiState.uploadState.scoreUrl
-                val midiUrl = uiState.uploadState.midiUrl
-
-                if (!scoreUrl.isNullOrEmpty() && !midiUrl.isNullOrEmpty()) {
-                    onUploadSuccess(scoreUrl, midiUrl)
-                    viewModel.clearUploadState()
-                    showSnackBar(context.getString(ResourcesR.string.serverUploadSuccess))
-                } else {
-                    showSnackBar(context.getString(ResourcesR.string.serverUploadError))
-                    viewModel.clearUploadState()
-                }
-            }
-            UploadStatus.ERROR -> {
-                showSnackBar(context.getString(ResourcesR.string.serverUploadError))
-                viewModel.clearUploadState()
-            }
-            else -> {}
         }
     }
 
@@ -139,21 +104,6 @@ fun LibraryScreen(
                             .padding(top = 20.dp)
                     )
 
-                    uiState.currentUploads?.let { current ->
-                        uiState.maxUploads?.let { max ->
-                            Text(
-                                text = "($current/$max)",
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Normal,
-                                color = MaterialTheme.customColors.appBlack,
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(top = 20.dp)
-                                    .padding(end = 10.dp)
-                            )
-                        }
-                    }
-
                 }
             }
 
@@ -171,21 +121,19 @@ fun LibraryScreen(
 
                         val isPlaying = uiState.currentPlayingRecordId == record.id && uiState.isPlaying
 
-                        val isUploading = uiState.uploadState.status ==
-                                UploadStatus.UPLOADING && uiState.uploadingRecordId == record.id
-
                         val isPaused = uiState.currentPlayingRecordId == record.id && !uiState.isPlaying
 
                         AudioRecordItem(
                             record = record,
                             isPlaying = isPlaying,
-                            isUploading = isUploading,
+                            transcription = uiState.transcriptionOf(record.id),
                             isPaused = isPaused,
                             onPlay = { viewModel.playAudio(record) },
                             onPause = { viewModel.pauseAudio() },
                             onStop = { viewModel.stopPlaying() },
                             onDelete = { viewModel.deleteRecord(record) },
-                            onUpload = { viewModel.uploadAudioToServer(record.filePath, record.id) },
+                            onTranscribe = { viewModel.transcribe(record) },
+                            onOpenScore = onOpenScore,
                             onResume = { viewModel.resumeAudio() },
                             onRename = { viewModel.showRenameDialog(record) }
                         )

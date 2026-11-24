@@ -2,32 +2,59 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 권한은 녹음용 마이크 하나. 녹음·악보는 앱 내부 저장소에만 두므로 저장소·미디어 권한이 필요 없다. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--
+        녹음·악보가 기기 밖으로 나가지 않게 OS의 자동 클라우드 백업(Google 드라이브)을 끈다(개인정보 처리방침 제1·3조).
+        Android 12+에서 사용자가 직접 하는 기기 간 이전은 data_extraction_rules의 device-transfer를 따른다.
+        Android 11 이하는 allowBackup="false"면 백업 자체가 꺼지므로 fullBackupContent가 필요 없다(DataExtractionRules 경고 무시).
+    -->
     <application
         android:name=".MainApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launch"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AiCompose"
-        tools:replace="android:icon,android:roundIcon"
-        android:localeConfig="@xml/locales_config">
+        tools:ignore="DataExtractionRules"
+        tools:replace="android:icon,android:roundIcon,android:allowBackup,android:supportsRtl,android:theme,android:dataExtractionRules">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 악보 공유(MIDI·MusicXML). authority는 feature:sheetmusic의 ScoreSharing과 같아야 한다. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- WorkManager 기본 자동 초기화를 뺀다. MainApplication이 Hilt 주입 설정으로 처음 쓸 때 초기화한다. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

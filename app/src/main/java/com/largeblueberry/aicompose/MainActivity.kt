@@ -8,10 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -45,16 +46,18 @@ class MainActivity : AppCompatActivity() {
 
     private var showSettingsDialog by mutableStateOf(false)
 
+    /**
+     * 앱이 요청하는 권한은 마이크 하나다. 녹음·악보는 앱 내부 저장소에만 두므로 저장소·미디어 권한이 필요 없다
+     * (개인정보 처리방침 제1조와 맞춰야 한다).
+     */
     private val requestPermissionLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            val isRecordAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
-
-            if (isRecordAudioGranted) {
-                Log.d(TAG, "RECORD_AUDIO permission granted.")
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                Log.d(TAG, "Microphone permission granted.")
             } else {
-                Log.d(TAG, "RECORD_AUDIO permission denied.")
+                Log.d(TAG, "Microphone permission denied.")
                 if (!shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
                     Log.d(TAG, "Permission might be permanently denied. Showing settings dialog.")
                     showSettingsDialog = true
@@ -73,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate called")
 
@@ -127,14 +131,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermissions() {
-        val permissionsToRequest = mutableListOf<String>()
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
-        }
-
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
+            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
 

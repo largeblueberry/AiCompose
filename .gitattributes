@@ -1,0 +1,4 @@
+# 앱(APK)에 그대로 실리는 assets는 줄바꿈을 바꾸지 않는다.
+# core.autocrlf=true인 Windows에서 체크아웃하면 LF→CRLF로 바뀌어, 빌드한 APK의 바이트가 환경마다 달라진다
+# (OSMD 번들, 라이선스 원문, 모델 고지). 모델(.tflite)은 원래 바이너리로 인식되지만 같은 규칙에 둔다.
+**/src/main/assets/** -text

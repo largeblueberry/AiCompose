@@ -1,61 +1,31 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
-    id("com.google.devtools.ksp")
+    id("aicompose.android.feature")
 }
 
 android {
     namespace = "com.largeblueberry.feature_sheetmusic"
-    compileSdk = 35
 
-    defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+    androidResources {
+        enable = false
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    buildFeatures {
-        viewBinding = true
-        compose = true
-        buildConfig = true
+    testOptions {
+        // ViewModel이 쓰는 android.util.Log를 JVM 테스트에서 예외 대신 무시하게 한다
+        unitTests.isReturnDefaultValues = true
+        // Robolectric 테스트(ScoreWebView)가 병합된 매니페스트로 테스트용 액티비티를 띄운다
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
 dependencies {
     implementation(project(":core:resources"))
     implementation(project(":core:ui"))
-    implementation(project(":core:data"))
     implementation(project(":core:domain"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui.ui)
-    implementation(libs.androidx.compose.ui.ui.tooling.preview)
-    implementation(libs.androidx.compose.foundation.foundation)
-    implementation(libs.androidx.compose.material3.material3)
-    debugImplementation(libs.androidx.compose.ui.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
-    implementation(libs.coil.compose)
+    implementation(project(":core:navigation"))
+    implementation(libs.androidx.webkit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

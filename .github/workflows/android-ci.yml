@@ -36,12 +36,15 @@ jobs:
         run: chmod +x gradlew
 
       # 4. 1차 품질 검사 (Lint 검사로 코드 스타일 확인)
+      # --continue: 한 모듈이 실패해도 멈추지 않고 모든 모듈의 lint 결과를 한 번에 보여 준다.
+      # 없으면 첫 실패 모듈에서 멈춰, 고칠 때마다 다음 모듈의 오류가 하나씩 드러난다(docs/troubleshooting.md C-13).
       - name: 1차 품질 검사 (Lint)
-        run: ./gradlew lintDebug
+        run: ./gradlew lintDebug --continue
 
       # 5. 2차 품질 검사 (핵심 부품 테스트)
+      # testDebugUnitTest는 안드로이드 모듈만 돈다. 순수 JVM 모듈(core:domain, core:music)은 test 작업이라 따로 적는다.
       - name: 2차 품질 검사 (Unit Tests)
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest :core:domain:test :core:music:test --continue
 
       # 6. 최종 조립 (APK 파일 생성)
       - name: 최종 조립 (Debug APK 빌드)
