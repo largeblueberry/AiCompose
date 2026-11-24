@@ -42,6 +42,7 @@
   - [C-10. 쓰지 않는 INTERNET 권한과 이미지 라이브러리](#c-10-쓰지-않는-internet-권한과-이미지-라이브러리) ✅
   - [C-11. 오픈소스 고지가 실제로 배포되는 것과 맞지 않았다](#c-11-오픈소스-고지가-실제로-배포되는-것과-맞지-않았다) ✅
   - [C-12. 약관이 서버 시절 그대로였고, 앱도 "기기 안에서만"을 다 지키지 못했다](#c-12-약관이-서버-시절-그대로였고-앱도-기기-안에서만을-다-지키지-못했다) ✅
+  - [C-13. main으로 가는 PR이 lint에서 계속 막혔다](#c-13-main으로-가는-pr이-lint에서-계속-막혔다) ✅
 
 ---
 
@@ -527,6 +528,30 @@
 - **진행 중 발견한 것: 라이브러리가 더한 권한** — 병합된 최종 매니페스트를 보니 3-2에서 넣은 WorkManager가 `WAKE_LOCK`, `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED`, `FOREGROUND_SERVICE`를 자동으로 더하고 있었다. 3-2 때 최종 권한 목록을 확인하지 않아 놓친 것이다. 모두 설치 때 OS가 묻지 않고 주는 **일반 권한**이고 인터넷 권한은 없다(`ACCESS_NETWORK_STATE`는 연결 여부만 본다). 빼면 WorkManager 내부(재부팅 후 작업 재등록 등)가 깨질 수 있어 두고, 처리방침에 "사용자에게 허락을 구하는 권한은 마이크 하나, 백그라운드 작업용 일반 권한은 자동 포함, 인터넷 권한 없음"으로 정확히 적었다. C-10의 "남은 권한" 목록도 이때부터는 이 넷이 더해진 상태다.
 - **배운 점**: "우리 코드가 하지 않는다"와 "앱이 하지 않는다"는 다르다. OS 설정(백업)과 라이브러리가 병합하는 매니페스트까지 봐야 약관에 사실을 쓸 수 있다.
 - **남은 것** 📝: 법률 자문이 아니므로 실제 배포 전에 약관을 검토한다. 의존성을 더할 때마다 최종 매니페스트의 권한을 확인한다.
+
+### C-13. main으로 가는 PR이 lint에서 계속 막혔다
+
+- **증상**: dev → main PR의 CI가 `:feature:library:lintDebug`에서 실패했다(`LocalContextGetResourceValueCall`). 같은 실패가 반복됐다.
+- **실제 범위를 먼저 확인했다**: CI와 같은 `./gradlew lintDebug`를 `--continue`로 로컬에서 돌리니, 오류는 한 모듈이 아니라 **세 모듈에 6개**였다.
+
+  | 모듈 | 규칙 | 위치 | 언제 생겼나 |
+  |---|---|---|---|
+  | feature:library | `LocalContextGetResourceValueCall` | `LibraryScreen.kt` 삭제 결과 스낵바 2곳 | 2026-03 코드 |
+  | feature:record | `LocalContextGetResourceValueCall` | `RecordScreenState.kt` 저장 안내 2곳, 권한 안내 1곳 | 2026-11-04 코드 1곳, **이번 온디바이스 1단계에서 쓴 코드 2곳** |
+  | feature:sheetmusic | `MissingClass` | 매니페스트의 `.SheetMusicActivity` | 2025-11-06에 클래스를 지우고 선언만 남음 |
+
+- **원인 1 — 라이브러리 업그레이드가 들여온 새 규칙**: 2026-11-06(`a43b2e2`)에 `compose-bom`이 2024.10.00에서 2026.09.00으로 올랐다. 새 Compose UI lint가 "`LocalContext.current.getString()`으로 문자열을 읽으면 설정 변경(언어 등)을 따라가지 못해 옛 값이 남는다"를 **오류**로 추가했다. 걸린 코드 대부분은 그 전부터 있었고, 1단계에서는 그 기존 방식을 그대로 따라 썼다. 실제로도 문제가 되는 패턴이다. 앱 설정에서 언어를 바꾸면 붙잡아 둔 문구가 옛 언어로 남을 수 있다.
+- **원인 2 — 지운 클래스의 매니페스트 선언**: 악보 화면을 Compose로 옮기며 `SheetMusicActivity`를 지웠지만 매니페스트 선언은 남았다. 2-4에서 같은 매니페스트의 `INTERNET` 줄만 지우고 이 줄은 놓쳤다.
+- **원인 3 — 왜 반복됐나(두 겹으로 가려졌다)**
+  1. **CI가 첫 실패에서 멈췄다.** `./gradlew lintDebug`에 `--continue`가 없어 Gradle이 첫 실패 모듈(library)에서 멈춘다. library를 고쳐도 다음 실행에서 record, 그다음 sheetmusic이 하나씩 드러나는 구조였다.
+  2. **로컬 확인이 CI와 달랐다.** 온디바이스 작업 내내 `:app:lintDebug`만 돌리고 "lint 오류 0"이라고 보고했다. app 모듈의 lint는 기본 설정(`checkDependencies` 꺼짐)에서 라이브러리 모듈을 검사하지 않는다. 세 모듈이 실패하는 상태에서 잘못된 "통과"를 보고한 것이다.
+- **같이 발견한 것 — CI가 돌리지 않던 테스트**: CI의 테스트 단계 `./gradlew testDebugUnitTest`는 안드로이드 모듈만 돈다. 순수 JVM 모듈(`core:domain`, `core:music`)의 테스트 작업 이름은 `test`라서, `core:music`의 골든 테스트·채보 알고리즘 테스트 42개와 `core:domain` 테스트가 **CI에서 한 번도 돌지 않았다**.
+- **결정**
+  - 인자 없는 문자열은 컴포지션에서 `stringResource(...)`로 읽어 effect에 넘긴다. 실행 시점에야 정해지는 인자가 있는 문자열(저장된 파일 이름)은 `LocalResources.current.getString(...)`으로 읽는다. 둘 다 설정 변경을 따라간다. lint 기준선(baseline)으로 덮지 않았다. 실제로 맞는 지적이라서다.
+  - 매니페스트에서 `SheetMusicActivity` 선언을 지웠다.
+  - CI: lint에 `--continue`를 넣어 모든 모듈의 결과가 한 번에 보이게 하고, 테스트 단계에 `:core:domain:test :core:music:test`를 더했다.
+- **검증**: CI와 똑같은 세 명령(`lintDebug --continue`, 테스트, `assembleDebug`)을 스테이징된 스냅샷에서 차례로 돌렸다. lint는 모든 모듈 오류 0, 테스트 130개 통과, APK 빌드 성공.
+- **배운 점**: "로컬에서 통과했다"는 CI와 같은 명령으로 확인했을 때만 의미가 있다. 멀티 모듈에서 lint·test는 모듈마다 따로 돌고, JVM 모듈은 작업 이름부터 다르다. 의존성을 크게 올리면 새 lint 규칙이 따라온다.
 
 ### 개선 후보
 

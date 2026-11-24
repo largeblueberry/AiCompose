@@ -72,3 +72,5 @@
 - 채보 진행 상태를 ViewModel 메모리에 따로 들지 않는다. 작업 흐름과 악보 흐름에서만 나와야 화면을 다시 열어도 같다.
 - `allowBackup`을 켜거나 저장소·미디어 권한을 더할 때는 약관도 같이 고친다(지금 약관은 "기기 밖으로 나가지 않음, 권한은 마이크 하나").
 - 의존성을 더하면 병합된 최종 매니페스트의 권한을 확인한다. 라이브러리가 권한을 더할 수 있다(WorkManager가 일반 권한 넷을 더한 적이 있다).
+- 확인은 CI와 같은 명령으로 한다: `./gradlew lintDebug --continue`, `./gradlew testDebugUnitTest :core:domain:test :core:music:test`. `:app:lintDebug`는 라이브러리 모듈을 검사하지 않고, JVM 모듈의 테스트는 `testDebugUnitTest`에 들어가지 않는다(troubleshooting C-13).
+- Compose에서 문자열을 `LocalContext.current.getString()`으로 읽지 않는다. `stringResource` 또는 `LocalResources`를 쓴다(설정 변경을 따라가야 한다).

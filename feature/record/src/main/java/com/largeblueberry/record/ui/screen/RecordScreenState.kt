@@ -14,6 +14,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -37,10 +39,17 @@ fun RecordScreenState(
     val coroutineScope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // 문자열은 LocalContext가 아니라 컴포지션(stringResource, LocalResources)에서 읽는다.
+    // LocalContext로 읽으면 설정(언어)이 바뀌어도 옛 값이 남는다(troubleshooting C-13).
+    val resources = LocalResources.current
+    val maxLengthMessage = stringResource(R.string.recordMaxLength)
+    val permissionMessage = stringResource(R.string.recordPermission)
+
     LaunchedEffect(uiState.savedFileName) {
         val name = uiState.savedFileName ?: return@LaunchedEffect
-        val saved = context.getString(R.string.recordSavedMSG, name)
-        val message = if (uiState.stoppedAtLimit) context.getString(R.string.recordMaxLength) + "\n" + saved else saved
+        // 파일 이름은 이 시점에야 정해지므로 포맷 문자열은 LocalResources로 읽는다
+        val saved = resources.getString(R.string.recordSavedMSG, name)
+        val message = if (uiState.stoppedAtLimit) maxLengthMessage + "\n" + saved else saved
         snackbarHostState.showSnackbar(message = message, duration = SnackbarDuration.Short)
         viewModel.consumeSavedMessage()
     }
@@ -62,7 +71,7 @@ fun RecordScreenState(
         } else {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(
-                    message = context.getString(R.string.recordPermission),
+                    message = permissionMessage,
                     duration = SnackbarDuration.Short
                 )
             }

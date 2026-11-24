@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,8 +30,6 @@ fun LibraryScreen(
     navController: NavController,
     onBackClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -44,14 +41,14 @@ fun LibraryScreen(
         )
     }
 
+    // 문자열은 컴포지션에서 읽는다. LocalContext로 읽으면 언어를 바꿔도 옛 값이 남는다(troubleshooting C-13).
+    val deleteSuccessMessage = stringResource(ResourcesR.string.fileDeleteSuccess)
+    val deleteErrorMessage = stringResource(ResourcesR.string.fileDeleteError)
+
     // 채보 상태는 항목에 계속 보이므로 일회성 안내(스낵바)는 삭제 결과만 쓴다
     LaunchedEffect(uiState.deleteResult) {
         uiState.deleteResult?.let { result ->
-            val message = if (result.isSuccess) {
-                context.getString(ResourcesR.string.fileDeleteSuccess)
-            } else {
-                context.getString(ResourcesR.string.fileDeleteError)
-            }
+            val message = if (result.isSuccess) deleteSuccessMessage else deleteErrorMessage
             showSnackBar(message)
             viewModel.clearDeleteResult()
         }
