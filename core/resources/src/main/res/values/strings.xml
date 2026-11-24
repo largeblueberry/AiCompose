@@ -32,7 +32,6 @@
     <string name="recordWaiting">Choose a tempo and tap the mic</string>
     <string name="recording">Recording</string>
     <string name="recordComplete">Recording stopped</string>
-    <string name="recordFailedFilePath">Recording path not found.</string>
     <string name="recordFailedStart">Failed to start recording.</string>
     <string name="recordFailedStop">Recording failed due to an unknown error.</string>
 
@@ -40,24 +39,12 @@
     <string name="recordStop">Stop recording</string>
     <string name="gotoLibrary">View recordings</string>
 
-    <string name="googleLogin">Sign in with Google Account</string>
 
-    <string name="userSkipButton">Skip for now</string>
-    <string name="utilOr">  or  </string>
 
-    <string name="accountSync">Account Link</string>
-    <string name="googleLoginExperienceMore">Sign in with your Google Account to experience more features.</string>
-    <string name="loginTermsAgreementNotice">By logging in, you agree to the Terms of Service.</string>
 
     <string name="settingTitle">Settings</string>
     <string name="appSetting">App Settings</string>
-    <string name="appAlarmMainText">Notifications</string>
-    <string name="appAlarmSubText">Push Notification Settings</string>
 
-    <string name="account">Account</string>
-    <string name="logout">Logout</string>
-    <string name="login">Login</string>
-    <string name="loginSubText">Sign in with your Google Account</string>
 
     <string name="languageMainText">Language</string>
     <string name="languageSubText">Language Settings</string>
@@ -65,13 +52,8 @@
     <string name="themeMainText">Theme</string>
     <string name="themeSubText">Light/Dark Mode</string>
 
-    <string name="appHelper">Help</string>
-    <string name="appUseMainText">How to Use</string>
-    <string name="appUseSubText">User Guide</string>
     <string name="aboutEareamMainText">About Eaream</string>
     <string name="aboutEareamSubText">Service Introduction</string>
-    <string name="appBugMainText">Report a Bug</string>
-    <string name="appBugSubText">Please report any errors.</string>
 
     <string name="serviceTermMainText">Terms of Service</string>
     <string name="serviceTermSubText">Terms and Policies</string>
@@ -79,7 +61,6 @@
 
     <string name="backButtonContentDescription">Back button</string>
     <string name="eareamLogoDescription">Eaream logo</string>
-    <string name="googleLogo">Google logo</string>
     <string name="pauseDescription">Pause</string>
     <string name="stopDescription">Stop</string>
     <string name="playDescription">Play</string>
@@ -106,17 +87,14 @@
     <string name="language_setting_title">Language Settings</string>
 
     <string name="sheet_music_list_title">Sheet Music List</string>
-    <string name="navigate_back_content_description">Navigate Back</string>
     <string name="empty_sheet_music_main_message">No sheet music yet</string>
     <string name="empty_sheet_music_sub_message">Shall we start recording first?</string>
     <string name="start_recording_button">🎤 Start Recording</string>
 
     <string name="sheet_music_detail_title">Sheet Music Detail</string>
-    <string name="sheet_music_detail_screen_message">Sheet Music Detail Screen</string>
 
 
     <string name="about_us_title">About Eareum</string>
-    <string name="navigate_back_description">Navigate back</string>
     <string name="app_slogan">Listen and Dream, AI Composing Service</string>
     <string name="app_description">Born to help anyone easily create their own melodies without missing a moment of inspiration, just like humming a tune.</string>
 
@@ -133,7 +111,6 @@
     <string name="contact_description">For feedback or inquiries, please email us at:\ncontact: onlym6659@gmail.com</string>
     <string name="version_info">Version %1$s</string>
 
-    <string name="bugreport">Bug Report</string>
 
     <string name="permission_dialog_title">Permission Required</string>
     <string name="permission_dialog_message">The app needs the following permissions to function properly:\n\n• Microphone\n• Accessibility Service</string>
@@ -159,15 +136,8 @@
 
     <string name="error_term_not_found">Error: Term not found.</string>
 
-    <string name="welcome_message">Welcome, %s!</string>
-    <string name="login_success_message">Login was successful.</string>
 
-    <string name="delete_account_title">Delete Account</string>
-    <string name="delete_account_message">Are you sure you want to delete your account?\n\n• All data will be deleted\n• This action cannot be undone</string>
-    <string name="delete_account_confirm">Delete</string>
 
-    <!-- Loading Content -->
-    <string name="loading_login">Logging in...</string>
 
     <!-- 녹음: BPM·카운트인·메트로놈 -->
     <string name="recordCountIn">Get ready… %1$d</string>

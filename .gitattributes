@@ -1,0 +1,3 @@
+# 앱 assets에 그대로 실리는 OSMD 파일은 줄바꿈을 바꾸지 않는다.
+# core.autocrlf=true인 Windows에서 체크아웃하면 LF→CRLF로 바뀌어, 빌드한 APK의 바이트가 환경마다 달라진다.
+feature/sheetmusic/src/main/assets/osmd/** -text
