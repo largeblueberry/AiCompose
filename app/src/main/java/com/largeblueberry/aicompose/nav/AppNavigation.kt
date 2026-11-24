@@ -38,8 +38,7 @@ fun AppNavigation() {
 
         composable(AppRoutes.LibraryScreen.route) {
             LibraryScreen(
-                // 라이브러리의 업로드는 아직 스텁이라 악보가 만들어지지 않는다. 3단계(채보 연결)에서 악보 id로 이동한다.
-                onUploadSuccess = { _, _ -> },
+                onOpenScore = { scoreId -> navController.navigate(AppRoutes.SheetMusicScreen.createRoute(scoreId)) },
                 navController = navController,
                 onBackClick = { navController.popBackStack() }
             )

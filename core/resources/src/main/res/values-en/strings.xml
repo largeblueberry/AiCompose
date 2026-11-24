@@ -13,13 +13,10 @@
     <string name="settingsMainText">Settings</string>
     <string name="settingsSubText">Change app settings.</string>
     <string name="waveformMainText">Check your Record</string>
-    <string name="waveformSubText">Review, delete, and upload your recording.</string>
+    <string name="waveformSubText">Listen to, delete, and turn your recordings into sheet music.</string>
 
 
     <string name="emptyLibrary">No recorded files.</string>
-    <string name="serverUploadError">Server upload failed. Please try again later.</string>
-    <string name="serverUploadSuccess">Upload successful!</string>
-    <string name="serverUploading">Already uploading. Please wait.</string>
     <string name="fileDeleteSuccess">File deletion successful.</string>
     <string name="fileDeleteError">File deletion failed. Please try again later.</string>
 
@@ -86,7 +83,6 @@
     <string name="pauseDescription">Pause</string>
     <string name="stopDescription">Stop</string>
     <string name="playDescription">Play</string>
-    <string name="uploadDescription">Upload</string>
     <string name="deleteDescription">Delete</string>
 
     <string name="theme_light">Light</string>
@@ -202,5 +198,14 @@
     <string name="sheetMusicShareXml">Share MusicXML</string>
     <string name="sheetMusicPlayError">Couldn\'t play the MIDI file.</string>
     <string name="retry">Try again</string>
+
+    <!-- 온디바이스 채보 -->
+    <string name="transcribeDescription">Make sheet music</string>
+    <string name="viewScoreDescription">View sheet music</string>
+    <string name="transcribeQueued">Waiting to make sheet music…</string>
+    <string name="transcribeRunning">Making sheet music… %1$d%%</string>
+    <string name="transcribeSaving">Saving sheet music…</string>
+    <string name="transcribeError">Couldn\'t make sheet music. Please try again.</string>
+    <string name="transcribeNoNotes">No melody found. Try humming a little louder and clearer.</string>
 
 </resources>

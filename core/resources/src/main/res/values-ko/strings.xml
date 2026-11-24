@@ -13,12 +13,9 @@
     <string name="settingsMainText">설정</string>
     <string name="settingsSubText">앱 설정을 변경해요.</string>
     <string name="waveformMainText">녹음을 확인하세요</string>
-    <string name="waveformSubText">내 녹음을 듣고, 삭제하고 업로드 해요.</string>
+    <string name="waveformSubText">내 녹음을 듣고, 지우고, 악보로 만들어요.</string>
 
     <string name="emptyLibrary">녹음된 파일이 없습니다.</string>
-    <string name = "serverUploadError">서버 업로드에 실패했습니다. 잠시후 다시 시도해주세요.</string>
-    <string name="serverUploadSuccess">업로드 성공!</string>
-    <string name="serverUploading">이미 업로드 중입니다. 잠시만 기다려주세요.</string>
     <string name="fileDeleteSuccess">파일 삭제 성공.</string>
     <string name="fileDeleteError">파일 삭제에 실패했습니다. 잠시후 다시 시도해주세요.</string>
 
@@ -85,7 +82,6 @@
     <string name="pauseDescription">일시 정지</string>
     <string name="stopDescription">정지</string>
     <string name="playDescription">재생</string>
-    <string name="uploadDescription">업로드</string>
     <string name="deleteDescription">삭제</string>
 
     <string name="theme_light">라이트</string>
@@ -201,5 +197,14 @@
     <string name="sheetMusicShareXml">MusicXML 공유</string>
     <string name="sheetMusicPlayError">MIDI를 재생하지 못했어요.</string>
     <string name="retry">다시 시도</string>
+
+    <!-- 온디바이스 채보 -->
+    <string name="transcribeDescription">악보 만들기</string>
+    <string name="viewScoreDescription">악보 보기</string>
+    <string name="transcribeQueued">악보 만들기 대기 중…</string>
+    <string name="transcribeRunning">악보 만드는 중… %1$d%%</string>
+    <string name="transcribeSaving">악보 저장 중…</string>
+    <string name="transcribeError">악보를 만들지 못했어요. 다시 시도해 주세요.</string>
+    <string name="transcribeNoNotes">멜로디를 찾지 못했어요. 조금 더 크고 또렷하게 불러 주세요.</string>
 
 </resources>
