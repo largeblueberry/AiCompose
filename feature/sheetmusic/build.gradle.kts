@@ -8,6 +8,11 @@ android {
     androidResources {
         enable = false
     }
+
+    // ViewModel이 쓰는 android.util.Log를 JVM 테스트에서 예외 대신 무시하게 한다
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -16,4 +21,5 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:navigation"))
     implementation(libs.androidx.webkit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
