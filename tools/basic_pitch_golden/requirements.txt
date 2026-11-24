@@ -1,0 +1,6 @@
+# Python 3.11 권장 (basic-pitch의 TensorFlow 버전 제약)
+basic-pitch==0.4.0
+tensorflow==2.15.0
+numpy==1.26.4
+scipy==1.17.1
+librosa==0.11.0

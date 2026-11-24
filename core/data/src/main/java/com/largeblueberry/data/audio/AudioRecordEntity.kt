@@ -21,5 +21,14 @@ data class AudioRecordEntity(
     val duration: String,
 
     @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+
+    @ColumnInfo(name = "bpm")
+    val bpm: Int,
+
+    @ColumnInfo(name = "beats_per_bar")
+    val beatsPerBar: Int,
+
+    @ColumnInfo(name = "sample_rate")
+    val sampleRate: Int,
 )

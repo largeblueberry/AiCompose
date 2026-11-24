@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--
+  기기 안 악보 렌더러. OpenSheetMusicDisplay 3.0.0 (BSD 3-Clause, LICENSE 참고)로 MusicXML을 SVG로 그린다.
+  네트워크를 쓰지 않는다. 앱이 window.renderScore(musicXml)를 부르고, 높이·오류는 AndroidBridge로 알린다.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=4.0">
+  <style>
+    html, body { margin: 0; padding: 0; background: #ffffff; }
+    #score { width: 100%; }
+  </style>
+  <script src="opensheetmusicdisplay.min.js"></script>
+</head>
+<body>
+<div id="score"></div>
+<script>
+  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("score", {
+    autoResize: true,
+    backend: "svg",
+    drawTitle: false,
+    drawPartNames: false,
+    drawComposer: false,
+    drawCredits: false
+  });
+
+  function reportHeight() {
+    if (window.AndroidBridge) window.AndroidBridge.reportHeight(Math.ceil(document.body.scrollHeight));
+  }
+
+  window.renderScore = function (xml) {
+    osmd.load(xml).then(function () {
+      osmd.render();
+      reportHeight();
+    }).catch(function (e) {
+      if (window.AndroidBridge) window.AndroidBridge.reportError(String(e));
+    });
+  };
+
+  // autoResize로 폭이 바뀌면 다시 그린다. 그때 높이도 다시 알린다.
+  new ResizeObserver(function () { reportHeight(); }).observe(document.body);
+</script>
+</body>
+</html>

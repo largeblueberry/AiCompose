@@ -1,6 +1,5 @@
 package com.largeblueberry.aicompose.nav
 
-import android.util.Log
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -39,12 +38,7 @@ fun AppNavigation() {
 
         composable(AppRoutes.LibraryScreen.route) {
             LibraryScreen(
-                onUploadSuccess = { scoreUrl, midiUrl ->
-                    val routeWithArgs = AppRoutes.SheetMusicScreen.createRoute(scoreUrl, midiUrl)
-
-                    Log.d("AppNavigation", "Navigating to SheetMusicScreen with args: $routeWithArgs")
-                    navController.navigate(routeWithArgs)
-                },
+                onOpenScore = { scoreId -> navController.navigate(AppRoutes.SheetMusicScreen.createRoute(scoreId)) },
                 navController = navController,
                 onBackClick = { navController.popBackStack() }
             )
@@ -110,48 +104,16 @@ fun AppNavigation() {
         }
 
         composable(
-            route = AppRoutes.SheetMusicScreen.routeWithArgs,
-            arguments = listOf(
-                navArgument(AppRoutes.SheetMusicScreen.SCORE_URL_ARG) { type = NavType.StringType },
-                navArgument(AppRoutes.SheetMusicScreen.MIDI_URL_ARG) { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            Log.d("AppNavigation", "인자 포함된 SheetMusicScreen 호출됨")
-            SheetMusicScreen(
-                scoreUrl = backStackEntry.arguments?.getString(AppRoutes.SheetMusicScreen.SCORE_URL_ARG),
-                midiUrl = backStackEntry.arguments?.getString(AppRoutes.SheetMusicScreen.MIDI_URL_ARG),
-                onNavigateToRecord = {
-                    navController.navigate(AppRoutes.RecordScreen.route)
-                },
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(AppRoutes.SheetMusicScreen.route) {
-            Log.d("AppNavigation", "기본 SheetMusicScreen 호출됨")
-            SheetMusicScreen(
-                scoreUrl = null,
-                midiUrl = null, // midiUrl도 null로 전달
-                onNavigateToRecord = {
-                    navController.navigate(AppRoutes.RecordScreen.route)
-                },
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
+            route = AppRoutes.SheetMusicScreen.route,
+            arguments = listOf(navArgument(AppRoutes.SheetMusicScreen.SCORE_ID_ARG) { type = NavType.StringType })
+        ) {
+            // 악보 id는 SheetMusicViewModel이 SavedStateHandle로 받는다
+            SheetMusicScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         composable(AppRoutes.SheetMusicHistoryScreen.route) {
             SheetMusicHistoryScreen(
-                onScoreClick = { scoreUrl, midiUrl ->
-                    val routeWithArgs = AppRoutes.SheetMusicScreen.createRoute(scoreUrl, midiUrl)
-
-                    Log.d("AppNavigation", "Navigating from History to SheetMusicScreen with args: $routeWithArgs")
-
-                    navController.navigate(routeWithArgs)
-                },
+                onScoreClick = { scoreId -> navController.navigate(AppRoutes.SheetMusicScreen.createRoute(scoreId)) },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToRecord = { navController.navigate(AppRoutes.RecordScreen.route) }
             )

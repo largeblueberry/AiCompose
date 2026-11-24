@@ -13,13 +13,10 @@
     <string name="settingsMainText">Settings</string>
     <string name="settingsSubText">Change app settings.</string>
     <string name="waveformMainText">Check your Record</string>
-    <string name="waveformSubText">Review, delete, and upload your recording.</string>
+    <string name="waveformSubText">Listen to, delete, and turn your recordings into sheet music.</string>
 
 
     <string name="emptyLibrary">No recorded files.</string>
-    <string name="serverUploadError">Server upload failed. Please try again later.</string>
-    <string name="serverUploadSuccess">Upload successful!</string>
-    <string name="serverUploading">Already uploading. Please wait.</string>
     <string name="fileDeleteSuccess">File deletion successful.</string>
     <string name="fileDeleteError">File deletion failed. Please try again later.</string>
 
@@ -32,10 +29,9 @@
     <string name="recordPermission">Recording permission is required.</string>
     <string name="recordSavedMSG">Recording saved: %1$s</string>
 
-    <string name="recordWaiting">Recording ...</string>
+    <string name="recordWaiting">Choose a tempo and tap the mic</string>
     <string name="recording">Recording</string>
     <string name="recordComplete">Recording stopped</string>
-    <string name="recordFailedFilePath">Recording path not found.</string>
     <string name="recordFailedStart">Failed to start recording.</string>
     <string name="recordFailedStop">Recording failed due to an unknown error.</string>
 
@@ -43,24 +39,12 @@
     <string name="recordStop">Stop recording</string>
     <string name="gotoLibrary">View recordings</string>
 
-    <string name="googleLogin">Sign in with Google Account</string>
 
-    <string name="userSkipButton">Skip for now</string>
-    <string name="utilOr">  or  </string>
 
-    <string name="accountSync">Account Link</string>
-    <string name="googleLoginExperienceMore">Sign in with your Google Account to experience more features.</string>
-    <string name="loginTermsAgreementNotice">By logging in, you agree to the Terms of Service.</string>
 
     <string name="settingTitle">Settings</string>
     <string name="appSetting">App Settings</string>
-    <string name="appAlarmMainText">Notifications</string>
-    <string name="appAlarmSubText">Push Notification Settings</string>
 
-    <string name="account">Account</string>
-    <string name="logout">Logout</string>
-    <string name="login">Login</string>
-    <string name="loginSubText">Sign in with your Google Account</string>
 
     <string name="languageMainText">Language</string>
     <string name="languageSubText">Language Settings</string>
@@ -68,13 +52,8 @@
     <string name="themeMainText">Theme</string>
     <string name="themeSubText">Light/Dark Mode</string>
 
-    <string name="appHelper">Help</string>
-    <string name="appUseMainText">How to Use</string>
-    <string name="appUseSubText">User Guide</string>
     <string name="aboutEareamMainText">About Eaream</string>
     <string name="aboutEareamSubText">Service Introduction</string>
-    <string name="appBugMainText">Report a Bug</string>
-    <string name="appBugSubText">Please report any errors.</string>
 
     <string name="serviceTermMainText">Terms of Service</string>
     <string name="serviceTermSubText">Terms and Policies</string>
@@ -82,11 +61,9 @@
 
     <string name="backButtonContentDescription">Back button</string>
     <string name="eareamLogoDescription">Eaream logo</string>
-    <string name="googleLogo">Google logo</string>
     <string name="pauseDescription">Pause</string>
     <string name="stopDescription">Stop</string>
     <string name="playDescription">Play</string>
-    <string name="uploadDescription">Upload</string>
     <string name="deleteDescription">Delete</string>
 
     <string name="theme_light">Light</string>
@@ -110,17 +87,14 @@
     <string name="language_setting_title">Language Settings</string>
 
     <string name="sheet_music_list_title">Sheet Music List</string>
-    <string name="navigate_back_content_description">Navigate Back</string>
     <string name="empty_sheet_music_main_message">No sheet music yet</string>
     <string name="empty_sheet_music_sub_message">Shall we start recording first?</string>
     <string name="start_recording_button">🎤 Start Recording</string>
 
     <string name="sheet_music_detail_title">Sheet Music Detail</string>
-    <string name="sheet_music_detail_screen_message">Sheet Music Detail Screen</string>
 
 
     <string name="about_us_title">About Eareum</string>
-    <string name="navigate_back_description">Navigate back</string>
     <string name="app_slogan">Listen and Dream, AI Composing Service</string>
     <string name="app_description">Born to help anyone easily create their own melodies without missing a moment of inspiration, just like humming a tune.</string>
 
@@ -133,11 +107,12 @@
     <string name="team_description_android">Focused on providing an easy and enjoyable composing experience.</string>
 
     <string name="section_title_license">License &amp; Contact</string>
-    <string name="license_description">This app is built with various open-source libraries. Check license information.</string>
+    <string name="license_description">This app uses the open-source software below. Tap an item to read its full license.</string>
     <string name="contact_description">For feedback or inquiries, please email us at:\ncontact: onlym6659@gmail.com</string>
     <string name="version_info">Version %1$s</string>
+    <string name="ossShowLicense">View license</string>
+    <string name="ossHideLicense">Hide license</string>
 
-    <string name="bugreport">Bug Report</string>
 
     <string name="permission_dialog_title">Permission Required</string>
     <string name="permission_dialog_message">The app needs the following permissions to function properly:\n\n• Microphone\n• Accessibility Service</string>
@@ -163,14 +138,45 @@
 
     <string name="error_term_not_found">Error: Term not found.</string>
 
-    <string name="welcome_message">Welcome, %s!</string>
-    <string name="login_success_message">Login was successful.</string>
 
-    <string name="delete_account_title">Delete Account</string>
-    <string name="delete_account_message">Are you sure you want to delete your account?\n\n• All data will be deleted\n• This action cannot be undone</string>
-    <string name="delete_account_confirm">Delete</string>
 
-    <!-- Loading Content -->
-    <string name="loading_login">Logging in...</string>
+
+    <!-- 녹음: BPM·카운트인·메트로놈 -->
+    <string name="recordCountIn">Get ready… %1$d</string>
+    <string name="recordBpmLabel">Tempo</string>
+    <string name="recordBpmValue">%1$d BPM</string>
+    <string name="recordBpmSlower">Slower</string>
+    <string name="recordBpmFaster">Faster</string>
+    <string name="recordClickHintHeadphones">Headphones connected: you\'ll hear the click while recording.</string>
+    <string name="recordClickHintSpeaker">Follow the flashing beat. Connect headphones to hear the click while recording.</string>
+    <string name="recordTooShort">Nothing was recorded. Stop after the count-in ends.</string>
+    <string name="recordMaxLength">Recordings are limited to 2 minutes, so recording stopped.</string>
+    <string name="recordCancelled">Recording was discarded because you left the screen.</string>
+    <string name="recordInterrupted">Recording stopped because another app took over audio.</string>
+
+    <!-- 라이브러리 -->
+    <string name="libraryItemMeta">%1$s · %2$d BPM</string>
+
+    <!-- 악보 -->
+    <string name="sheetMusicInfo">%1$d BPM · %2$s · %3$d notes</string>
+    <string name="sheetMusicCreatedAt">Created %1$s</string>
+    <string name="sheetMusicNotFound">This sheet music no longer exists.</string>
+    <string name="sheetMusicLoadError">Couldn\'t open the sheet music.</string>
+    <string name="sheetMusicRenderError">Couldn\'t draw the sheet music.</string>
+    <string name="sheetMusicPlay">Play</string>
+    <string name="sheetMusicStop">Stop</string>
+    <string name="sheetMusicShareMidi">Share MIDI</string>
+    <string name="sheetMusicShareXml">Share MusicXML</string>
+    <string name="sheetMusicPlayError">Couldn\'t play the MIDI file.</string>
+    <string name="retry">Try again</string>
+
+    <!-- 온디바이스 채보 -->
+    <string name="transcribeDescription">Make sheet music</string>
+    <string name="viewScoreDescription">View sheet music</string>
+    <string name="transcribeQueued">Waiting to make sheet music…</string>
+    <string name="transcribeRunning">Making sheet music… %1$d%%</string>
+    <string name="transcribeSaving">Saving sheet music…</string>
+    <string name="transcribeError">Couldn\'t make sheet music. Please try again.</string>
+    <string name="transcribeNoNotes">No melody found. Try humming a little louder and clearer.</string>
 
 </resources>

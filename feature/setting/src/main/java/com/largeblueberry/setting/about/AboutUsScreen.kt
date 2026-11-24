@@ -103,15 +103,17 @@ fun AboutUsScreen(
 
             SectionTitle(stringResource(id = R.string.section_title_license))
             Text(
-                text = stringResource(id = R.string.license_description),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
                 text = stringResource(id = R.string.contact_description),
                 style = MaterialTheme.typography.bodyMedium,
                 lineHeight = 22.sp
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.license_description),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OpenSourceLicenseSection()
 
             Spacer(modifier = Modifier.height(32.dp))
             Text(

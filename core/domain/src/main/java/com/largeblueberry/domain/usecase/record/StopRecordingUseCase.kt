@@ -2,42 +2,15 @@ package com.largeblueberry.domain.usecase.record
 
 import com.largeblueberry.domain.model.RecordModel
 import com.largeblueberry.domain.repository.RecordRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
+/** 녹음을 끝내고 라이브러리(DB)에 저장한다. */
 class StopRecordingUseCase @Inject constructor(
     private val recordRepository: RecordRepository,
 ) {
-    operator fun invoke(filePath: String): Result<RecordModel> {
-        return recordRepository.stopRecording().map { durationMillis ->
-            createAudioRecord(filePath, durationMillis)
+    suspend operator fun invoke(): Result<RecordModel> =
+        recordRepository.stopRecording().mapCatching { record ->
+            recordRepository.saveRecord(record)
+            record
         }
-    }
-
-    private fun createAudioRecord(filePath: String, durationMillis: Long): RecordModel {
-        val fileName = filePath.substring(filePath.lastIndexOf("/") + 1)
-        val createdAt = System.currentTimeMillis()
-        val durationFormatted = formatRecordingDuration(durationMillis.toInt())
-        return RecordModel(
-            filename = fileName,
-            filePath = filePath,
-            fileSize = File(filePath).length(),
-            createdAt = createdAt,
-            duration = durationFormatted
-        )
-    }
-
-    private fun formatRecordingDuration(durationMillis: Int): String {
-        val minutes = (durationMillis / 1000) / 60
-        val seconds = (durationMillis / 1000) % 60
-        return String.format("%02d:%02d", minutes, seconds)
-    }
-
-    suspend fun saveRecordToDatabase(recordModel: RecordModel) {
-        withContext(Dispatchers.IO) {
-            recordRepository.saveRecord(recordModel)
-        }
-    }
 }

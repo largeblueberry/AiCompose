@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -47,30 +46,19 @@ class MainActivity : AppCompatActivity() {
 
     private var showSettingsDialog by mutableStateOf(false)
 
+    /**
+     * 앱이 요청하는 권한은 마이크 하나다. 녹음·악보는 앱 내부 저장소에만 두므로 저장소·미디어 권한이 필요 없다
+     * (개인정보 처리방침 제1조와 맞춰야 한다).
+     */
     private val requestPermissionLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            val isRecordAudioGranted = permissions[Manifest.permission.RECORD_AUDIO] ?: false
-            val isAudioReadGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                permissions[Manifest.permission.READ_MEDIA_AUDIO] ?: true
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                Log.d(TAG, "Microphone permission granted.")
             } else {
-                permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: true
-            }
-
-            if (isRecordAudioGranted && isAudioReadGranted) {
-                Log.d(TAG, "Required permissions granted.")
-            } else {
-                Log.d(TAG, "Permissions denied.")
-                val rationalePermission = if (!isRecordAudioGranted) {
-                    Manifest.permission.RECORD_AUDIO
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    Manifest.permission.READ_MEDIA_AUDIO
-                } else {
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                }
-
-                if (!shouldShowRequestPermissionRationale(rationalePermission)) {
+                Log.d(TAG, "Microphone permission denied.")
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
                     Log.d(TAG, "Permission might be permanently denied. Showing settings dialog.")
                     showSettingsDialog = true
                 }
@@ -143,24 +131,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermissions() {
-        val permissionsToRequest = mutableListOf<String>()
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(Manifest.permission.READ_MEDIA_AUDIO)
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-        }
-
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
+            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
 

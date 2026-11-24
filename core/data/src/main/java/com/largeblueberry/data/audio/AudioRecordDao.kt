@@ -12,6 +12,9 @@ interface AudioRecordDao {
     @Query("SELECT * FROM audio_records ORDER BY created_at DESC")
     fun getAllRecords(): Flow<List<AudioRecordEntity>>
 
+    @Query("SELECT * FROM audio_records WHERE id = :id")
+    suspend fun getRecordById(id: Int): AudioRecordEntity?
+
     @Insert
     suspend fun insertRecord(record: AudioRecordEntity)
 

@@ -22,5 +22,4 @@ dependencies {
     implementation(libs.androidx.preference)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.mockk.android)
 }
