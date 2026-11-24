@@ -7,12 +7,13 @@
 
 - 서버 없이 기기 안에서 허밍 → 음표 → MIDI·악보까지 만든다(온디바이스 피벗, 2026-11).
 - 대상은 단성 허밍. 다성·악기 채보는 목표가 아니다.
+- 녹음과 악보는 기기 밖으로 나가지 않는다(서버 없음, INTERNET 권한 없음, 클라우드 백업 끔). 이용약관·개인정보 처리방침이 이 약속을 근거로 쓰여 있다.
 
 ## 결정
 
 ### 채보 모델: Spotify Basic Pitch (`nmp.tflite`)
 - 이유: 가볍고(파라미터 2만 미만), 공식 tflite 제공, CQT가 그래프 안에 있어 원시 파형만 넣으면 됨, Apache 2.0.
-- 결과: 입력은 22,050Hz mono float32. 앱 안에 라이선스 고지 필요.
+- 결과: 입력은 22,050Hz mono float32. 라이선스 고지는 About 화면에 있다(troubleshooting C-11).
 - 모델 출력 → 음표 변환(`note_creation.py`)은 Kotlin으로 포팅하고, Python 원본 결과와 비교하는 골든 테스트로 검증한다.
 - Basic Pitch는 다성 모델이라 허밍용 단성화 단계를 따로 둔다.
 - LiteRT CPU로 돌린다. GPU delegate·support 라이브러리는 쓰지 않는다(모델이 작고, 그래프 안 CQT 연산의 GPU 지원이 불확실).
@@ -29,12 +30,36 @@
 - `AudioRecord` PCM 16-bit mono WAV. 22,050Hz를 먼저 시도하고, 기기가 거부하면 44,100Hz로 녹음해 2배 다운샘플(저역통과 포함)한다. 44,100만 모든 기기에서 보장되기 때문.
 - 저장 위치는 `filesDir/recordings/`. `externalCacheDir`는 OS가 지울 수 있어 사용자의 녹음이 사라진다.
 - 기존 3GP 녹음과 그 DB 행은 버린다(마이그레이션 없음).
+- 녹음 중에는 진동을 끈다. 모터 소리가 마이크로 들어간다(카운트인 중에만 진동).
+- 화면이 `ON_STOP`되면 녹음을 취소하고 버린다. 백그라운드 녹음은 하지 않는다.
+
+### 악보 표시: WebView + OpenSheetMusicDisplay
+- 이유: 이미 동작하고, 조판 품질이 충분하다. Compose Canvas 직접 렌더러는 단선율이라 해 볼 만하지만 채보 연결 뒤의 선택 과제로 미뤘다(troubleshooting B-16). Verovio(NDK)는 비용 대비 이득이 적어 제외.
+- 실제로 그려지는지는 JVM 테스트로 볼 수 없다. Robolectric은 연결(설정·URL·브리지·정리)만 보고, 렌더링은 기기 체크리스트로 본다.
+
+### 채보 실행: WorkManager
+- 화면을 떠나도 계속되도록 백그라운드 작업으로 돈다. 알림은 띄우지 않는다.
+- 일반 OneTimeWork. expedited는 API 31 미만에서 foreground service 알림이 필요해서 쓰지 않는다.
+- 녹음마다 독립 작업(`ExistingWorkPolicy.KEEP`), 모델은 저장소의 Mutex로 한 번에 하나만. 하나의 APPEND 체인은 앞 작업이 실패하면 뒤가 모두 실패한다.
+- 악보 id는 작업 id에서 만든다. 작업이 다시 실행돼도 악보는 하나다.
+- 성공은 작업 상태로 기억하지 않는다. "Room에 그 녹음의 악보가 있다"가 성공이다(작업 기록이 지워져도 화면이 흔들리지 않게).
+- 자동 재시도 없음(같은 녹음은 다시 돌려도 같다). 사용자 취소 버튼 없음. 녹음을 지우면 그 작업만 내부에서 취소한다.
+
+### 녹음과 악보의 관계
+- 녹음을 지워도 악보는 남긴다(외래 키 `SET_NULL`). 악보는 사용자가 보관·공유하는 결과물이라 녹음과 수명이 같지 않다.
+
+### 오픈소스 고지
+- 목록을 코드로 직접 관리한다(`OpenSourceLicenses.kt`). 자동 생성 도구는 JS 번들·모델을 다루지 못한다. OSMD 번들 안의 라이브러리(VexFlow, JSZip, pako 등)까지 고지한다.
+
+### 테스트
+- 검증 대상은 실제 객체로, 우리가 가진 타입의 협력 객체는 fake로, 내 것이 아닌 타입(WebView)은 Robolectric shadow를 spy처럼 쓴다. mockk는 쓰지 않는다.
+- 경쟁 상태는 반복 실행이 아니라 테스트가 실행 순서를 직접 만들어 확인한다(가짜 모델에 문을 두고 테스트가 연다).
 
 ### 모듈과 의존 방향
-- `:core:domain`(JVM): `Transcriber` 같은 인터페이스, 악보 모델, 유스케이스.
+- `:core:domain`(JVM): `TranscriptionRepository`·`TranscriptionScheduler` 같은 인터페이스, 악보 모델, 유스케이스. 어떤 백그라운드 기술로 도는지 모른다.
 - `:core:music`(JVM, 프로젝트 의존 없음): note creation 포팅, 단성화, 위상 추정·양자화, 조성 추정, MIDI·MusicXML 생성. 품질을 결정하는 곳이라 기기 없이 테스트하려고 순수 JVM으로 뺐다.
 - `:core:ml`(android): LiteRT, 모델 assets, 창 분할·unwrap.
-- `:core:data`: `Transcriber` 구현(= ml + music 조합), 파일·DB 저장. domain·ml·music에 의존.
+- `:core:data`: 채보 파이프라인 구현(= ml + music 조합), WorkManager 작업, 파일·DB 저장. domain·ml·music에 의존.
 - 악보 결과는 URL이 아니라 로컬 파일·데이터로 다루고, 화면 간에는 id를 넘긴다.
 
 ## 하지 말 것
@@ -42,3 +67,8 @@
 - 템포 자동 추정을 기본 경로로 넣지 않는다(위 "템포·박자" 결정).
 - 녹음을 캐시 디렉터리에 두지 않는다.
 - 서버 시절 경로(HTTP로 악보 HTML 받기, 업로드 용어)를 되살리지 않는다.
+- 채보를 하나의 APPEND 체인으로 묶지 않는다(실패가 뒤로 번진다). expedited 작업을 쓰지 않는다(알림 필요).
+- suspend 함수를 `runCatching`으로 감싸지 않는다. 취소(CancellationException)까지 실패로 삼켜 WorkManager가 다시 예약하지 않는다.
+- 채보 진행 상태를 ViewModel 메모리에 따로 들지 않는다. 작업 흐름과 악보 흐름에서만 나와야 화면을 다시 열어도 같다.
+- `allowBackup`을 켜거나 저장소·미디어 권한을 더할 때는 약관도 같이 고친다(지금 약관은 "기기 밖으로 나가지 않음, 권한은 마이크 하나").
+- 의존성을 더하면 병합된 최종 매니페스트의 권한을 확인한다. 라이브러리가 권한을 더할 수 있다(WorkManager가 일반 권한 넷을 더한 적이 있다).

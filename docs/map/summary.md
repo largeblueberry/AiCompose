@@ -1,6 +1,6 @@
 # AiCompose 구조 개요 (archgraph)
 
-- 소스 커밋 `61d5ab5` · 추출 2026-11-23T14:48:05+09:00 · 그래프 archgraph/0.1 · 설정 `없음`
+- 소스 커밋 `b82eb28` (작업 트리에 커밋 안 된 변경 있음) · 추출 2026-11-24T12:03:50+09:00 · 그래프 archgraph/0.1 · 설정 `없음`
 - 모든 줄은 소스에서 추출한 사실이다. 역할 태그와 [c] 표시는 추론이고, 근거를 괄호에 둔다. 판정(규칙 위반 여부)은 하지 않는다.
 - 역할 태그: 없음. 도구는 역할을 추측하지 않는다(프로필 꺼짐). 켜려면 설정에 `profile: android-clean`.
 - 경로는 각 모듈의 소스 루트 기준이다. `파일:줄`은 그 루트에 붙여서 읽는다.
@@ -34,90 +34,101 @@
 | 모듈 | 종류 | 계층 | 프로젝트 의존 |
 |---|---|---|---|
 | `:app` | android-app | - | :feature:sheetmusic (impl), :feature:setting (impl), :feature:library (impl), :feature:record (impl), :core:data (impl), :core:domain (impl), :core:navigation (impl), :core:ui (impl), :core:resources (impl) |
-| `:core:data` | android-library | - | :core:domain (impl) |
+| `:core:data` | android-library | - | :core:domain (impl), :core:ml (impl), :core:music (impl) |
 | `:core:domain` | jvm | - | - |
+| `:core:ml` | android-library | - | :core:music (api) |
+| `:core:music` | jvm | - | - |
 | `:core:navigation` | android-library | - | - |
 | `:core:resources` | android-library | - | - |
 | `:core:ui` | android-library | - | :core:resources (impl), :core:domain (impl) |
 | `:feature:library` | android-library | - | :core:resources (impl), :core:ui (impl), :core:domain (impl) |
 | `:feature:record` | android-library | - | :core:resources (impl), :core:ui (impl), :core:domain (impl), :core:navigation (impl) |
 | `:feature:setting` | android-library | - | :core:resources (impl), :core:ui (impl), :core:domain (impl), :core:navigation (impl) |
-| `:feature:sheetmusic` | android-library | - | :core:resources (impl), :core:ui (impl), :core:domain (impl) |
+| `:feature:sheetmusic` | android-library | - | :core:resources (impl), :core:ui (impl), :core:domain (impl), :core:navigation (impl) |
 
 외부 라이브러리 의존(테스트 설정 제외, 카탈로그 별칭). 모듈 build 파일에 선언한 것:
-- `:app`: androidx.activity.compose, androidx.core.splashscreen, androidx.navigation.compose
-- `:core:data`: androidx.datastore.preferences, room.compiler, room.ktx, room.runtime, tensorflow.lite, tensorflow.lite.gpu, tensorflow.lite.support
+- `:app`: androidx.activity.compose, androidx.core.splashscreen, androidx.navigation.compose, hilt.work, work.runtime.ktx
+- `:core:data`: androidx.datastore.preferences, androidx.hilt.compiler, hilt.work, room.compiler, room.ktx, room.runtime, work.runtime.ktx
 - `:core:domain`: javax.inject, kotlinx.coroutines.core
-- `:feature:library`: androidx.activity.compose, hilt.compiler
+- `:core:ml`: litert
+- `:feature:library`: androidx.activity.compose
 - `:feature:record`: androidx.activity.compose
 - `:feature:setting`: androidx.datastore.preferences, androidx.preference
-- `:feature:sheetmusic`: coil.compose
+- `:feature:sheetmusic`: androidx.compose.bom, androidx.compose.ui.test.manifest, androidx.webkit
 
 [c] build 파일에 없고 컨벤션 플러그인이 추가한 것(같은 목록인 모듈은 묶음):
 - `:app`: androidx.appcompat, androidx.compose.bom, androidx.compose.foundation, androidx.compose.material.icons.extended, androidx.compose.material3, androidx.compose.ui, androidx.compose.ui.graphics, androidx.compose.ui.tooling, androidx.compose.ui.tooling.preview, androidx.core.ktx, hilt.android, hilt.compiler, hilt.navigation.compose, kotlin-stdlib, material
 - `:core:data`: androidx.appcompat, androidx.core.ktx, hilt.android, hilt.compiler, hilt.navigation.compose, kotlin-stdlib, material
-- `:core:navigation`, `:core:resources`: androidx.appcompat, androidx.core.ktx, kotlin-stdlib, material
+- `:core:ml`, `:core:navigation`, `:core:resources`: androidx.appcompat, androidx.core.ktx, kotlin-stdlib, material
 - `:core:ui`: androidx.appcompat, androidx.compose.bom, androidx.compose.foundation, androidx.compose.material.icons.extended, androidx.compose.material3, androidx.compose.ui, androidx.compose.ui.graphics, androidx.compose.ui.tooling, androidx.compose.ui.tooling.preview, androidx.core.ktx, kotlin-stdlib, material
-- `:feature:library`: androidx.appcompat, androidx.compose.bom, androidx.compose.foundation, androidx.compose.material.icons.extended, androidx.compose.material3, androidx.compose.ui, androidx.compose.ui.graphics, androidx.compose.ui.tooling, androidx.compose.ui.tooling.preview, androidx.core.ktx, androidx.lifecycle.runtime.compose, androidx.lifecycle.runtime.ktx, androidx.lifecycle.viewmodel.compose, androidx.lifecycle.viewmodel.ktx, androidx.navigation.compose, hilt.android, hilt.navigation.compose, kotlin-stdlib, kotlinx.coroutines.android, material
-- `:feature:record`, `:feature:setting`, `:feature:sheetmusic`: androidx.appcompat, androidx.compose.bom, androidx.compose.foundation, androidx.compose.material.icons.extended, androidx.compose.material3, androidx.compose.ui, androidx.compose.ui.graphics, androidx.compose.ui.tooling, androidx.compose.ui.tooling.preview, androidx.core.ktx, androidx.lifecycle.runtime.compose, androidx.lifecycle.runtime.ktx, androidx.lifecycle.viewmodel.compose, androidx.lifecycle.viewmodel.ktx, androidx.navigation.compose, hilt.android, hilt.compiler, hilt.navigation.compose, kotlin-stdlib, kotlinx.coroutines.android, material
+- `:feature:library`, `:feature:record`, `:feature:setting`: androidx.appcompat, androidx.compose.bom, androidx.compose.foundation, androidx.compose.material.icons.extended, androidx.compose.material3, androidx.compose.ui, androidx.compose.ui.graphics, androidx.compose.ui.tooling, androidx.compose.ui.tooling.preview, androidx.core.ktx, androidx.lifecycle.runtime.compose, androidx.lifecycle.runtime.ktx, androidx.lifecycle.viewmodel.compose, androidx.lifecycle.viewmodel.ktx, androidx.navigation.compose, hilt.android, hilt.compiler, hilt.navigation.compose, kotlin-stdlib, kotlinx.coroutines.android, material
+- `:feature:sheetmusic`: androidx.appcompat, androidx.compose.foundation, androidx.compose.material.icons.extended, androidx.compose.material3, androidx.compose.ui, androidx.compose.ui.graphics, androidx.compose.ui.tooling, androidx.compose.ui.tooling.preview, androidx.core.ktx, androidx.lifecycle.runtime.compose, androidx.lifecycle.runtime.ktx, androidx.lifecycle.viewmodel.compose, androidx.lifecycle.viewmodel.ktx, androidx.navigation.compose, hilt.android, hilt.compiler, hilt.navigation.compose, kotlin-stdlib, kotlinx.coroutines.android, material
 
 ## 2. 파일과 타입 (모듈별 개수)
 
 파일·타입·줄·가변 프로퍼티(var)는 쿼리 `files <모듈>`로 본다. 역할 수는 타입마다 첫 역할로 센다.
 - `:app` (루트 `app/src/main/java/com/largeblueberry/aicompose/`): 파일 14, 타입 8 — 역할 없음 8; @Composable 함수 12
-- `:core:data` (루트 `core/data/src/main/java/com/largeblueberry/data/`): 파일 16, 타입 16 — 역할 없음 16
-- `:core:domain` (루트 `core/domain/src/main/java/com/largeblueberry/domain/`): 파일 22, 타입 22 — 역할 없음 22
+- `:core:data` (루트 `core/data/src/main/java/com/largeblueberry/data/`): 파일 25, 타입 28 — 역할 없음 28
+- `:core:domain` (루트 `core/domain/src/main/java/com/largeblueberry/domain/`): 파일 35, 타입 49 — 역할 없음 49
+- `:core:ml` (루트 `core/ml/src/main/java/com/largeblueberry/ml/`): 파일 2, 타입 2 — 역할 없음 2
+- `:core:music` (루트 `core/music/src/main/java/com/largeblueberry/music/`): 파일 16, 타입 33 — 역할 없음 33
 - `:core:navigation` (루트 `core/navigation/src/main/java/com/largeblueberry/navigation/`): 파일 1, 타입 14 — 역할 없음 14
 - `:core:ui` (루트 `core/ui/src/main/java/com/largeblueberry/core_ui/`): 파일 7, 타입 4 — 역할 없음 4; @Composable 함수 3
-- `:feature:library` (루트 `feature/library/src/main/java/com/largeblueberry/library/`): 파일 8, 타입 7 — 역할 없음 7; @Composable 함수 4
-- `:feature:record` (루트 `feature/record/src/main/java/com/largeblueberry/record/ui/`): 파일 4, 타입 3 — 역할 없음 3; @Composable 함수 5
-- `:feature:setting` (루트 `feature/setting/src/main/java/com/largeblueberry/setting/`): 파일 14, 타입 10 — 역할 없음 10; @Composable 함수 20
-- `:feature:sheetmusic` (루트 `feature/sheetmusic/src/main/java/com/largeblueberry/feature_sheetmusic/ui/`): 파일 9, 타입 8 — 역할 없음 8; @Composable 함수 14
+- `:feature:library` (루트 `feature/library/src/main/java/com/largeblueberry/library/`): 파일 8, 타입 12 — 역할 없음 12; @Composable 함수 6
+- `:feature:record` (루트 `feature/record/src/main/java/com/largeblueberry/record/ui/`): 파일 4, 타입 4 — 역할 없음 4; @Composable 함수 7
+- `:feature:setting` (루트 `feature/setting/src/main/java/com/largeblueberry/setting/`): 파일 16, 타입 12 — 역할 없음 12; @Composable 함수 23
+- `:feature:sheetmusic` (루트 `feature/sheetmusic/src/main/java/com/largeblueberry/feature_sheetmusic/ui/`): 파일 11, 타입 11 — 역할 없음 11; @Composable 함수 14
 
 ## 3. 소스 밖 API 호출
 
 3.1은 Android SDK·JDK와 설정 `sdk.packages`(없음)에 속하는 클래스를 호출하는 곳이다. 값·로그 유틸(`java.lang`, `java.util`, `java.text`, `java.time`, `java.math`, `android.util`, `kotlin`)은 빼고 3.2에서 센다. 형식: 묶음(`sdk.packages` 항목, 없으면 패키지) 뒤에 그것을 호출하는 소유자(타입·최상위 함수) 수. 소유자와 위치는 쿼리 `uses <패키지·클래스>`.
-- `:app` (-): android.app 2, android.os 2, android 1, android.content 1, android.content.pm 1, android.net 1, android.provider 1
-- `:core:data` (-): android.content 1, android.media 1, android.os 1, java.io 1
-- `:core:domain` (-): java.io 3
-- `:core:navigation` (-): java.net 1, java.nio.charset 1
+- `:app` (-): android 1, android.app 1, android.content 1, android.content.pm 1, android.net 1, android.os 1, android.provider 1
+- `:core:data` (-): java.io 4, android.content 3, android.media 3, android.os 1, java.nio.file 1
+- `:core:domain` (-): java.io 2
+- `:core:ml` (-): android.content 1, android.content.res 1, java.nio 1
+- `:core:music` (-): java.io 2, java.nio 1
+- `:core:navigation` (-): android.net 1
 - `:feature:library` (-): android.content 1, android.media 1
-- `:feature:record` (-): android 1, android.content 1, android.content.pm 1, android.content.res 1, java.io 1
-- `:feature:sheetmusic` (-): android.content 2, android.view 1, android.webkit 1, java.io 1, java.net 1
+- `:feature:record` (-): android 1, android.content 1, android.content.pm 1, android.content.res 1
+- `:feature:setting` (-): android.content 1, android.content.res 1
+- `:feature:sheetmusic` (-): android.content 1, android.media 1, android.view 1, android.webkit 1, java.io 1, org.json 1
 
 3.2 그 밖의 라이브러리 호출 수(모듈별 상위 6개). 위치는 쿼리 `uses <패키지>`:
-- `:app`: androidx.compose.foundation:foundation-layout-android 61, androidx.compose.material3:material3-android 48, androidx.compose.ui:ui-unit-android 42, androidx.compose.ui:ui-android 34, androidx.navigation:navigation-runtime-android 25, androidx.compose.foundation:foundation-android 24, 기타 117
-- `:core:data`: JDK(java.lang·java.util 등) 24, org.jetbrains.kotlin:kotlin-stdlib 21, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 13, androidx.datastore:datastore-preferences-core-android 8, Android SDK(값·로그 유틸) 5, androidx.room:room-runtime-android 3, 기타 11
-- `:core:domain`: org.jetbrains.kotlin:kotlin-stdlib 20, JDK(java.lang·java.util 등) 3, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 2, (kotlin 내장 등) 1
+- `:app`: androidx.compose.foundation:foundation-layout-android 61, androidx.compose.material3:material3-android 48, androidx.compose.ui:ui-unit-android 42, androidx.compose.ui:ui-android 34, androidx.compose.foundation:foundation-android 24, androidx.navigation:navigation-runtime-android 22, 기타 102
+- `:core:data`: org.jetbrains.kotlin:kotlin-stdlib 96, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 45, (kotlin 내장 등) 40, androidx.work:work-runtime 37, JDK(java.lang·java.util 등) 24, Android SDK(값·로그 유틸) 15, 기타 25
+- `:core:domain`: org.jetbrains.kotlin:kotlin-stdlib 21, JDK(java.lang·java.util 등) 2
+- `:core:ml`: org.jetbrains.kotlin:kotlin-stdlib 10, (kotlin 내장 등) 7, com.google.ai.edge.litert:litert 5, JDK(java.lang·java.util 등) 4
+- `:core:music`: org.jetbrains.kotlin:kotlin-stdlib 196, (kotlin 내장 등) 135, JDK(java.lang·java.util 등) 88
 - `:core:ui`: androidx.compose.ui:ui-graphics-android 62, androidx.compose.material3:material3-android 15, androidx.compose.ui:ui-unit-android 10, androidx.compose.ui:ui-text-android 10, org.jetbrains.kotlin:kotlin-stdlib 4, androidx.compose.runtime:runtime-android 4, 기타 3
-- `:feature:library`: androidx.compose.material3:material3-android 66, androidx.compose.foundation:foundation-layout-android 38, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 28, androidx.compose.ui:ui-android 20, androidx.compose.ui:ui-unit-android 19, org.jetbrains.kotlin:kotlin-stdlib 14, 기타 63
-- `:feature:record`: androidx.compose.material3:material3-android 31, androidx.compose.foundation:foundation-layout-android 29, androidx.compose.ui:ui-unit-android 22, androidx.compose.ui:ui-android 19, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 18, androidx.compose.animation:animation-core-android 17, 기타 43
-- `:feature:setting`: androidx.compose.material3:material3-android 133, androidx.compose.foundation:foundation-layout-android 103, androidx.compose.ui:ui-unit-android 67, androidx.compose.ui:ui-android 48, androidx.compose.foundation:foundation-android 21, androidx.compose.material:material-icons-core-android 17, 기타 57
-- `:feature:sheetmusic`: androidx.compose.material3:material3-android 119, androidx.compose.foundation:foundation-layout-android 85, androidx.compose.ui:ui-unit-android 47, org.jetbrains.kotlin:kotlin-stdlib 24, Android SDK(값·로그 유틸) 23, androidx.compose.ui:ui-android 20, 기타 76
+- `:feature:library`: androidx.compose.material3:material3-android 75, androidx.compose.foundation:foundation-layout-android 42, androidx.compose.ui:ui-android 28, org.jetbrains.kotlin:kotlin-stdlib 23, androidx.compose.ui:ui-unit-android 22, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 22, 기타 55
+- `:feature:record`: androidx.compose.material3:material3-android 52, androidx.compose.foundation:foundation-layout-android 44, androidx.compose.ui:ui-android 33, androidx.compose.ui:ui-unit-android 30, org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 22, androidx.compose.animation:animation-core-android 17, 기타 56
+- `:feature:setting`: androidx.compose.material3:material3-android 145, androidx.compose.foundation:foundation-layout-android 110, androidx.compose.ui:ui-unit-android 69, androidx.compose.ui:ui-android 50, androidx.compose.foundation:foundation-android 22, org.jetbrains.kotlin:kotlin-stdlib 19, 기타 82
+- `:feature:sheetmusic`: androidx.compose.material3:material3-android 86, androidx.compose.foundation:foundation-layout-android 64, androidx.compose.ui:ui-android 26, androidx.compose.ui:ui-unit-android 24, androidx.compose.runtime:runtime-android 15, org.jetbrains.kotlin:kotlin-stdlib 12, 기타 62
 
 ## 4. DI 바인딩 (Hilt)
 
 바인딩별 위치·주입받는 곳은 쿼리 `bindings <타입>`. 스코프는 `@`, 한정자는 괄호, 구현은 `→`.
-주입 래퍼(INJECTS 40개): Provider 0, Lazy 0, 래퍼 없음 40
+주입 래퍼(INJECTS 68개): Provider 0, Lazy 1, 래퍼 없음 67
 
 ### SingletonComponent
-- 방식별: @Provides 6, @Binds 6, @Inject 생성자 2
-- DI 모듈별 @Provides·@Binds 수: AudioModule 1, DataStoreModule 2, DatabaseModule 3, RepositoryModule 6
-- @Inject 생성자(역할별 수): 역할 없음 2
+- 방식별: @Provides 10, @Binds 8, @Inject 생성자 3, @AssistedInject 1
+- DI 모듈별 @Provides·@Binds 수: AudioModule 1, DataStoreModule 2, DatabaseModule 3, MlModule 3, RepositoryModule 7, WorkModule 2
+- @Inject 생성자(역할별 수): 역할 없음 4
+- 보조 주입(@AssistedInject): 1
 
 ### ViewModelComponent
 - 방식별: @Inject 생성자 8
 - @Inject 생성자(역할별 수): 역할 없음 8
 
 ### 컴포넌트에 묶이지 않은 바인딩
-- 방식별: @Inject 생성자 17
-- @Inject 생성자(역할별 수): 역할 없음 17
+- 방식별: @Inject 생성자 26
+- @Inject 생성자(역할별 수): 역할 없음 26
 
-스코프가 있는 바인딩이 만드는 타입(테스트 대체 제외): @Singleton 8, 그중 가변 프로퍼티(var)가 있는 타입 2. 타입과 var는 쿼리 `bindings <타입>`·`files <모듈>` 또는 `--full`.
+스코프가 있는 바인딩이 만드는 타입(테스트 대체 제외): @Singleton 12, 그중 가변 프로퍼티(var)가 있는 타입 2. 타입과 var는 쿼리 `bindings <타입>`·`files <모듈>` 또는 `--full`.
 
 ## 5. 주입 관계 (생성자 주입)
 
 역할 사이 주입 수. 타입별 목록은 쿼리 `injects <타입>`.
-- 한쪽에 역할이 없는 주입: 34
+- 한쪽에 역할이 없는 주입: 59
 설정에 선언된 역할 규칙(`role-rules`): 없음
 
