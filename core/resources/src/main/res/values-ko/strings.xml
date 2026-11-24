@@ -105,9 +105,11 @@
     <string name="team_description_android">쉽고 즐거운 작곡 경험을 제공하기 위해 고민했습니다.</string>
 
     <string name="section_title_license">라이선스 및 문의</string>
-    <string name="license_description">본 앱은 다양한 오픈소스 라이브러리를 기반으로 제작되었습니다. 라이선스 정보 확인하기</string>
+    <string name="license_description">이 앱은 아래 오픈소스 소프트웨어를 사용합니다. 항목을 누르면 라이선스 전문을 볼 수 있어요.</string>
     <string name="contact_description">앱에 대한 의견이나 문의사항은 아래 이메일로 보내주세요.\ncontact: onlym6659@gmail.com</string>
     <string name="version_info">버전 %1$s</string>
+    <string name="ossShowLicense">라이선스 보기</string>
+    <string name="ossHideLicense">라이선스 접기</string>
 
 
 

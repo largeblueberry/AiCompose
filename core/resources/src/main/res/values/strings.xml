@@ -107,9 +107,11 @@
     <string name="team_description_android">Focused on providing an easy and enjoyable composing experience.</string>
 
     <string name="section_title_license">License &amp; Contact</string>
-    <string name="license_description">This app is built with various open-source libraries. Check license information.</string>
+    <string name="license_description">This app uses the open-source software below. Tap an item to read its full license.</string>
     <string name="contact_description">For feedback or inquiries, please email us at:\ncontact: onlym6659@gmail.com</string>
     <string name="version_info">Version %1$s</string>
+    <string name="ossShowLicense">View license</string>
+    <string name="ossHideLicense">Hide license</string>
 
 
     <string name="permission_dialog_title">Permission Required</string>
