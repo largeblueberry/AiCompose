@@ -49,4 +49,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
+    // WorkManager를 Hilt 주입 설정으로 초기화(MainApplication)
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.work)
 }

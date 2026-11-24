@@ -40,6 +40,18 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- WorkManager 기본 자동 초기화를 뺀다. MainApplication이 Hilt 주입 설정으로 처음 쓸 때 초기화한다. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
