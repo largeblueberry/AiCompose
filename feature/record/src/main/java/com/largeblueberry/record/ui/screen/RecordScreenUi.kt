@@ -39,13 +39,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.largeblueberry.core_ui.CustomColors
@@ -108,63 +109,11 @@ fun RecordScreenUi(
         RecordingState.INTERRUPTED -> stringResource(ResourcesR.string.recordInterrupted)
     }
 
-    val recordingTransition = rememberInfiniteTransition(label = "recording_animation")
-    val recordingPulseScale by recordingTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse_scale"
-    )
-    val recordingPulseAlpha by recordingTransition.animateFloat(
-        initialValue = 0.8f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse_alpha"
-    )
-
-    val waitingTransition = rememberInfiniteTransition(label = "waiting_animation")
-    val waitingPulseScale by waitingTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.08f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "waiting_pulse_scale"
-    )
-    val waitingRippleScale by waitingTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.3f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "waiting_ripple_scale"
-    )
-    val waitingRippleAlpha by waitingTransition.animateFloat(
-        initialValue = 0.4f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "waiting_ripple_alpha"
-    )
-
-    val buttonScale = if (isRecording) {
-        recordingPulseScale
-    } else if (recordingStateText == RecordingState.WAITING) {
-        waitingPulseScale
-    } else {
-        1f
+    val micPulse = when {
+        isRecording -> MicPulse.RECORDING
+        recordingStateText == RecordingState.WAITING -> MicPulse.WAITING
+        else -> MicPulse.NONE
     }
-    val buttonAlpha = if (isRecording) recordingPulseAlpha else 1f
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -210,46 +159,13 @@ fun RecordScreenUi(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (recordingStateText == RecordingState.WAITING) {
-                        Box(
-                            modifier = Modifier
-                                .size(micButtonSize)
-                                .scale(waitingRippleScale)
-                                .graphicsLayer(alpha = waitingRippleAlpha)
-                                .background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = CircleShape
-                                )
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .size(micButtonSize)
-                            .clickable { onRecordToggleClick() }
-                            .background(
-                                color = if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            )
-                            .scale(buttonScale)
-                            .graphicsLayer(alpha = buttonAlpha),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = if (isRecording) Icons.Default.Stop else Icons.Default.Mic,
-                            contentDescription = if (isRecording) {
-                                stringResource(ResourcesR.string.recordStop)
-                            } else {
-                                stringResource(ResourcesR.string.recordStart)
-                            },
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(micIconSize)
-                        )
-                    }
-                }
+                MicButton(
+                    pulse = micPulse,
+                    isRecording = isRecording,
+                    size = micButtonSize,
+                    iconSize = micIconSize,
+                    onClick = onRecordToggleClick
+                )
 
                 Spacer(modifier = Modifier.height(if (isSmallScreen) 24.dp else 32.dp))
 
@@ -288,6 +204,120 @@ fun RecordScreenUi(
             Spacer(modifier = Modifier.weight(0.3f))
         }
     }
+}
+
+private enum class MicPulse { NONE, WAITING, RECORDING }
+
+/**
+ * 마이크 버튼과 맥동 애니메이션. 애니메이션 값은 graphicsLayer 람다 안(그리기 단계)에서만 읽는다.
+ * 컴포지션에서 읽으면 애니메이션 프레임마다 화면 전체가 재구성된다(troubleshooting D-5).
+ * 무한 애니메이션은 필요한 상태의 분기 안에서만 만든다(그 상태가 아니면 돌지 않는다).
+ */
+@Composable
+private fun MicButton(
+    pulse: MicPulse,
+    isRecording: Boolean,
+    size: Dp,
+    iconSize: Dp,
+    onClick: () -> Unit
+) {
+    val scaleOf: () -> Float
+    val alphaOf: () -> Float
+    when (pulse) {
+        MicPulse.RECORDING -> {
+            val transition = rememberInfiniteTransition(label = "recording_animation")
+            val pulseScale by transition.animateFloat(
+                initialValue = 1f,
+                targetValue = 1.1f,
+                animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
+                label = "pulse_scale"
+            )
+            val pulseAlpha by transition.animateFloat(
+                initialValue = 0.8f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
+                label = "pulse_alpha"
+            )
+            scaleOf = { pulseScale }
+            alphaOf = { pulseAlpha }
+        }
+        MicPulse.WAITING -> {
+            val transition = rememberInfiniteTransition(label = "waiting_animation")
+            val pulseScale by transition.animateFloat(
+                initialValue = 1f,
+                targetValue = 1.08f,
+                animationSpec = infiniteRepeatable(tween(1200), RepeatMode.Reverse),
+                label = "waiting_pulse_scale"
+            )
+            scaleOf = { pulseScale }
+            alphaOf = { 1f }
+        }
+        MicPulse.NONE -> {
+            scaleOf = { 1f }
+            alphaOf = { 1f }
+        }
+    }
+
+    Box(contentAlignment = Alignment.Center) {
+        if (pulse == MicPulse.WAITING) {
+            WaitingRipple(size = size)
+        }
+        Box(
+            modifier = Modifier
+                .size(size)
+                .graphicsLayer {
+                    val s = scaleOf()
+                    scaleX = s
+                    scaleY = s
+                    alpha = alphaOf()
+                }
+                .clip(CircleShape)
+                .background(
+                    if (isRecording) Theme.customColors.recordingRed else MaterialTheme.colorScheme.primary
+                )
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = if (isRecording) Icons.Default.Stop else Icons.Default.Mic,
+                contentDescription = if (isRecording) {
+                    stringResource(ResourcesR.string.recordStop)
+                } else {
+                    stringResource(ResourcesR.string.recordStart)
+                },
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(iconSize)
+            )
+        }
+    }
+}
+
+/** 대기 중 버튼 뒤로 퍼지는 물결. 값은 그리기 단계에서만 읽는다. */
+@Composable
+private fun WaitingRipple(size: Dp) {
+    val transition = rememberInfiniteTransition(label = "waiting_ripple")
+    val rippleScale by transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.3f,
+        animationSpec = infiniteRepeatable(tween(1200), RepeatMode.Restart),
+        label = "waiting_ripple_scale"
+    )
+    val rippleAlpha by transition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(tween(1200), RepeatMode.Restart),
+        label = "waiting_ripple_alpha"
+    )
+    Box(
+        modifier = Modifier
+            .size(size)
+            .graphicsLayer {
+                scaleX = rippleScale
+                scaleY = rippleScale
+                alpha = rippleAlpha
+            }
+            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+    )
 }
 
 @Composable

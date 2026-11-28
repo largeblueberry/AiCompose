@@ -49,6 +49,7 @@
   - [D-2. 언어를 바꿔도 체크 표시가 옛 언어에 남았다](#d-2-언어를-바꿔도-체크-표시가-옛-언어에-남았다) ✅
   - [D-3. 설정 화면 로고 카드가 다크 모드에서 캡처를 붙인 것처럼 보였다](#d-3-설정-화면-로고-카드가-다크-모드에서-캡처를-붙인-것처럼-보였다) ✅
   - [D-4. 라이브러리 화면만 상단바가 달랐다](#d-4-라이브러리-화면만-상단바가-달랐다) ✅
+  - [D-5. 녹음 화면이 대기 중에도 매 프레임 재구성됐다](#d-5-녹음-화면이-대기-중에도-매-프레임-재구성됐다) ✅
 
 ---
 
@@ -611,3 +612,46 @@
 - **원인**: 공통 컴포넌트 `EareamTopAppBar`가 생기기 전에 만든 화면이라, `Surface` + `Box`로 상단바를 직접 그리고 있었다(위아래 여백 32dp에 위쪽 20dp 추가, `headlineMedium` 가운데 정렬, 그림자 4dp).
 - **결정**: 직접 그린 상단바를 지우고 `Scaffold(topBar = { EareamTopAppBar(...) })`로 바꿨다. 뒤로가기 동작(이전 화면이 있으면 pop, 없으면 `onBackClick`)은 그대로 옮겼다.
 - **검증**: 기기에서 악보 목록·악보 화면과 같은 높이·위치로 나오는 것을 확인. `:feature:library` lint·테스트 통과.
+
+### D-5. 녹음 화면이 대기 중에도 매 프레임 재구성됐다
+
+- **증상**: Layout Inspector의 재구성 횟수로 녹음 화면을 보니, 아무것도 누르지 않은 대기 상태인데 `RecordScreenUi`가 **2126번 재구성되고 건너뜀은 0번**이었다. 그 아래 `Scaffold`와 콘텐츠(`Column`, `OutlinedButton` 등)도 2148~2149로 같이 늘었다. 부모 `RecordScreenState`는 2번뿐이었다.
+
+  ![수정 전: 대기 상태의 녹음 화면 재구성 횟수](images/troubleshooting/problem_recomposition-before.png)
+
+- **읽는 법**: 부모는 2번인데 자식이 2126번이면, 부모가 새 값을 내려줘서가 아니라 **자식이 스스로 읽은 State 때문에** 다시 실행된 것이다. 그래서 범위를 `RecordScreenUi` 본문으로 좁혔다.
+- **원인: 무한 애니메이션 값을 컴포지션 단계에서 읽었다**
+  ```kotlin
+  val waitingPulseScale by waitingTransition.animateFloat(...)   // 매 프레임 바뀌는 State
+  val buttonScale = if (isRecording) recordingPulseScale
+                    else if (status == WAITING) waitingPulseScale  // ← 함수 본문에서 읽음
+                    else 1f
+  ```
+  1. `by`로 위임한 애니메이션 값은 읽는 순간 **읽은 범위가 그 State를 구독**한다. 대기 중에는 `waitingPulseScale`을 `RecordScreenUi` 본문에서 읽으므로, 애니메이션 한 프레임(초당 약 60번)마다 `RecordScreenUi` 전체가 다시 실행됐다. 2126번은 약 35초 분량이다.
+  2. 그렇게 읽은 `buttonScale`(매번 다른 Float)을 `Scaffold`의 콘텐츠 람다가 캡처하니, 람다가 매번 달라져 **콘텐츠도 매 프레임 다시 실행**됐다. 인자가 같은 자식(`BpmSelector` 등)은 건너뛰어도, 트리 전체를 매 프레임 비교하며 내려간다.
+  3. 콘텐츠 안의 `.scale(rippleScale)`, `.graphicsLayer(alpha = rippleAlpha)`처럼 **값을 인자로 받는 modifier**도 값을 컴포지션에서 읽는다.
+  4. 같이 발견한 것: `recordingTransition`은 녹음 중이 아닐 때도 늘 돌고 있었다. 또 마이크 버튼이 `background → scale` 순서여서 scale이 그 뒤(아이콘)에만 걸려, **원은 그대로이고 아이콘만** 맥동했다.
+- **Compose의 세 단계로 보면**: 컴포지션(무엇을 그릴지) → 레이아웃(어디에) → 그리기(어떻게). State를 **어느 단계에서 읽느냐**가 무엇이 다시 실행되는지를 정한다. 크기·투명도처럼 그리기에만 쓰는 값을 컴포지션에서 읽으면, 그리기만 다시 하면 될 일을 재구성으로 치르게 된다.
+- **검토한 선택지**
+  - (a) 값을 그리기 단계로 미루기만 한다: `graphicsLayer { scaleX = … }` 람다 안에서 읽는다.
+  - (b) 애니메이션을 작은 composable로 분리만 한다: 재구성 범위는 줄지만 그 범위는 여전히 매 프레임 재구성된다.
+  - (a)+(b)를 함께 택했다. (a)로 재구성 자체를 없애고, (b)로 나중에 누가 실수로 컴포지션에서 읽어도 피해가 버튼 하나로 묶이게 했다.
+- **결정** (`feature/record/.../RecordScreenUi.kt`)
+  - `MicButton`, `WaitingRipple`을 분리하고 애니메이션 값은 `graphicsLayer { }` **람다 안에서만** 읽는다. `RecordScreenUi`는 "지금 어떤 맥동인지"(`MicPulse.NONE/WAITING/RECORDING`)만 넘긴다. 이 값은 상태가 바뀔 때만 바뀐다.
+  - 무한 애니메이션은 해당 상태의 분기 안에서만 만든다. 대기가 아니면 대기 애니메이션이, 녹음 중이 아니면 녹음 애니메이션이 돌지 않는다.
+  - modifier 순서를 `size → graphicsLayer → clip → background → clickable`로 바꿔 원 전체가 맥동하게 했다(원래 의도한 모습).
+- **검증**
+  - `:feature:record` lint·테스트 통과.
+  - 기기에서 대기 화면을 0.6초 간격으로 두 번 캡처해 원 전체 크기가 바뀌고 물결이 퍼지는 것을 확인했다.
+  - Layout Inspector에서 같은 조건(대기 상태, 애니메이션이 도는 중)으로 다시 쟀다.
+
+    | 구성 요소 | 수정 전 | 수정 후 |
+    |---|---|---|
+    | `RecordScreenState` | 2 | 2 |
+    | `RecordScreenUi` | 2126 (건너뜀 0) | 0 |
+    | `Scaffold`·콘텐츠(`Column`, `Text`, `OutlinedButton` …) | 2148~2149 | 0 |
+
+    수정 후에도 버튼은 맥동하고 물결이 퍼진다. 애니메이션은 그대로 돌고, 재구성 없이 그리기만 다시 한다는 뜻이다.
+
+  ![수정 후: 같은 화면의 재구성 횟수](images/troubleshooting/problem_recomposition-after.png)
+- **배운 점**: 재구성 횟수는 부모와 자식을 같이 봐야 원인 위치가 보인다. 애니메이션처럼 매 프레임 바뀌는 값은 "어느 단계에서 읽는가"부터 정한다. 람다를 받는 modifier(`graphicsLayer { }`, `offset { }`, `drawBehind { }`)가 그 도구다.
