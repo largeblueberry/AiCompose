@@ -180,4 +180,5 @@
     <string name="transcribeError">Couldn\'t make sheet music. Please try again.</string>
     <string name="transcribeNoNotes">No melody found. Try humming a little louder and clearer.</string>
 
+    <string name="settingAboutSection">About</string>
 </resources>

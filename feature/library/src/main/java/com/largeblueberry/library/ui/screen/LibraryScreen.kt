@@ -5,19 +5,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.largeblueberry.core_ui.customColors
+import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.library.ui.viemodel.LibraryViewModel
 import com.largeblueberry.resources.R as ResourcesR
 
@@ -54,7 +52,20 @@ fun LibraryScreen(
         }
     }
 
+    // 상단바는 다른 화면과 같은 공통 컴포넌트를 쓴다
     Scaffold(
+        topBar = {
+            EareamTopAppBar(
+                title = stringResource(ResourcesR.string.myLibrary),
+                onNavigateBack = {
+                    if (navController.previousBackStackEntry != null) {
+                        navController.popBackStack()
+                    } else {
+                        onBackClick()
+                    }
+                }
+            )
+        },
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { paddingValues ->
 
@@ -64,49 +75,6 @@ fun LibraryScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 4.dp
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 32.dp)
-                ) {
-
-                    IconButton(
-                        onClick = {
-                            if (navController.previousBackStackEntry != null) {
-                                navController.popBackStack()
-                            } else {
-                                onBackClick()
-                            }
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .padding(top = 20.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(ResourcesR.string.backButtonContentDescription),
-                            tint = MaterialTheme.customColors.appBlack
-                        )
-                    }
-
-                    Text(
-                        text = stringResource(ResourcesR.string.myLibrary),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.customColors.appBlack,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(top = 20.dp)
-                    )
-
-                }
-            }
-
             if (uiState.isEmpty) {
                 EmptyView()
             } else {
