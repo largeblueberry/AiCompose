@@ -22,8 +22,13 @@
     drawTitle: false,
     drawPartNames: false,
     drawComposer: false,
-    drawCredits: false
+    drawCredits: false,
+    // MusicXmlWriter는 <beam>을 쓰지 않는다. 안 묶으면 16분음표마다 깃발이 달려 폰 폭에서 음표가 겹친다.
+    autoBeam: true,
+    autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
   });
+  // 폰 폭(약 360px)에서 조표·임시표가 많으면 zoom 1.0으로는 음표 사이가 모자라 겹친다
+  osmd.zoom = 0.75;
 
   function reportHeight() {
     if (window.AndroidBridge) window.AndroidBridge.reportHeight(Math.ceil(document.body.scrollHeight));

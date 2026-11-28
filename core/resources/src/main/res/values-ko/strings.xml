@@ -178,4 +178,5 @@
     <string name="transcribeError">악보를 만들지 못했어요. 다시 시도해 주세요.</string>
     <string name="transcribeNoNotes">멜로디를 찾지 못했어요. 조금 더 크고 또렷하게 불러 주세요.</string>
 
+    <string name="settingAboutSection">정보</string>
 </resources>
