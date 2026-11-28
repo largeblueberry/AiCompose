@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/archgraph-check.sh\"",
+            "timeout": 300,
+            "statusMessage": "archgraph check (아키텍처 규칙 검사)"
+          }
+        ]
+      }
+    ]
+  }
+}

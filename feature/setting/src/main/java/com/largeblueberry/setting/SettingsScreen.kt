@@ -14,14 +14,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.largeblueberry.core_ui.LightCustomColors
 import com.largeblueberry.core_ui.component.EareamTopAppBar
 import com.largeblueberry.core_ui.customColors
 import com.largeblueberry.ui.R
@@ -81,64 +80,54 @@ fun SettingsScreen(
     }
 }
 
+/**
+ * 앱 정보 헤더. 로고는 투명 배경 선화(eareamlogo_line)를 테마 글자색으로 칠해 라이트·다크 모두에 맞춘다.
+ * 설정 항목이 첫 화면에 보이도록 한 줄로 둔다.
+ */
 @Composable
 private fun AppInfoCard() {
+    val colors = MaterialTheme.customColors
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.customColors.appWhite
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        colors = CardDefaults.cardColors(containerColor = colors.appWhite),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 20.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // 앱 로고
             Image(
-                painter = painterResource(id = R.drawable.eareamlogo),
+                painter = painterResource(id = R.drawable.eareamlogo_line),
                 contentDescription = stringResource(ResourceR.string.eareamLogoDescription),
-                modifier = Modifier
-                    .size(140.dp)
-                    .padding(8.dp)
-                    .offset(x = (30).dp, y = 0.dp),
-                contentScale = ContentScale.Fit
+                modifier = Modifier.size(56.dp),
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(colors.appBlack)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
-            // 앱 제목
-            Text(
-                text = stringResource(id = ResourceR.string.app_name),
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                color = LightCustomColors.titleBlueDark,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // 부제목
-            Text(
-                text = stringResource(id = ResourceR.string.app_subtitle),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                color = LightCustomColors.subtitleBlue,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 버전 텍스트
-            Text(
-                text = "버전 ${BuildConfig.VERSION_NAME}",
-                fontSize = 12.sp,
-                color = MaterialTheme.customColors.settingUtilColor
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(id = ResourceR.string.app_name),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.titleBlueDark
+                )
+                Text(
+                    text = stringResource(id = ResourceR.string.app_subtitle),
+                    fontSize = 13.sp,
+                    color = colors.subtitleBlue
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(ResourceR.string.version_info, BuildConfig.VERSION_NAME),
+                    fontSize = 12.sp,
+                    color = colors.settingUtilColor
+                )
+            }
         }
     }
 }
@@ -170,7 +159,7 @@ private fun AboutSection(
     onNavigateToServiceTerm: () -> Unit = {},
     onNavigateToAbout: () -> Unit = {}
 ) {
-    SettingSection(title = "정보") {
+    SettingSection(title = stringResource(ResourceR.string.settingAboutSection)) {
         SettingItem(
             icon = Icons.Default.Description,
             title = stringResource(ResourceR.string.serviceTermMainText),

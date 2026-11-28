@@ -1,0 +1,29 @@
+# archgraph 검사 규칙 (archgraph check, D33). 사용자와 합의한 아키텍처만 적는다.
+# 이 파일을 바꾸는 것은 규칙을 바꾸는 것이다. AI는 위반을 없애려고 이 파일을 고치지 않는다(사용자와 합의한 뒤에만).
+# 출처: docs/map/notes.md "모듈과 의존 방향".
+
+layers:                                   # 위에 적은 계층이 먼저 이긴다
+  domain:       { modules: [":core:domain"] }
+  music:        { modules: [":core:music"] }
+  ml:           { modules: [":core:ml"] }
+  data:         { modules: [":core:data"] }
+  presentation: { modules: [":feature:*", ":core:ui"] }
+  shared:       { modules: [":core:resources", ":core:navigation"] }
+  app:          { modules: [":app"] }
+
+allowed:                                  # 적힌 계층 사이 모듈 의존만 허용. 같은 계층 안은 보지 않는다
+  music: []                               # 프로젝트 의존 없음(기기 없이 테스트하려고 순수 JVM)
+  ml: [music]
+  data: [domain, ml, music]
+  presentation: [domain, shared]
+  app: ["*"]
+
+deny:
+  - { from: { layer: presentation }, to: { type: "androidx.work.**" }, why: "어떤 백그라운드 기술로 도는지는 data만 안다(domain은 TranscriptionScheduler 인터페이스만)" }
+  - { from: { layer: presentation }, to: { type: "androidx.room.**" }, why: "DB는 data만 안다" }
+  - { from: { layer: domain }, to: { type: "android.**" }, why: "domain은 순수 JVM이다" }
+
+protect:                                  # 바꾸면 알림(위반 아님). 의도한 변경이면 작업 보고에 이유를 적는다
+  - "core/domain/src/main/**"             # 경계: 인터페이스·모델·유스케이스
+  - "archgraph.yaml"                      # 규칙 자체
+  - ".claude/**"                          # 검사 훅

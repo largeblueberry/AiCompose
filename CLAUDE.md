@@ -32,3 +32,11 @@ $A conventions $M/graph.json -o $M/conventions.md
 ```bash
 $A query docs/map/graph.json <deps|uses|bindings|injects|members|gaps|files> [인자]
 ```
+
+## 아키텍처 검사 (archgraph.yaml)
+
+- `archgraph.yaml`은 사용자와 합의한 아키텍처 규칙이다(계층 사이 허용 의존 `allowed`, 참조 금지 `deny`, 경계 파일 `protect`).
+- 작업을 마칠 때마다 Stop 훅(`.claude/hooks/archgraph-check.sh`)이 검사한다. 위반이나 새 protect 알림이 있으면 보고서가 돌아온다.
+- 위반은 코드를 고쳐서 없앤다. 규칙이 틀렸다고 보면 고치지 말고 사용자에게 알린다. **`archgraph.yaml`을 고쳐 위반을 없애지 않는다.**
+- protect 알림은 위반이 아니다. 의도한 변경이면 작업 보고에 무엇을 왜 바꿨는지 적는다.
+- 훅의 그래프·보고서는 `build/archgraph/`에 있다(커밋하지 않음). `docs/map`의 지도와 별개다.
